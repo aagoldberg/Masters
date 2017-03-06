@@ -1,0 +1,133 @@
+---
+title: "Grando-Project"
+author: "John Grando"
+date: "March 6, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando - Data Project
+
+### Data Preparation
+
+```{r}
+#Set the working directory and read in the files
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/DataProject")
+} else {
+  setwd("~/Documents/Masters/DATA606/DataProject")
+}
+fileurl = "PublicLEEDProjectDirectory.csv"
+project_data <- read.csv(file = fileurl, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+svfileurl = "SummaryVersionsMap.csv"
+sv_data <- read.csv(file = svfileurl, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+#Format dates
+project_data$CertDate <- as.Date(project_data$CertDate,"%m/%d/%Y")
+project_data$RegistrationDate <- as.Date(project_data$RegistrationDate,"%m/%d/%Y")
+#Add two calculated columns.  SubtmittalTime is the number of days between certification and registration dates (completed projects).  SubmittalTimePending is the number of days between the date the information was pulled and the registration date (open projects). 
+project_data$SubmittalTime <- as.numeric(project_data$CertDate - project_data$RegistrationDate)
+project_data$SubmittalTimePending <- ifelse(is.na(project_data$CertDate)==TRUE,as.Date("3/2/2017","%m/%d/%Y")-project_data$RegistrationDate,NA)
+#Run sapply() to do a table join between the project directory data and the SummaryVersionsMap file.  The latter file is a mapping scheme that provides further sub-category information to each project type.
+project_data$RatingSystemFamily <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                          function(x){
+                                            x <- sv_data[which(sv_data$RatingSystem == x),2]
+                                            x <- ifelse(identical(x, character(0)), character(0), as.character(x))
+                                          }
+                                          )
+project_data$System <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                             function(x){
+                               x <- sv_data[which(sv_data$RatingSystem == x),3]
+                               x <- ifelse(identical(x, character(0)), character(0), as.character(x))
+                             }
+)
+project_data$Version <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                              function(x){
+                                x <- sv_data[which(sv_data$RatingSystem == x),4]
+                                x <- ifelse(identical(x, character(0)), character(0), as.character(x))
+                              }
+)
+project_data$Platform <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                              function(x){
+                                x <- sv_data[which(sv_data$RatingSystem == x),5]
+                                x <- ifelse(identical(x, character(0)), character(0), as.character(x))
+                              }
+)
+project_data$RSLaunch <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                function(x){
+                                  x <- sv_data[which(sv_data$RatingSystem == x),6]
+                                }
+)
+project_data$RSLaunch <- as.Date(as.character(project_data$RSLaunch),"%m/%d/%Y")
+project_data$RSRegClose <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                function(x){
+                                  x <- sv_data[which(sv_data$RatingSystem == x),7]
+                                }
+)
+project_data$RSRegClose <- as.Date(as.character(project_data$RSRegClose),"%m/%d/%Y")
+project_data$RSSunset <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                  function(x){
+                                    x <- sv_data[which(sv_data$RatingSystem == x),8]
+                                  }
+)
+project_data$RSSunset <- as.Date(as.character(project_data$RSSunset),"%m/%d/%Y")
+project_data$RSIteration <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                function(x){
+                                  x <- sv_data[which(sv_data$RatingSystem == x),9]
+                                }
+)
+project_data$RSIteration <- as.integer(as.character(project_data$RSIteration))
+
+#Add a few more calculated columns now that the sub-category data has been added.
+project_data$RegAfterLaunch <- as.integer(project_data$RegistrationDate - project_data$RSLaunch)
+project_data$CertAfterLaunch <- as.integer(project_data$CertDate - project_data$RSLaunch)
+project_data$RegYear <- trunc(project_data$RegAfterLaunch / 365) + 1
+project_data$CertYear <- trunc(project_data$CertAfterLaunch / 365) + 1
+
+#Create more generalized categories of the Owner types.
+project_data$OwnerTypesAdj <- sapply(project_data$OwnerTypes, 
+                                     function(x){
+                                       x <- ifelse(grepl("government",tolower(x)),"government",
+                                            ifelse(grepl("education",tolower(x)),"education",
+                                            ifelse(grepl("confidential",tolower(x)),"confidential",
+                                            ifelse(grepl("corporate",tolower(x)),"corporate",
+                                            ifelse(grepl("^profit",tolower(x)),"profit",
+                                            ifelse(grepl("^non-profit",tolower(x)),"non-profit",
+                                            ifelse(grepl("individual",tolower(x)),"individual",
+                                            ifelse(grepl("investor",tolower(x)),"investor",
+                                            ifelse(x=="",NA,
+                                            ifelse(is.null(x),NULL,
+                                            "other"))))))))))
+                                     }
+)
+#I am planning to do some comparions between Platforms v2 and v3.  These are two versions of the LEED Rating system and represent a significant change in prerequisite and credit requirements.  One major issue is that because v2 came first, the projects have had a much longer opportunity to stay open than the v3 projects.  In an attempt to normalize this, I have taken a snapshot of the v2 data at the same point in time as v3.  Specifically, I found how many days the v3 Platform has been open and made a cutoff date that was the same number of days after the v2 launch.  Any v2 projects that were open on that cutoff date were considered stil open and the SubmittalTimePending was calculated using the v2cutoff date - the registration date.
+
+#Days the v3 platform has been open since launch
+maxv3days <- as.numeric(as.Date("3/2/2017","%m/%d/%Y")- as.Date("4/27/2009","%m/%d/%Y"))
+
+#Cutoff date for v2 which is maxv3days after the v2 launch
+v2cutoff <- as.Date("11/15/2000","%m/%d/%Y") + maxv3days
+
+#Create an adjusted timeline for v2 projects
+project_data$TimeAdj <- ifelse(project_data$Platform=="v2",v2cutoff - project_data$RegistrationDate, NA)
+
+#taeka subset of data that only includes v3 projects and v2 projects with positive values.  A negative TimeAdj would indicate the individual project was in the beta program and registered before the actual launch.
+project_data_reduc <- subset(project_data, project_data$Platform=="v3" | (project_data$Platform=="v2" & project_data$TimeAdj>0))
+
+#Create the adjusted SubmittalTime for v2 projects, just take the original SubmittalTime for v3 projects 
+project_data_reduc$SubmittalTimeAdj <- ifelse(project_data_reduc$Platform=="v2" & project_data_reduc$CertDate < v2cutoff, 
+                                              project_data_reduc$CertDate - project_data_reduc$RegistrationDate,
+                                              ifelse(project_data_reduc$Platform=="v3",
+                                                     project_data_reduc$SubmittalTime,
+                                                     NA))
+#Create the adjusted SubmittalTimePending for v2 projects, just take the original SubmittalTime for v3 projects 
+project_data_reduc$SubmittalTimePendingAdj <- ifelse(project_data_reduc$Platform=="v2" & (is.na(project_data_reduc$CertDate)==TRUE | project_data_reduc$CertDate > v2cutoff),
+                                                     v2cutoff-project_data_reduc$RegistrationDate,
+                                                     project_data_reduc$SubmittalTimePending)
+#Create a subset of completed projects that have relevant data.
+completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTime>0 & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)) & project_data_reduc$CertAfterNotice == FALSE)
+```
+

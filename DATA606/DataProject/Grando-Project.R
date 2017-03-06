@@ -10,7 +10,7 @@ sv_data <- read.csv(file = svfileurl, header = TRUE, sep = ",", stringsAsFactors
 project_data$CertDate <- as.Date(project_data$CertDate,"%m/%d/%Y")
 project_data$RegistrationDate <- as.Date(project_data$RegistrationDate,"%m/%d/%Y")
 project_data$SubmittalTime <- as.numeric(project_data$CertDate - project_data$RegistrationDate)
-project_data$SubmittalTimePending <- ifelse(is.na(project_data$CertDate)==TRUE,Sys.Date()-project_data$RegistrationDate,NA)
+project_data$SubmittalTimePending <- ifelse(is.na(project_data$CertDate)==TRUE, as.Date("3/2/2017","%m/%d/%Y")-project_data$RegistrationDate,NA)
 project_data$RatingSystemFamily <- sapply(project_data$LEEDSystemVersionDisplayName, 
                                           function(x){
                                             x <- sv_data[which(sv_data$RatingSystem == x),2]
@@ -101,7 +101,7 @@ table(project_data$OwnerTypesAdj)
 table(subset(project_data$OwnerTypes, project_data$OwnerTypesAdj=="other"))
 
 #v3 and v2 projects which were registered a maximum of the max v3 days after RSLaunch
-maxv3days <- as.numeric(Sys.Date()- as.Date("4/27/2009","%m/%d/%Y"))
+maxv3days <- as.numeric(as.Date("3/2/2017","%m/%d/%Y")- as.Date("4/27/2009","%m/%d/%Y"))
 v2cutoff <- as.Date("11/15/2000","%m/%d/%Y") + maxv3days
 #v3 day comparison
 project_data$TimeAdj <- ifelse(project_data$Platform=="v2",v2cutoff - project_data$RegistrationDate, NA)

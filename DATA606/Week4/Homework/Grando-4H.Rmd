@@ -304,16 +304,21 @@ ggplot(data.frame(x = c(6000, 12000)), aes(x))+ stat_function(fun = dnorm, args 
 
 Answer:
 
-####We could not estimate (a) without a nearly normal distribution since the parameters are basd on the population.  We also could not estimate (c) since the sample size is not sufficient (less than 30) to yield a nearly normal sampling distribution if the population distribution is significantly skewed.
+We could not estimate (a) without a nearly normal distribution since the parameters are basd on the population.  We also could not estimate (c) since the sample size is not sufficient (less than 30) to yield a nearly normal sampling distribution if the population distribution is significantly skewed.
 
-The p-value is based on determining a z-value from the sample distribution.  This calculation takes the square root of the sample size in the denominator; therefore, an increase in n would result in a decrease of the absolute value of Z.  The overall result would be an increase in the p-value.
+####4.48 Same observation, different sample size. Suppose you conduct a hypothesis test based on a sample where the sample size is n = 50, and arrive at a p-value of 0.08. You then refer back to your notes and discover that you made a careless mistake, the sample size should have been n = 500. Will your p-value increase, decrease, or stay the same? Explain.
 
-put equation in here
+Answer:
+
+The p-value is based on determining a z-value from the sample distribution.  The denominator of the z-value calculation is the standard error.  An increase in n would result in a decrease in the standard error which would in turn increase the z-value determined.  Therefore, the overall result would be a decrease in the p-value
+
+$$\qquad Z\quad =\quad \frac { \overline { x } -\quad null\quad value }{ { SE }_{ x } } =\quad \frac { \overline { x } -\quad null\quad value }{ \frac { s }{ \sqrt { 50 }  }  } =\frac { (\overline { x } -\quad null\quad value)\quad *\quad \sqrt { 50 }  }{ s } \\ \frac { (\overline { x } -\quad null\quad value)\quad *\quad \sqrt { 50 }  }{ s } \quad *\quad \frac { \sqrt { 500 }  }{ \sqrt { 50 }  } \quad =\quad Z\quad *\quad \frac { \sqrt { 500 }  }{ \sqrt { 50 }  } $$
 
 ```{r}
 z_value <- qnorm(p = .08, mean = 0, sd = 1)
-z_value_new <- z_value * sqrt(50) / sqrt(500)
-p_value <- pnorm(q = z_value_new, mean = 0, sd = 1)
+z_value
+z_value_new <- z_value * sqrt(500) / sqrt(50)
+z_value_new
+p_value_new <- pnorm(q = z_value_new, mean = 0, sd = 1)
+p_value_new
 ```
-
-Answer:
