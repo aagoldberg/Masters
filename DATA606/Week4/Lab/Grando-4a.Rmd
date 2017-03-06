@@ -1,0 +1,233 @@
+---
+title: "Grando-4a"
+author: "John Grando"
+date: "February 15, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando-4a Lab
+
+Set working directory and source the data.
+
+```{r}
+setwd("~/Documents/Masters/DATA606/Week4/Lab/lab4a")
+load("more/ames.RData")
+library(DATA606)
+require(ggplot2)
+```
+
+
+####Exercise 1 - Describe this population distribution.
+
+First, I will create the summary graphs.
+
+```{r}
+area <- ames$Gr.Liv.Area
+summary(area)
+area_df <- data.frame(area,"overall")
+names(area_df) <- c("data","type")
+ggplot(area_df, aes(x=data))+geom_histogram(binwidth = 500, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="black",args=list(mean=mean(area_df$data),sd(area_df$data)))+labs(x="area")
+qqnorm(area_df$data)
+qqline(area_df$data)
+```
+
+The histogram has been overlayed with a normal distribution curve.  As can be seenn from that graph, it appears data has a right skew.  Additionally, the normal probability plot bends up and left of the line which also indicates a right skewed distribution.
+
+####Exercise 2 - Describe the distribution of this sample. How does it compare to the distribution of the population?
+
+First, I will re-create the graphs from the previous exercise
+
+```{r}
+set.seed(100)
+samp1 <- sample(area, 50)
+samp1_df <- data.frame(samp1,"samp1")
+names(samp1_df) <- c("data","type")
+ggplot(samp1_df, aes(x=data))+geom_histogram(binwidth = 500, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="black",args=list(mean=mean(samp1_df$data),sd(samp1_df$data)))+labs(x="area")
+qqnorm(samp1_df$data)
+qqline(samp1_df$data)
+```
+
+This sample also appears to be right skewed for the same reasons as the overall distribution.  Additionally, I have overlayed the two graphs to show their similarities.
+
+```{r}
+combined_data <- rbind(area_df, samp1_df)
+ggplot(combined_data, aes(x=data, fill=type))+geom_histogram(binwidth = 500, alpha=0.5, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="red",args=list(mean=mean(area_df$data),sd(area_df$data)))+stat_function(fun=dnorm,color="blue",args=list(mean=mean(samp1_df$data),sd(samp1_df$data)))+labs(x="area")
+```
+
+####Exercise 3 - Take a second sample, also of size 50, and call it samp2. How does the mean of samp2 compare with the mean of  samp1? Suppose we took two more samples, one of size 100 and one of size 1000. Which would you think would provide a more accurate estimate of the population mean?
+
+Answer:
+
+First, I will generate the necessary graphs.  Here I will overlay samp1 and samp2 data for comparison.
+
+```{r}
+set.seed(150)
+samp2 <- sample(area, 50)
+samp2_df <- data.frame(samp2,"samp2")
+names(samp2_df) <- c("data","type")
+samp_combined <- rbind(samp1_df, samp2_df)
+ggplot(samp_combined, aes(x=data, fill=type))+geom_histogram(binwidth = 200, alpha=0.5, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="red",args=list(mean=mean(samp1_df$data),sd(samp1_df$data)))+stat_function(fun=dnorm,color="blue",args=list(mean=mean(samp2_df$data),sd(samp2_df$data)))+labs(x="area")
+```
+
+Both samples appear to have the same general mean and distribution.  The more samples we take, the more accurate our estimate will become because we will have a better overall picture of the population data.
+
+####Exercise 4 - How many elements are there in sample_means50? Describe the sampling distribution, and be sure to specifically note its center. Would you expect the distribution to change if we instead collected 50,000 sample means?
+
+Answer:
+
+First, we will recreate the graphs in the lab:
+
+```{r}
+sample_means50 <- rep(NA, 5000)
+
+for(i in 1:5000){
+   samp <- sample(area, 50)
+   sample_means50[i] <- mean(samp)
+   }
+hist(sample_means50, breaks = 50)
+```
+
+Now, we can find the number of elements by taking the length of sample_means50.
+
+```{r}
+length(sample_means50)
+```
+
+The sampling distribution appears to be approximately normal with a mean of 1500.  As we collect more samples, the mean would shift closer to the population means and the distribution would become more normal.
+
+####Exercise 5 - To make sure you understand what you’ve done in this loop, try running a smaller version. Initialize a vector of 100 zeros called sample_means_small. Run a loop that takes a sample of size 50 from area and stores the sample mean in sample_means_small, but only iterate from 1 to 100. Print the output to your screen (type  sample_means_small into the console and press enter). How many elements are there in this object called  sample_means_small? What does each element represent?
+
+Answer:
+
+```{r}
+sample_means_small <- rep(NA, 100)
+for(i in 1:100){
+   samp <- sample(area, 50)
+   sample_means_small[i] <- mean(samp)
+   print(mean(samp))
+}
+```
+
+There are 100 elements in the sample_means_small set:
+
+```{r}
+length(sample_means_small)
+```
+
+Each element represents a simple random sample of size 50 from the vector "area".
+
+####Exercise 6 - When the sample size is larger, what happens to the center? What about the spread?
+
+Answer:
+
+First, let's generate the graphs from the lab:
+
+```{r}
+sample_means10 <- rep(NA, 5000)
+sample_means100 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 10)
+  sample_means10[i] <- mean(samp)
+  samp <- sample(area, 100)
+  sample_means100[i] <- mean(samp)
+}
+par(mfrow = c(3, 1))
+
+xlimits <- range(sample_means10)
+
+hist(sample_means10, breaks = 20, xlim = xlimits)
+hist(sample_means50, breaks = 20, xlim = xlimits)
+hist(sample_means100, breaks = 20, xlim = xlimits)
+```
+
+The center stays relatively the same, but gets closer to the population mean, as the number of samples increase; however, the spread decreases as the number of samples increase.
+
+
+####Question 1 - Take a random sample of size 50 from price. Using this sample, what is your best point estimate of the population mean?
+
+Answer:
+
+First, I will generate the necessary data set:
+
+```{r}
+set.seed(300)
+price <- ames$SalePrice
+samp_price50 <- sample(price, 50)
+```
+
+The best point estimate that could be determined would be the mean of the sample taken, which is:
+
+```{r}
+mean(samp_price50)
+```
+
+####Question 2 - Since you have access to the population, simulate the sampling distribution for $\bar{x}_{price}$ by taking 5000 samples from the population of size 50 and computing 5000 sample means. Store these means in a vector called sample_means50. Plot the data, then describe the shape of this sampling distribution. Based on this sampling distribution, what would you guess the mean home price of the population to be? Finally, calculate and report the population mean.
+
+Answer:
+
+```{r}
+sample_means50 <- rep(NA, 5000)
+for(i in 1:5000){
+   samp <- sample(price, 50)
+   sample_means50[i] <- mean(samp)
+}
+hist(sample_means50, breaks = 50)
+```
+
+The sample appears to follow an approximately normal distribution.  Based on the sampling distribution, the approximate mean home price is:
+
+```{r}
+mean(sample_means50)
+```
+
+The population mean is:
+
+```{r}
+mean(price)
+```
+
+####Question 3 - Change your sample size from 50 to 150, then compute the sampling distribution using the same method as above, and store these means in a new vector called sample_means150. Describe the shape of this sampling distribution, and compare it to the sampling distribution for a sample size of 50. Based on this sampling distribution, what would you guess to be the mean sale price of homes in Ames?
+
+Answer:
+
+First, I will generat the necessary graphs to compare the differnece between 50 and 150 samples:
+
+```{r}
+sample_means150 <- rep(NA, 5000)
+for(i in 1:5000){
+   samp <- sample(price, 150)
+   sample_means150[i] <- mean(samp)
+}
+sample_means50_df <- data.frame(sample_means50,"samp50")
+names(sample_means50_df) <- c("data", "type")
+sample_means150_df <- data.frame(sample_means150, "samp150")
+names(sample_means150_df) <- c("data", "type")
+combined_means <- rbind(sample_means50_df, sample_means150_df)
+ggplot(combined_means, aes(x=data, fill=type))+geom_histogram(binwidth = 1000, alpha=0.5, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="red",args=list(mean=mean(sample_means50_df$data),sd(sample_means50_df$data)))+stat_function(fun=dnorm,color="blue",args=list(mean=mean(sample_means150_df$data),sd(sample_means150_df$data)))+labs(x="area")
+```
+
+The mean and variability between sample sizes of 50 and 150 appear to be ver close to each other. Based on the sampling distribution of 150, the mean sale price would be:
+
+```{r}
+mean(sample_means150)
+```
+
+####Question 4 - Of the sampling distributions from 2 and 3, which has a smaller spread? If we’re concerned with making estimates that are more often close to the true value, would we prefer a distribution with a large or small spread?
+
+Answer:
+
+```{r}
+mean(sample_means50)
+sd(sample_means50)
+mean(sample_means150)
+sd(sample_means150)
+
+```
+
+The sampling distribution which uses 150 samples has the smaller spread, as can be seen from the standard deviations of the data sets.  If we're concerned with making estimates that are more often close to the true value, we would prefer a distribution with a small spread.

@@ -1,0 +1,66 @@
+RatingSystem,Rating System Family,System,Version,Platform,RS Launch,RS Reg Close,RS Sunset,RS Iteration
+LEED For Homes Multi Family Low-Rise,Homes,Homes MF: LR,v4,v4,12/13/2013,,,0
+LEED For Homes Multi Family Mid-Rise,Homes,Homes MF: MR,v4,v4,12/13/2013,,,0
+LEED For Homes Single Family,Homes,Homes SF: LR,v4,v4,12/13/2013,,,0
+LEED for Retail (CI) Pilot,IDC,CI-Retail,Pilot,v2,,,,0
+LEED for Retail (NC),BDC,NC-Retail,2,v2,9/18/2006,6/27/2009,6/27/2015,0
+LEED for Retail (New Construction) Pilot,BDC,NC-Retail,Pilot,v2,,,,0
+LEED for Schools,BDC,Schools,2007,v2,4/1/2007,6/27/2009,6/27/2015,1
+LEED FOR SCHOOLS v2009,BDC,Schools,2009,v3,4/27/2009,10/31/2016,6/30/2021,2
+LEED Italia NC 2009,BDC,Italia NC,2009,v3,6/1/2011,10/31/2016,6/30/2021,1
+LEED v4 BD+C: CS,BDC,BD+C CS,v4,v4,12/13/2013,,,3
+LEED v4 BD+C: DC,BDC,BD+C DataCenters,v4,v4,12/13/2013,,,1
+LEED v4 BD+C: HC,BDC,BD+C HC,v4,v4,12/13/2013,,,2
+LEED v4 BD+C: HP,BDC,BD+C Hospitality,v4,v4,12/13/2013,,,1
+LEED v4 BD+C: NC,BDC,BD+C NC,v4,v4,12/13/2013,,,5
+LEED v4 BD+C: SC,BDC,BD+C Schools,v4,v4,12/13/2013,,,3
+LEED v4 BD+C: WDC,BDC,BD+C WDC,v4,v4,12/13/2013,,,1
+LEED v4 ID+C: CI,IDC,ID+C CI,v4,v4,12/13/2013,,,3
+LEED v4 ID+C: HP,IDC,ID+C Hospitality,v4,v4,12/13/2013,,,3
+LEED v4 ID+C: Retail,IDC,ID+C Retail,v4,v4,12/13/2013,,,2
+LEED v4 O+M: EB,OM,O+M EB,v4,v4,12/13/2013,,,0
+LEED v4 O+M: SC,OM,O+M Schools,v4,v4,12/13/2013,,,0
+LEED v4 O+M: WDC,OM,O+M WDC,v4,v4,12/13/2013,,,0
+LEED-CI 1.0 Pilot,IDC,CI,Pilot,v2,,,,0
+LEED-CI 1.0 Pilot (original),IDC,CI,Pilot,v2,,,,0
+LEED-CI 2.0,IDC,CI,2,v2,11/17/2004,6/27/2009,6/27/2015,1
+LEED-CI Retail v2009,IDC,CI-Retail,2009,v3,4/27/2009,10/31/2016,6/30/2021,1
+LEED-CI v2009,IDC,CI,2009,v3,4/27/2009,10/31/2016,6/30/2021,2
+LEED-CS 1.0 Pilot,BDC,CS,Pilot,v2,,,,0
+LEED-CS 2.0,BDC,CS,2,v2,10/31/2005,6/27/2009,6/27/2015,1
+LEED-CS v2009,BDC,CS,2009,v3,4/27/2009,10/31/2016,6/30/2021,2
+LEED-EB 1.0 Pilot,OM,EB,Pilot,v2,,,,0
+LEED-EB 1.0 Pilot (original),OM,EB,Pilot,v2,,,,0
+LEED-EB 2.0,OM,EB,2,v2,11/17/2004,5/31/2008,8/30/2014,1
+LEED-EB O&M,OM,EB:O&M,2008,v2,3/8/2008,6/27/2009,6/27/2015,2
+LEED-EB:OM v2009,OM,EB:O&M,2009,v3,4/27/2009,10/31/2016,6/30/2021,3
+LEED-HC v2009,BDC,HC,2009,v3,11/16/2010,10/31/2016,6/30/2021,1
+LEED-HOMES MR v2010,Homes,Homes MF: MR,2010,v2,,,,0
+LEED-HOMES v2008,Homes,Homes SF: LR,2008,v2,,,,0
+LEED-NC 1.0 Pilot,BDC,NC,Pilot,v2,,,,0
+LEED-NC 2.0,BDC,NC,2,v2,11/15/2000,11/15/2002,12/31/2009,1
+LEED-NC 2.1,BDC,NC,2.1,v2,11/15/2002,11/15/2005,11/15/2011,2
+LEED-NC 2.2,BDC,NC,2.2,v2,10/31/2005,6/27/2009,6/27/2015,3
+LEED-NC Retail v2009,BDC,NC-Retail,2009,v3,4/27/2009,10/31/2016,6/30/2021,1
+LEED-NC v2009,BDC,NC,2009,v3,4/27/2009,10/31/2016,6/30/2021,4
+LEED-ND Project Registration 1.0,ND,ND,Pilot,v2,,,,0
+LEED-ND v2009 Stage 1,ND,ND Stage 1,2009,v3,4/27/2009,10/31/2016,6/30/2021,1
+LEED-ND v2009 Stage 2,ND,ND Stage 2,2009,v3,4/27/2009,10/31/2016,6/30/2021,1
+LEED-ND v2009 Stage 3,ND,ND Stage 3,2009,v3,4/27/2009,10/31/2016,6/30/2021,1
+,BDC,Master Site D+C,2009,v3,4/27/2009,,,1
+,BDC,Master Site O+M,2009,v3,4/27/2009,,,1
+LEED India 2011 NC,BDC,NC,2011,v4,10/20/2011,10/31/2016,6/30/2021,2
+LEED V4 BD+C: HOLR,BDC,Homes,v4,v4,12/13/2013,,,3
+LEED V4 BD+C: HOMR,BDC,Homes,v4,v4,12/13/2013,,,2
+LEED v4 BD+C: Retail,BDC,BD+C Retail,v4,v4,12/13/2013,,,2
+LEED v4 O+M: DC,OM,O+M DataCenters,v4,v4,12/13/2013,,,1
+LEED v4 O+M: HP,OM,O+M Hospitality,v4,v4,12/13/2013,,,1
+LEED India 2011 CS,BDC,CS,2011,v4,2/11/2011,10/31/2016,6/30/2021,
+LEED BC-NC,BDC,NC,v1,v3,,,,1
+LEED Canada for New Construction and Major Renovations,BDC,NC-CA,v1,v3,,,,1
+LEED Canada for Core and Shell Development,BDC,CS-CA,v1,v3,,,,1
+LEED Canada for Commercial Interiors,IDC,CI-CA,v1,v3,,,,1
+LEED Canada for Existing Buildings: Operations and Maintenance,OM,EB:O&M-CA,v1,v3,,,,1
+LEED Canada for Homes,Homes,Homes-CA,v1,v3,,,,1
+LEED India CS,BDC,CS-IN,v1,v3,,,,1
+LEED India NC,BDC,NC-IN,v1,v3,,,,1

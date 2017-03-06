@@ -1,0 +1,321 @@
+---
+title: "Week3_R_Solutions"
+author: "John Grando"
+date: "January 20, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 3 Solutions
+
+This is the published version for the Week 3 assignment
+
+Question - 4 Meaningful question for analysis: Please state at the beginning a meaningful question for analysis. Use the first three steps and anything else that would be helpful to answer the question you are posing from the data set you chose. Please write a brief conclusion paragraph in R markdown at the end.
+
+I have selected a data set which reports a simulated building heating and cooling load based on a varying set of inputs (https://archive.ics.uci.edu/ml/datasets/Energy+efficiency).  To provide some background, I am a mechanical engineer who specializes in building energy simulation which is why I found this data set particularly interesting.  Since I haven't seen the actually energy simulation, i'm unsure of many input parameters which could greatly affect the results.  Therefore, I'll be treating this as just a data set with numbers rather than a summarey on modeling analysis.
+
+It appears this data was constructed in order to determine how two response variables, cooling load and heating load, will vary given changes in a number of tracked predictor variables.  The main question I set out to answer is, which variables have the greatest impact on the cooling and heating loads for the modeled buildings?
+
+First, I will take the data and import it into data tables.  During my analysis, it seemed like some plotting functions (e.g. geom_histogram) did not work well wtih numberical and categorical data.  To get the best plots possible, I created two data tables; one where all the colums are character type, and the other with numerical types where applicable.
+
+```{r}
+eedataurl <- "https://github.com/john-grando/Masters/raw/master/Workshop/R/Week3/assignment/ENB2012_data.csv"
+eedata <- read.csv(file = eedataurl, 
+                   header = TRUE, sep <- ",", 
+                   #colClasses = c("numeric","numeric","numeric","numeric", "numeric", "character", "numeric", "character", "numeric", "numeric"),
+                   colClasses = c("character","character","character","character", "character", "character", "character", "character", "numeric", "numeric"),
+                   col.names = c("relative.compactness","surface.area","wall.area","roof.area","overall.height","orientation","glazing.area","glazing.area.distribution","heating.load","cooling.load"), 
+                   stringsAsFactors = FALSE)
+eedatanumeric <- read.csv(file = eedataurl, 
+                          header = TRUE, sep <- ",", 
+                          colClasses = c("numeric","numeric","numeric","numeric","numeric","character","numeric","character","numeric","numeric"),
+                          col.names = c("relative.compactness","surface.area","wall.area","roof.area","overall.height","orientation","glazing.area","glazing.area.distribution","heating.load","cooling.load"), 
+                          stringsAsFactors = FALSE)
+```
+
+Question 2 - Data wrangling: Please perform some basic transformations. They will need to make sense but could include column renaming, creating a subset of the data, replacing values, or creating new columns with derived data (for example – if it makes sense you could sum two columns together)
+
+From the data provided, it appears that glazing area is actually the glazing ratio.  We can then calculate an extra column which gives the actual glazing area.
+
+```{r}
+eedata$glazing.area.actual <- formatC(eedatanumeric$glazing.area * eedatanumeric$wall.area)
+eedatanumeric$glazing.area.actual <- eedatanumeric$glazing.area * eedatanumeric$wall.area
+```
+
+Question 1 - Data Exploration: This should include summary statistics, means, medians, quartiles, or any other relevant information about the data set. Please include some conclusions in the R Markdown text.
+
+To start, I take a look at the histograms of the two response variables in this study (cooling load and heating load)
+
+```{r}
+require(ggplot2)
+ggplot(eedata, aes(x = cooling.load)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+ggplot(eedata, aes(x = heating.load)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+```
+
+
+Upon inspection, it appears both of these response variables are bimodal.  Therefore, I will check whether there are any inputs influencing this shape.
+
+First, i'll check categorical fields of orientation and glazing area distribution since a linear regression wouldn't provide any meaningful results
+
+```{r}
+ggplot(eedata, aes(cooling.load, fill = orientation)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+ggplot(eedata, aes(cooling.load, fill = glazing.area.distribution)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+ggplot(eedata, aes(heating.load, fill = orientation)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+ggplot(eedata, aes(heating.load, fill = glazing.area.distribution)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+```
+
+It does not appear that these attributes are influencing the bimodal nature of the cooling or heating response variables.
+
+I then start with checking the numeric fields in reference to the cooling response variable.  For the following steps, I will be using the lm() function to check for correlation.  I realize that a lot or results show weak r squared values but i'm using more of a check rather than a proof of strong relationships.
+
+
+```{r}
+testlm <- lm(cooling.load ~ relative.compactness, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = cooling.load, fill = relative.compactness)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ surface.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = cooling.load, fill = surface.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ wall.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = cooling.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ glazing.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = cooling.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ glazing.area.actual, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = cooling.load, fill = glazing.area.actual)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+```
+
+While some of these show a correlation between surface properties and cooling load, the overall height and roof area are clearly the dominant factors
+
+```{r}
+testlm <- lm(cooling.load ~ overall.height, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = cooling.load, fill = overall.height)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+ggplot(eedata, aes(y = cooling.load, x = overall.height)) + geom_boxplot() + labs(x = "overall height", y = "cooling load")
+testlm <- lm(cooling.load ~ roof.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = cooling.load, fill = roof.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+ggplot(eedata, aes(y = cooling.load, x = roof.area)) + geom_boxplot() + labs(x = "roof area", y = "cooling load")
+```
+
+Next, I test the heating load
+
+```{r}
+testlm <- lm(heating.load ~ relative.compactness, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = heating.load, fill = relative.compactness)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ surface.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = heating.load, fill = surface.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ wall.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = heating.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ glazing.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = heating.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ glazing.area.actual, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = heating.load, fill = glazing.area.actual)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+```
+
+Similaraly, the heating response variable is greatly impacted by the overall height and roof area.
+
+```{r}
+testlm <- lm(heating.load ~ overall.height, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = heating.load, fill = overall.height)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+ggplot(eedata, aes(y = heating.load, x = overall.height)) + geom_boxplot() + labs(x = "overall height", y = "cooling load")
+testlm <- lm(heating.load ~ roof.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata, aes(x = heating.load, fill = roof.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+ggplot(eedata, aes(y = heating.load, x = roof.area)) + geom_boxplot() + labs(x = "overall height", y = "heating load")
+```
+
+However, we see that only one roof area is applied to buildings with a 3.50 overall height and it appears to correlate to a much lower heating and cooling load
+
+```{r}
+ggplot(eedata, aes(x = cooling.load, fill = roof.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load") + facet_wrap(~overall.height)
+ggplot(eedata, aes(x = heating.load, fill = roof.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load") + facet_wrap(~overall.height)
+
+```
+
+So let's split this data into two new tables where one is for 3.50 tall buildings and the other is for 7.0 tall buildings; I'm assuming the unit is meters from here on out.
+
+```{r}
+eedata3.50 <- subset(eedata, eedata$overall.height == "3.50")
+eedata3.50numeric <- subset(eedatanumeric, eedata$overall.height < 6)
+eedata7.00 <- subset(eedata, eedata$overall.height == "7.00")
+eedata7.00numeric <- subset(eedatanumeric, eedata$overall.height > 4)
+```
+
+Now we can look at the 3.5m tall building histograms
+
+```{r}
+ggplot(eedata3.50, aes(x = cooling.load)) + geom_histogram(binwidth = 1) + labs(x = "cooling load 3.5m")
+ggplot(eedata3.50, aes(x = heating.load)) + geom_histogram(binwidth = 1) + labs(x = "heating load 3.5m")
+```
+
+Next, let's re-run our cooling analysis
+
+```{r}
+testlm <- lm(cooling.load ~ relative.compactness, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = cooling.load, fill = relative.compactness)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ surface.area, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = cooling.load, fill = surface.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ wall.area, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = cooling.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ glazing.area, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = cooling.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ glazing.area.actual, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = cooling.load, fill = glazing.area.actual)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+```
+
+Glazing area appears to have the biggest impact on the cooling response variable in this subset of data, but not by much.
+
+```{r}
+ggplot(eedata3.50, aes(x = cooling.load)) + geom_histogram(binwidth = 1) + labs(x = "cooling load") + facet_wrap(~glazing.area)
+```
+
+When a facet wrap is applied, it can be seen that wall area may play a factor in the cooling load as well.  It appears that higher glazing ratios and larger wall areas would correlate to larger cooling loads; however, it's not so clear at the moment.
+
+```{r}
+#Test the two parameters with each other
+testlm <- lm(cooling.load ~ glazing.area * wall.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = cooling.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load") + facet_wrap(~glazing.area)
+#reverse wrapping
+ggplot(eedata3.50, aes(x = cooling.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load") + facet_wrap(~wall.area)
+```
+
+Now we can run the heating analysis.
+
+```{r}
+testlm <- lm(heating.load ~ relative.compactness, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = heating.load, fill = relative.compactness)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ surface.area, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = heating.load, fill = surface.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ wall.area, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = heating.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+```
+
+Again, glazing ratio appears to have the biggest impact, along with the wall area.
+
+```{r}
+testlm <- lm(heating.load ~ glazing.area, data = eedata3.50numeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = heating.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+```
+
+Heating facet wraps
+
+```{r}
+testlm <- lm(heating.load ~ glazing.area * wall.area, data = eedatanumeric)
+summary(testlm)
+ggplot(eedata3.50, aes(x = heating.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load") + facet_wrap(~glazing.area)
+ggplot(eedata3.50, aes(x = heating.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load") + facet_wrap(~wall.area)
+```
+
+Now let's run the 7.0m building
+
+```{r}
+ggplot(eedata7.00, aes(x = cooling.load)) + geom_histogram(binwidth = 1)
+ggplot(eedata7.00, aes(x = heating.load)) + geom_histogram(binwidth = 1)
+```
+
+Cooling analysis
+
+```{r}
+testlm <- lm(cooling.load ~ relative.compactness, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = cooling.load, fill = relative.compactness)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ surface.area, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = cooling.load, fill = surface.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ wall.area, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = cooling.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+testlm <- lm(cooling.load ~ roof.area, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = cooling.load, fill = roof.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+```
+
+Glazing area doesn't appear to have the same level of impact on the 7.0m buildings but these are separated to be consistent with the 3.50m findings.
+
+```{r}
+testlm <- lm(cooling.load ~ glazing.area, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = cooling.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+ggplot(eedata7.00, aes(x = cooling.load)) + geom_histogram(binwidth = 1) + labs(x = "cooling load") + facet_wrap(~glazing.area)
+#facet wrap
+ggplot(eedata7.00, aes(x = cooling.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load") + facet_wrap(~glazing.area)
+#reverse wrapping
+ggplot(eedata7.00, aes(x = cooling.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load") + facet_wrap(~wall.area)
+```
+
+Perform a heating analysis on the 7.0m buildings
+
+```{r}
+testlm <- lm(heating.load ~ relative.compactness, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = heating.load, fill = relative.compactness)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ surface.area, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = heating.load, fill = surface.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ wall.area, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = heating.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+testlm <- lm(heating.load ~ roof.area, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = heating.load, fill = roof.area)) + geom_histogram(binwidth = 1) + labs(x = "cooling load")
+```
+
+Glazing area results
+
+```{r}
+testlm <- lm(heating.load ~ glazing.area, data = eedata7.00numeric)
+summary(testlm)
+ggplot(eedata7.00, aes(x = heating.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load")
+#facet wrap
+ggplot(eedata7.00, aes(x = heating.load, fill = wall.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load") + facet_wrap(~glazing.area)
+#reverse wrapping
+ggplot(eedata7.00, aes(x = heating.load, fill = glazing.area)) + geom_histogram(binwidth = 1) + labs(x = "heating load") + facet_wrap(~wall.area)
+```
+
+Question - 3 Graphics: Please make sure to display at least one scatter plot, box plot and histogram. Don’t be limited to this. Please explore the many other options in R packages such as ggplot2.
+
+##Summary
+Let's put together some summary graphs.
+
+Cooling - scatter plot separating 3.50 vs. 7 meter buildings by wall area and glazing ratio.
+
+```{r}
+ggplot(eedatanumeric, aes(y = cooling.load, x = wall.area)) + geom_point(aes(color = glazing.area)) + facet_wrap(~overall.height) + labs(x = "wall area", y = "cooling load")
+ggplot(eedatanumeric, aes(y = cooling.load, x = glazing.area)) + geom_point(aes(color = wall.area)) + facet_wrap(~overall.height) + labs(x = "glazing area ratio", y = "cooling load")
+```
+
+Heating - scatter plot separating 3.50 vs. 7 meter buildings by wall area and glazing ratio.
+
+```{r}
+ggplot(eedatanumeric, aes(y = heating.load, x = wall.area)) + geom_point(aes(color = glazing.area)) + facet_wrap(~overall.height) + labs(x = "wall area", y = "heating load")
+ggplot(eedatanumeric, aes(y = heating.load, x = glazing.area)) + geom_point(aes(color = wall.area)) + facet_wrap(~overall.height) + labs(x = "glazing area ratio", y = "cooling load")
+```
+
+As we can see be the summary graphs, it appears that as the glazing area ratio and wall area increase, the heating and cooling loads will generally increase as well.  This is also shown by graphing the actual glazing area (glazing area ratio * wall area) against the heating and cooling loads.  However, due to low quality of fit in many of the tests run in this analysis, it appears there may be more factors influencing the response variables.
+
+```{r}
+ggplot(eedatanumeric, aes(y = cooling.load, x = glazing.area)) + geom_point(aes(color = glazing.area.actual)) + facet_wrap(~overall.height) + labs(x = "glazing area ratio", y = "cooling load")
+ggplot(eedatanumeric, aes(y = heating.load, x = glazing.area)) + geom_point(aes(color = glazing.area.actual)) + facet_wrap(~overall.height) + labs(x = "glazing area ratio", y = "heating load")
+```

@@ -1,0 +1,167 @@
+---
+title: "Grando-P"
+author: "John Grando"
+date: "February 16, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando - Presentation
+
+First, let's set the working directory and source the data.
+
+```{r}
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Presentation")
+} else {
+  setwd("~/Documents/Masters/DATA606/Presentation")
+}
+require(ggplot2)
+library(DATA606)
+```
+
+For each problem, I have used the suggested normalPlot() function, as well as ggplot() to show how these answer can be produced in different ways.
+
+####Area under the curve, Part I. What percent of a standard normal distribution N ($\mu$ = 0,$\sigma$ = 1) is found in each region? Be sure to draw a graph.
+
+####(a) Z < -1.35
+
+Answer:
+
+The percent is:
+
+```{r}
+pnorm(q = -1.35, mean = 0, sd = 1)
+```
+
+
+Using normalPlot()
+```{r}
+normalPlot(mean = 0, sd = 1, bounds = c(-1.35), tails = TRUE)
+```
+
+Using ggplot()
+
+```{r}
+lb <- -4
+ub <- 4
+z1 <- -4
+z2 <- -1.35
+pick_line1 <- z2
+pick_line2 <- z2
+Q1 <- ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm)  + stat_function(fun = dnorm, xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("Z = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("Z = %s\n", pick_line2)), color="black", angle=90) + labs(x="Z - Value")
+Q1
+```
+
+
+####(b) Z > 1.48
+
+Answer:
+
+The percent is:
+
+```{r}
+pnorm(q = 1.48, mean = 0, sd = 1, lower.tail = FALSE)
+```
+
+Using normalPlot()
+
+```{r}
+normalPlot(mean = 0, sd = 1, bounds = c(1.48, 4))
+```
+
+Using ggplot()
+
+```{r}
+lb <- -4
+ub <- 4
+z1 <- 1.48
+z2 <- ub
+pick_line1 <- z1
+pick_line2 <- z1
+Q2 <- ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm)  + stat_function(fun = dnorm, xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("Z = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("Z = %s\n", pick_line2)), color="black", angle=90) + labs(x="Z - Value")
+Q2
+```
+
+####(c) -0.4 < Z < 1.5
+
+Answer:
+
+The percent is:
+
+```{r}
+pnorm(q = 1.5, mean = 0, sd = 1) - pnorm(q = -0.4, mean = 0, sd = 1)
+```
+
+Using normalPlot()
+
+```{r}
+normalPlot(mean = 0, sd = 1, bounds = c(-0.4, 1.5))
+```
+
+Using ggplot()
+
+```{r}
+lb <- -4
+ub <- 4
+z1 <- -0.4
+z2 <- 1.5
+pick_line1 <- z1
+pick_line2 <- z2
+Q3 <- ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm)  + stat_function(fun = dnorm, xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("Z = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("Z = %s\n", pick_line2)), color="black", angle=90) + labs(x="Z - Value")
+Q3
+```
+
+####(d) |Z| > 2
+
+The percent is:
+
+```{r}
+pnorm(q = 2, mean = 0, sd = 1, lower.tail = FALSE) + pnorm(q = -2, mean = 0, sd = 1)
+```
+
+Also, because the distribution is symmetric, the following method provides the same result.
+
+```{r}
+pnorm(q = 2, mean = 0, sd = 1, lower.tail = FALSE) * 2
+```
+
+Using normalPlot()
+
+```{r}
+normalPlot(mean = 0, sd = 1, bounds = c(-2, 2), tails = TRUE)
+```
+
+Using ggplot()
+
+```{r}
+lb <- -4
+ub <- 4
+z1 <- -2
+z2 <- 2
+pick_line1 <- z1
+pick_line2 <- z2
+Q4 <- ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm)  + stat_function(fun = dnorm, xlim = c(lb, z1),geom = "area", alpha=0.5)+ stat_function(fun = dnorm, xlim = c(z2, ub),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("Z = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("Z = %s\n", pick_line2)), color="black", angle=90)
+Q4 + labs(x="Z - Value")
+```
+
+#### Additional note
+
+Each ggplot() was generated in a single line; however, note that this is not necessary.  For example, if we knew that a range of -4 < Z < 4 would always be sufficient, we could set up a base graph and store it in a variable:
+
+```{r}
+g <- ggplot(data.frame(x = c(-4, 4)), aes(x))+ stat_function(fun = dnorm)
+
+z1 <- -0.4
+z2 <- 1.5
+pick_line1 <- z1
+pick_line2 <- z2
+gplot <- g + stat_function(fun = dnorm, xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("Z = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("Z = %s\n", pick_line2)), color="black", angle=90) + labs(x="Z - Value") + labs(x="Z - Value")
+gplot
+```
+
+

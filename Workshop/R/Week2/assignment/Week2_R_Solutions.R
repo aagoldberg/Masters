@@ -1,0 +1,38 @@
+print("Problem 7 - BONUS – place the original .csv in a github file and have R read from the link. This will be a very useful skill as you progress in your data science education and career.")
+airpollutionurl <- "https://raw.githubusercontent.com/john-grando/Masters/master/Workshop/R/Week2/assignment/summer.csv"
+print(airpollutionurl)
+airpollutiondata <- read.csv(file = airpollutionurl, header <- TRUE, sep <- ",", colClasses = c('NULL','numeric','numeric','numeric','numeric','numeric'))
+summary(airpollutiondata, digits <- 4)
+print("Problem 1 - Use the summary function to gain an overview of the data set. Then display the mean and median for at least two attributes")
+print(c(NO.Median = median(airpollutiondata$NO), NO.Mean = mean(airpollutiondata$NO)))
+print("Problem 2 - Create a new data frame with a subset of the columns and rows. Make sure to rename it")
+newDF <- subset(x = airpollutiondata, airpollutiondata$PM10 >34)
+print("Problem 3 - Create new column names for the new data frame.")
+colnames(newDF) <- c("newO3", "newNO2", "NewNO", "newSO2", "newPM10")
+print(head(newDF))
+print("Problem 4 - Use the summary function to create an overview of your new data frame. The print the mean and median for the same two attributes. Please compare")
+print(summary(newDF, digits <- 4))
+print(NO.Median = median(airpollutiondata$NO), NO.Mean = mean(airpollutiondata$NO)))
+print(NO.Median = median(newDF$newNO), NO.Mean = mean(newDF$newNO)))
+print(c(O3_All_PM10 = median(airpollutiondata$O3), O3_PM10_GT_34 = median(newDF$newO3)))
+print(c(NO2_All_PM10 = median(airpollutiondata$NO2), NO2_PM10_GT_34 = median(newDF$newNO2)))
+print(c(NO_All_PM10 = median(airpollutiondata$NO), NO_PM10_GT_34 = median(newDF$newNO)))
+print(c(PM10_All_PM10 = median(airpollutiondata$PM10), PM10_PM10_GT_34 = median(newDF$newPM10)))
+print("Problem 5 - For at least 3 values in a column please rename so that every value in that column is renamed. For example, suppose I have 20 values of the letter “e” in one column. Rename those values so that all 20 would show as excellent")
+print(head(newDF))
+newDF$newSO2[newDF$newSO2 < 10] <- 0
+newDF$newNO[newDF$newNO == 30] <- 31
+newDF$newO3[newDF$newNO2 > 30] <- newDF$newO3[newDF$newNO2 >30] / 2 
+print("Problem 6 - Display enough rows to see examples of all of steps 1-5 above.")
+print("Examples have been provided within each step to make review easier")
+
+require(ggplot2)
+cpyDF <- cbind(airpollutiondata, DataSet = "All")
+cpynewDF <- subset(x = airpollutiondata, airpollutiondata$PM10 >34)
+cpynewDF <- cbind(cpynewDF, DataSet = "PM10_GT_34")
+combinedDF <- rbind(cpyDF, cpynewDF)
+#Box plots of NO
+ggplot(data = combinedDF, aes(y = NO, x = DataSet)) + geom_boxplot()
+require(reshape2)
+combinedDF.m <- melt(data = combinedDF, id.vars = "DataSet", measure.vars = c("O3","NO2","NO","PM10"))
+ggplot(data = combinedDF.m, aes(y = value, x = DataSet)) + facet_wrap(~variable) + geom_boxplot()

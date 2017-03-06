@@ -1,0 +1,8 @@
+name: Publish Document
+title:
+account: rpubs
+server: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/252553/c13ad2eaa6174cd6819631dfedc9f384
+bundleId: https://api.rpubs.com/api/v1/document/252553/c13ad2eaa6174cd6819631dfedc9f384
+url: http://rpubs.com/john-grando/252553
+when: 1487731592.32661

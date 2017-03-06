@@ -1,0 +1,6 @@
+Workshop/SQL/Week1/meetup/*
+Workshop/R/Week1/meetup/*
+Workshop/math/Week1/meetup/*
+.RData
+*.Rhistory
+.Rproj.user

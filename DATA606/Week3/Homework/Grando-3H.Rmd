@@ -1,0 +1,331 @@
+---
+title: "Grando-3H"
+author: "John Grando"
+date: "February 8, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando-3 Homework
+
+```{r}
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Week3/Homework")
+} else {
+  setwd("~/Documents/Masters/DATA606/Week3/Homework")
+}
+library(DATA606)
+require(ggplot2)
+```
+
+####3.2 Area under the curve, Part II. What percent of a standard normal distribution N (mu = 0,sigma = 1) is found in each region? Be sure to draw a graph.
+
+####(a) Z > -1.13
+
+Answer:
+
+The probability is: 
+
+```{r}
+pnorm(-1.13, mean = 0, sd = 1, lower.tail = FALSE)
+```
+
+I graphed each answer twice; once using normalPlot, and then again using ggplot()
+
+normalPlot()
+
+```{r}
+normalPlot(mean = 0, sd = 1, bounds = c(-1.13,4))
+```
+
+ggplot()
+
+```{r}
+lb <- -4
+ub <- 4
+z1 <- -1.13
+z2 <- ub
+pick_line1 <- z1
+pick_line2 <- z1
+Q1 <- ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm)  + stat_function(fun = dnorm, xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("Z = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("Z = %s\n", pick_line2)), color="black", angle=90)
+Q1
+```
+
+
+####(b) Z < 0.18
+
+Answer:
+
+The probability is: 
+
+```{r}
+pnorm(0.18, mean = 0, sd = 1)
+```
+
+Using normalPlot()
+
+```{r}
+normalPlot(mean = 0, sd = 1, bounds = c(0.18), tails = TRUE)
+```
+
+Using ggplot()
+
+```{r}
+lb <- -4
+ub <- 4
+z1 <- lb
+z2 <- 0.18
+pick_line1 <- z2
+pick_line2 <- z2
+Q2 <- ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm)  + stat_function(fun = dnorm, xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("\nZ = %s", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("\nZ = %s", pick_line2)), color="black", angle=90)
+Q2
+```
+
+
+####(c) Z > 8
+
+The probability is: 
+
+```{r}
+pnorm(8, mean = 0, sd = 1, lower.tail = FALSE)
+```
+
+using normalPlot()
+
+```{r}
+normalPlot(mean = 0, sd = 1, bounds = c(8, 9))
+```
+
+using ggplot()
+
+```{r}
+lb <- -10
+ub <- 10
+z1 <- 8
+z2 <- ub
+pick_line1 <- z1
+pick_line2 <- z1
+Q3 <- ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm)  + stat_function(fun = dnorm, xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("\nZ = %s", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("\nZ = %s", pick_line2)), color="black", angle=90)
+Q3
+```
+
+
+####(d) |Z| < 0.5
+
+The probability is: 
+
+```{r}
+pnorm(0.5, mean = 0, sd = 1) - pnorm(-0.5, mean = 0, sd = 1)
+```
+
+using normalPlot()
+
+```{r}
+normalPlot(mean = 0, sd = 1, bounds = c(-0.5, 0.5))
+```
+
+using ggplot()
+
+```{r}
+lb <- -4
+ub <- 4
+z1 <- -0.5
+z2 <- 0.5
+pick_line1 <- z1
+pick_line2 <- z2
+Q4 <- ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm)  + stat_function(fun = dnorm, xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("Z = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.25, label=sprintf("\nZ = %s", pick_line2)), color="black", angle=90)
+Q4
+```
+
+####3.14 Find the SD. Find the standard deviation of the distribution in the following situations.
+
+####(a) MENSA is an organization whose members have IQs in the top 2% of the population. IQs are normally distributed with mean 100, and the minimum IQ score required for admission to MENSA is 132.
+
+Answer: 
+
+Given the data is normally distributed, the value of the top 2% of the population would correlate to a known z value which can then be used to solve the following equation.
+
+```{r}
+z_value <- qnorm(p = 0.98, mean = 0, sd = 1)
+z_value
+```
+
+$$Z\quad =\quad \frac { x\quad -\quad \mu  }{ \sigma  } \\ \sigma \quad =\quad \frac { x\quad -\quad \mu  }{ Z } \\ \sigma \quad =\quad \frac { 132\quad -\quad 100 }{ 2.053 }=15.59$$
+
+####(b) Cholesterol levels for women aged 20 to 34 follow an approximately normal distribution with mean 185 milligrams per deciliter (mg/dl). Women with cholesterol levels above 220 mg/dl are considered to have high cholesterol and about 18.5% of women fall into this category.
+
+Answer:
+
+Using the same methods as described in part (a):
+
+```{r}
+high_c <- 1-0.185
+z_value <- qnorm(p = high_c, mean = 0, sd = 1)
+z_value
+```
+
+$$\sigma \quad =\quad \frac { x\quad -\quad \mu  }{ Z } \\ \sigma \quad =\quad \frac { 220\quad -\quad 185 }{ 0.896 } =39.06$$
+
+####3.18 Heights of female college students. Below are heights of 25 female college students.
+
+####(a) The mean height is 61.52 inches with a standard deviation of 4.58 inches. Use this information to determine if the heights approximately follow the 68-95-99.7% Rule.
+
+Answer:
+
+We can use qnorm to determine what heights corespond to given percentiles and use that information to subset the data and determine the resulting proportions.  If the calculated propoprtions are close to the corresponding percent (68-95-99.7%) then the rule is followed.
+
+```{r}
+college_f <- c(54, 55, 56, 56, 57, 58, 58, 59, 60, 60, 60, 61, 61, 62, 62, 63, 63, 63, 64, 65, 65, 67, 67, 69, 73)
+college_f_mean <- mean(college_f)
+college_f_sd <- sd(college_f)
+college_68_z <- qnorm(p = 0.68, mean = 61.52, sd = 4.58)
+sum(college_68_z>college_f)/length(college_f)
+
+college_95_z <- qnorm(p = 0.95, mean = 61.52, sd = 4.58)
+sum(college_95_z>college_f)/length(college_f)
+
+college_99.7_z <- qnorm(p = 0.997, mean = 61.52, sd = 4.58)
+sum(college_99.7_z>college_f)/length(college_f)
+
+```
+
+It appears the 68-95-99.7% rule is generally followed.  However, from the values determined, it appears each test returned higher than expected results which indicates that there is more data to the left of the mean than would be in a normal distribution; therefore, the data has a right skew. A histogram plot and normal probability plot confirms our findings.
+
+```{r}
+hist(college_f)
+qqnorm(college_f)
+qqline(college_f)
+```
+
+Using the methodology from the lab asignment, we can show the normal probability plot of simulated data that does follow a normal distribution:
+
+```{r}
+qqnormsim(college_f)
+```
+
+We can see that simulations of college female heights can be just as extreme as the data set we were given.  This analysis gives us mo re evidence that our data follows a normal distribution.
+
+####(b) Do these data appear to follow a normal distribution? Explain your reasoning using the graphs provided below.
+
+Answer:
+
+Yes, the normal probability plot shows the sample generally follows a normal distribtuion.  While the values bend up and to the left of the line which indicates a right skew is present, the qqnormsim() results show that this could be just due to the samples taken.
+
+####3.22 Defective rate. A machine that produces a special type of transistor (a component of computers) has a 2% defective rate. The production is considered a random process where each transistor is independent of the others.
+
+####(a) What is the probability that the 10 th transistor produced is the first with a defect?
+
+Answer: 
+
+This is a description of a data set that can be approximated using a geometric distribution.  The probability is:
+
+$${ \left( 1-p \right)  }^{ n-1 }\quad \ast \quad p$$
+$${ \left( 1-0.02 \right)  }^{ 10-1 }\quad \ast \quad 0.02\quad =\quad 0.0167$$
+
+
+####(b) What is the probability that the machine produces no defective transistors in a batch of 100?
+
+Answer:
+
+Given that the production of each transistor is independent, then it is just the probability that there was no defect (98%) for 100 trials.
+
+$${ \left( 1-0.02 \right)  }^{ 100 }\quad =\quad 0.1326$$
+
+####(c) On average, how many transistors would you expect to be produced before the first with a defect? What is the standard deviation?
+
+Answer:
+
+Since this is a geometric distribution, the average and standard deviation can be determined as follows:
+
+Mean:
+
+$$\mu \quad =\quad \frac { 1 }{ p } \quad =\quad \frac { 1 }{ .02 } \quad =\quad 50$$
+
+Standard Deviation:
+
+$$\sigma \quad =\quad \sqrt { \frac { 1-p }{ { p }^{ 2 } }  } \quad =\quad \sqrt { \frac { 1-0.02 }{ 0.02^{ 2 } }  } =\quad 49.50$$
+
+####(d) Another machine that also produces transistors has a 5% defective rate where each transistor is produced independent of the others. On average how many transistors would you expect to be produced with this machine before the first with a defect? What is the standard deviation?
+
+Answer:
+
+Mean:
+
+$$\mu \quad =\quad \frac { 1 }{ p } \quad =\quad \frac { 1 }{ .05 } \quad =\quad 20$$
+
+Standard Deviation:
+
+$$\sigma \quad =\quad \sqrt { \frac { 1-p }{ { p }^{ 2 } }  } \quad =\quad \sqrt { \frac { 1-0.05 }{ 0.05^{ 2 } }  } =\quad 19.49$$
+
+
+
+####(e) Based on your answers to parts (c) and (d), how does increasing the probability of an event affect the mean and standard deviation of the wait time until success?
+
+Answer:
+
+As the probability increases, the mean reduces in value because it is inversely correlated to the probability.  Also, since the denominator of the standard deviation approximation has the higher power of x, the standard deviation will also decrease as the probability increases.
+
+####3.38 Male children. While it is often assumed that the probabilities of having a boy or a girl are the same, the actual probability of having a boy is slightly higher at 0.51. Suppose a couple plans to have 3 kids.
+
+####(a) Use the binomial model to calculate the probability that two of them will be boys.
+
+Answer:
+
+```{r}
+choose(3,2)
+```
+
+$$\left( \begin{matrix} n \\ k \end{matrix} \right) { p }^{ k }{ \left( 1-p \right)  }^{ n-k }\quad =\quad \left( \begin{matrix} 3 \\ 2 \end{matrix} \right) { 0.51 }^{ 2 }{ \left( 1-0.51 \right)  }^{ 3-2 }\quad =\quad 3\quad *\quad { 0.51 }^{ 2 }\quad *\quad { \left( { 1-0.51 } \right)  }^{ 1 }\quad =\quad 0.3823$$
+
+
+####(b) Write out all possible orderings of 3 children, 2 of whom are boys. Use these scenarios to calculate the same probability from part (a) but using the addition rule for disjoint outcomes. Confirm that your answers from parts (a) and (b) match.
+
+Answer:
+
+$$BBG = 0.51 * 0.51 * 0.49 = .1274 \\BGB = 0.51 * 0.49 * 0.51 = .1274\\GBB = 0.51 * 0.51 * 0.49 = .1274\\0.1274 + 0.1274 + 0.1274 = 0.3822$$
+
+The answers for parts (a) and (b) match.  The small discrepancy is due to rounding.
+
+####(c) If we wanted to calculate the probability that a couple who plans to have 8 kids will have 3 boys, briefly describe why the approach from part (b) would be more tedious than the approach from part (a).
+
+Answer:
+
+As the number of trials increase, the number of possible combinations grows at a very fast rate.  Using the example above, the smallest possible combination (other than n = 0 or n = n) would be n = 1 (or n = 7) which is 8.  Adding another success increases these trials greatly
+
+```{r}
+choose(8,1)
+choose(8,2)
+choose(8,3)
+```
+
+####3.42 Serving in volleyball. A not-so-skilled volleyball player has a 15% chance of making the serve, which involves hitting the ball so it passes over the net on a trajectory such that it will land in the opposing team’s court. Suppose that her serves are independent of each other. 
+
+####(a) What is the probability that on the 10 th try she will make her 3 rd successful serve?
+
+Answer:
+
+This is a description of a negative binomial distribution.  This probability can be calculated as follows:
+
+```{r}
+choose(10-1, 3-1)
+```
+
+$$\left( \begin{matrix} n-1 \\ k-1 \end{matrix} \right) { p }^{ k }{ \left( 1-p \right)  }^{ n-k }\quad =\quad \left( \begin{matrix} 10-1 \\ 3-1 \end{matrix} \right) { 0.15 }^{ 3 }{ \left( 1-0.15 \right)  }^{ 10-3 }\quad =\quad 36\quad *\quad { 0.15 }^{ 3 }\quad *\quad { \left( { 1-0.15 } \right)  }^{ 7 }\quad =\quad 0.039$$
+
+####(b) Suppose she has made two successful serves in nine attempts. What is the probability that her 10 th serve will be successful?
+
+Answer:
+
+Given each serve is independent of the previous serves, the probability that the next serve (10th) serve will be successful is 15%.
+
+####(c) Even though parts (a) and (b) discuss the same scenario, the probabilities you calculated should be different. Can you explain the reason for this discrepancy?
+
+Answer:
+
+part (a) is seeking the probability that the third success will happen on the tenth attempt.  part (b) is not concerned with the outcome of the previous nine serves, only the tenth attempt.  Therefore, it is expected that there would be a different probability for each part.

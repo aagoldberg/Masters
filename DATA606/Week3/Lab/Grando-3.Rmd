@@ -1,0 +1,228 @@
+---
+title: "Grando-3"
+author: "John Grando"
+date: "February 7, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando-3 Lab
+
+Set working directory and source the data.
+
+```{r}
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Week3/Lab/Lab3")
+} else {
+  setwd("~/Documents/Masters/DATA606/Week3/Lab/Lab3")
+}
+load("more/bdims.RData")
+require(ggplot2)
+```
+
+
+####Exercise 1 - Make a histogram of mens heights and a histogram of womens heights. How would you compare the various aspects of the two distributions?
+
+Answer:
+
+First, I will generate the necessary graphs:
+
+```{r}
+mdims <- subset(bdims, sex == 1)
+fdims <- subset(bdims, sex == 0)
+ggplot(mdims, aes(x=hgt)) + geom_histogram(binwidth=2) + ggtitle("Male Height") + labs(x="Height")
+ggplot(fdims, aes(x=hgt)) + geom_histogram(binwidth=2) + ggtitle("Female Height") + labs(x="Height")
+
+mdata <- data.frame(mdims$hgt,"male")
+names(mdata) <- c("height","sex") 
+fdata = data.frame(fdims$hgt,"female")
+names(fdata) <- c("height","sex")
+combined_dims <- rbind(mdata,fdata)
+ggplot(combined_dims, aes(x=height,fill=sex)) +geom_histogram(binwidth = 2, alpha=0.5, position = "identity")+ggtitle("People Heights")+labs("Height")
+
+```
+
+The male and female distributions apear to be generally symmetric with very little skew and might have a normal distribution.  It appears there may be some bimodal peak in the female data but that might just be due to the bin width selection.  It appears the male sample median and mean are greater than the sample for the female population.
+
+####Exercise 2 - Based on the this plot, does it appear that the data follow a nearly normal distribution?
+
+Answer:
+
+I created a graph using the densities of the results which have the normal curves overlayed.
+
+```{r}
+ggplot(combined_dims, aes(x=height, fill=sex)) +geom_histogram(binwidth = 2, alpha = 0.5, position = "identity", aes(y=..density..))+ggtitle("People Heights")+labs("Height")+stat_function(fun=dnorm,color="blue",args=list(mean=mean(fdata$height),sd(fdata$height)))+stat_function(fun=dnorm,color="red",args=list(mean=mean(mdata$height),sd(mdata$height)))
+```
+
+Yes, it appears that the data follows a nearly normal distribution.  The histogram densities appear to have a shape that is similar to their respective normal curves.
+
+####Exercise 3 - Make a normal probability plot of sim_norm. Do all of the points fall on the line? How does this plot compare to the probability plot for the real data?
+
+Answer:
+
+First, I will generate the necessary graphs:
+
+```{r}
+fhgtmean <- mean(fdims$hgt)
+fhgtsd   <- sd(fdims$hgt)
+sim_norm <- rnorm(n = length(fdims$hgt), mean = fhgtmean, sd = fhgtsd)
+qqnorm(sim_norm)
+qqline(sim_norm)
+```
+
+No, the simulation data does not all fall on the line.  For the second part of the data, I have made overlayed qqplots to compare.
+
+```{r}
+qqnorm(sim_norm, ylim=range(sim_norm,fdims$hgt), col="red")
+points(qqnorm(fdims$hgt, plot.it = FALSE), col="blue")
+legend("bottomright", legend = c("Sim", "Data"), pch = 1, col = c("red", "blue"))
+qqline(sim_norm, col="red")
+qqline(fdims$hgt, col="blue")
+```
+
+The simulation results and actual data appear to separate from the line at the tail ends a similar amount.
+
+####Exercise 4 - Does the normal probability plot for fdims$hgt look similar to the plots created for the simulated data? That is, do plots provide evidence that the female heights are nearly normal?
+
+Answer:
+
+First I will generate the requested graphs:
+
+```{r}
+qqnormsim(fdims$hgt)
+```
+
+Yes, the data looks similar to the plots created and provide evidence that the female heights are nearly normal.
+
+#####Exercise 5 - Using the same technique, determine whether or not female weights appear to come from a normal distribution.
+
+Answer:
+
+First, i will generate the necessary graphs:
+
+```{r}
+ggplot(fdims, aes(x=wgt)) + geom_histogram(binwidth=2) + ggtitle("Female Weight") + labs(x="Weight")
+ggplot(fdims, aes(x=wgt)) + geom_histogram(binwidth=2, alpha = 0.5, position = "identity", aes(y=..density..)) + ggtitle("Female Weight") + labs(x="Weight")+stat_function(fun=dnorm,color="black",args=list(mean=mean(fdims$wgt),sd(fdims$wgt)))
+
+sim_norm_w <- rnorm(n = length(fdims$wgt), mean = mean(fdims$wgt), sd = sd(fdims$wgt))
+qqnorm(sim_norm_w)
+qqline(sim_norm_w)
+qqnorm(fdims$wgt)
+qqline(fdims$wgt)
+
+qqnorm(sim_norm_w, ylim=range(sim_norm_w,fdims$wgt), col="red")
+points(qqnorm(fdims$wgt, plot.it = FALSE), col="blue")
+legend("bottomright", legend = c("Sim", "Data"), pch = 1, col = c("red", "blue"))
+qqline(sim_norm_w, col="red")
+qqline(fdims$wgt, col="blue")
+
+qqnormsim(fdims$wgt)
+```
+
+It does not appear the female weights follow a normal distribution over the entire data set.  The histogram generate shows there are some outliers which are causing the data to be skewed.  Additionally, the qqnorm plots show that the data has much larger outliers at the tail ends than the simulated data which are bent up and to the left, confirming the data has a right skew.
+
+####Exercise 6 - Write out two probability questions that you would like to answer; one regarding female heights and one regarding female weights. Calculate the those probabilities using both the theoretical normal distribution as well as the empirical distribution (four probabilities in all). Which variable, height or weight, had a closer agreement between the two methods?
+
+Answer:
+
+Question pertaining to heights: What is the probability that a randomly chosen young adult female is taller than 160 cm and shorter than 180 cm?
+
+```{r}
+theoretical_result_height <- pnorm(q=180,mean=mean(sim_norm),sd=sd(sim_norm))-pnorm(q=160,mean=mean(sim_norm),sd=sd(sim_norm))
+empirical_result_height <- sum(fdims$hgt>160 & fdims$hgt<180) / length(fdims$hgt)
+theoretical_result_height
+empirical_result_height
+```
+
+Question pertaining to weights: What is the probability that a randomly chosen young adult female is heavier than 65 kg and lighter than 80 kg?
+
+```{r}
+theoretical_result_weight <- pnorm(q=80,mean=mean(sim_norm_w),sd=sd(sim_norm_w))-pnorm(q=65,mean=mean(sim_norm_w),sd=sd(sim_norm_w))
+empirical_result_weight <- sum(fdims$wgt>65 & fdims$wgt<80) / length(fdims$wgt)
+theoretical_result_weight
+empirical_result_weight
+```
+
+
+From the results, the question pertaining to female heights had a closer agreement between the two methods.  As noted previously, this data appears to be more normally distributed than the weights data; therefore, it is expecte to have the better agreement.
+
+####Question 1 - Now let’s consider some of the other variables in the body dimensions data set. Using the figures at the end of the exercises, match the histogram to its normal probability plot. All of the variables have been standardized (first subtract the mean, then divide by the standard deviation), so the units won’t be of any help. If you are uncertain based on these figures, generate the plots in R to check.
+
+####a. The histogram for female biiliac (pelvic) diameter (bii.di) belongs to normal probability plot letter ____.
+
+Answer:
+
+B - The quantiles below -2 depart significantly from a normal distribution curve in the histogram, which can be seen seen in the corresponding plot
+
+####b. The histogram for female elbow diameter (elb.di) belongs to normal probability plot letter ____.
+
+Answer:
+
+C - The histogram appears to be close to a normal distribution curve except at the outer quantiles.
+
+####c. The histogram for general age (age) belongs to normal probability plot letter ____.
+
+Answer:
+
+D - There is no data for values below -1, which explains the plot line and significantly departed data in the probability plot.  Additionally, the sample quantiles (y-axis) in the plot only range from -1 to 4.
+
+####d. The histogram for female chest depth (che.de) belongs to normal probability plot letter ____.
+
+Answer:
+
+A - For similar reasons in D, except the data does not go below the -2 quantile and the plot y-axis ranges from -2 to 5. 
+
+####Question 2 - Note that normal probability plots C and D have a slight stepwise pattern. Why do you think this is the case?
+
+Answer:
+
+Probability plot C corresponds to the female elbow diameter variable
+
+This is continuous numeric data; however, when you investigate the values, you see that the results are measured to the nearest tenth of a cm which has lead to a reduced number of unique readings.  The data could be smoothed out if more accurate (more decimal places) were used in the measurements.  I have recreated a plot similar to the one in the Lab.  Also, I have calculated the number of levels (unique values) in the female elbow diameter variable, which was only 42.  This is much smaller than some of the other variables, for example female biiliac (pelvic) diameter (bii.di) which has 90 levels.  I have created a visual aid for this variable by using a normal probability plot.  This graph show a much clearer stepped nature in the data due to the low number of unique values that can be measured.
+
+```{r}
+f_elbow_test <- data.frame((fdims$elb.di - mean(fdims$elb.di)) / sd(fdims$elb.di))
+names(f_elbow_test) <- c("di")
+ggplot(f_elbow_test, aes(x=di))+ geom_histogram(binwidth = 0.5)+scale_x_continuous(breaks = -3:3)
+nlevels(factor(fdims$elb.di))
+nlevels(factor(bdims$bii.di))
+qqnorm(bdims$elb.di)
+qqline(bdims$elb.di)
+```
+
+
+Probability plot D corresponds to the general age variable.  
+
+```{r}
+age_test <- data.frame((bdims$age - mean(bdims$age)) / sd(bdims$age))
+names(age_test) <- c("age")
+ggplot(age_test, aes(x=age))+ geom_histogram(binwidth = 0.5)+scale_x_continuous(breaks = -1:5)
+nlevels(factor(bdims$age))
+nlevels(factor(bdims$bii.di))
+qqnorm(bdims$age)
+qqline(bdims$age)
+```
+
+This is a discrete numeric variable so it is possibly stepped due to the fact that values can only take on a small number of values.  The data could be smoothed out if the age were reported by number of days, rather than years.  I have recreated a plot similar to the one in the Lab.  Also, I have calculated the number of levels (unique values) in the general age variable, which was only 44.  Again, this is much smaller than some of the other variables, for example female biiliac (pelvic) diameter (bii.di) which has 90 levels.  I have created a visual aid for this variable by using a normal probability plot.  This graph show a much clearer stepped nature in the data due to the low number of unique values that can be measured.
+
+####Question 3 - As you can see, normal probability plots can be used both to assess normality and visualize skewness. Make a normal probability plot for female knee diameter (kne.di). Based on this normal probability plot, is this variable left skewed, symmetric, or right skewed? Use a histogram to confirm your findings.
+
+Answer:
+
+First, I will generate the necessary graphs:
+
+```{r}
+qqnorm(fdims$kne.di)
+qqline(fdims$kne.di)
+```
+
+The distribution is right skewed.  This can be seen from the normal probability plot by recognizing that the sample quantiles bend up and to the left of the line and depart from normality.  The following histogram confirms this finding.
+
+```{r}
+ggplot(fdims, aes(x=kne.di))+geom_histogram(binwidth = 0.5)+labs(x="diameter")+ggtitle("Female Knee Diameter")
+```
+

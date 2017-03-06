@@ -1,0 +1,237 @@
+---
+title: "Grando-1"
+author: "John Grando"
+date: "January 31, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+##Lab 1 Assignment
+
+First, let's set the working directory and source the data.
+
+```{r}
+setwd("~/Documents/Masters/DATA606/Week1/Lab/Lab1")
+source("more/cdc.R")
+require(ggplot2)
+require(plyr)
+```
+
+
+###Exercise 1 - How many cases are there in this data set? How many variables? For each variable, identify its data type (e.g. categorical, discrete).
+
+Answer:
+
+The number of cases is the number of rows in the data frame:
+
+```{r}
+nrow(cdc)
+```
+
+The number of variables is the number of columns:
+
+```{r}
+ncol(cdc)
+```
+
+Data Type:
+
+genhlth - categorical, ordinal
+
+exerany - categorical, nominal.  Could be ordinal if it were viewed as "less than once in the last month" and "more than once in the last month"
+
+hlthplan - categorical, nominal
+
+smoke100 - categorigal, nominal.  Could be ordinal if it were viewed as "less than 100 cigarettes" and "more than 100 cigarettes" options
+
+height - numeric, discrete
+
+weight - numeric, discrete
+
+wtdesire - numeric, discrete
+
+age - numeric, discrete
+
+gender - categorical, nominal
+
+
+###Exercise 2 - Create a numerical summary for height and age, and compute the interquartile range for each. Compute the relative frequency distribution for gender and exerany. How many males are in the sample? What proportion of the sample reports being in excellent health?
+
+Answer: 
+
+Numerical summary for height
+
+```{r}
+summary(cdc$height)
+```
+
+Numerical summary for age
+
+```{r}
+summary(cdc$age)
+```
+
+The interquartile range for height is 70 - 64 = 6
+
+```{r}
+h <- summary(cdc$height)
+h["3rd Qu."] - h["1st Qu."]
+```
+
+
+The interquartile range for age is 57 - 31 = 26
+
+```{r}
+a <- summary(cdc$age)
+a["3rd Qu."] - a["1st Qu."]
+```
+
+
+
+Relative frequency distribution for gender
+
+```{r}
+barplot(table(cdc$gender) / nrow(cdc))
+```
+
+Relative frequency distribution for exerany
+
+```{r}
+barplot(table(cdc$exerany) / nrow(cdc))
+```
+
+Males in the sample
+
+```{r}
+nrow(subset(cdc, gender=="m"))
+```
+
+Proportion of sample in excellent health
+
+```{r}
+nrow(subset(cdc, genhlth=="excellent")) / nrow(cdc)
+```
+
+###Exercise 3 - What does the mosaic plot reveal about smoking habits and gender?
+
+Answer:
+
+It appears that there may be a higher proportion of men who smoke more than 100 cigarrettes in their lifetime than women.
+
+###Exercise 4 - Create a new object called under23_and_smoke that contains all observations of respondents under the age of 23 that have smoked 100 cigarettes in their lifetime. Write the command you used to create the new object as the answer to this exercise.
+
+Answer:
+
+```{r}
+under23_and_smoke <- subset(cdc, cdc$age < 23 & cdc$smoke100 == 1)
+```
+
+
+###Exercise 5 - What does this box plot show? Pick another categorical variable from the data set and see how it relates to BMI. List the variable you chose, why you might think it would have a relationship to BMI, and indicate what the figure seems to suggest.
+
+Answer:
+
+It shows that the median of bmi is slightly lower and the variability slightly smaller for those who report excellent health.  Although these values slightly increase (median and variability) as reported health gets poorer, it does not appear to be by much.  This indicates that self-assessment of general health may not have a strong association to bmi.
+
+
+```{r}
+bmi <- (cdc$weight / cdc$height^2) * 703
+boxplot(bmi ~ cdc$exerany)
+```
+
+I chose exerany as my categorical variable because it seemed that a person who hasn't exercised within the last month, doesn't do it often, and would have a higher weight.  My assumption is that height is independent with exerany.  It appears that the median is slightly lower for those individuals who have worked out and the variability is lower.  However, note that the outliers are just as extreme (actually even more) than the non exercising group.
+
+###Question 1 - Make a scatterplot of weight versus desired weight. Describe the relationship between these two variables.
+
+Now I will make the scatter plot.
+
+```{r}
+ggplot(cdc, aes(y=wtdesire, x=weight)) + geom_point() + labs(y="desired weight")
+```
+
+It appears that there is a positive linear association between weight and desired weight.
+
+###Question 2 - Let’s consider a new variable: the difference between desired weight (wtdesire) and current weight (weight). Create this new variable by subtracting the two columns in the data frame and assigning them to a new object called wdiff.
+
+```{r}
+cdc$wdiff <- cdc$weight - cdc$wtdesire
+```
+
+###Question 3 - What type of data is wdiff? If an observation wdiff is 0, what does this mean about the person’s weight and desired weight. What if wdiff is positive or negative?
+
+wdiff is numerical data because performing arithmetic operations on this data would still have meaning.  If an observation of wdiff is 0, then that indicates a person is at their desired weight. Since I have subtracted desired weight from weight, a positive value would indicate that a person is heavier than they wish to be.  A negative value would indicate a person is lighter than they wish to be.
+
+###Question 4 - Describe the distribution of wdiff in terms of its center, shape, and spread, including any plots you use. What does this tell us about how people feel about their current weight?
+
+```{r}
+summary(cdc$wdiff)
+ggplot(cdc, aes(y=wdiff, x=1)) + geom_boxplot() + ggtitle("Weight difference") + labs(x="Weight - desired weight")
+ggplot(cdc, aes(x=wdiff)) + geom_histogram(binwidth = 10) + ggtitle("Weight difference") + labs(x="Weight - desired weight")
+```
+
+there are some pretty extreme outlying negative values (person who is lighter than desired) which appear to be errors.  Let's check the head and tail of the data.
+
+```{r}
+head(arrange(cdc, wdiff))
+tail(arrange(cdc, wdiff))
+```
+
+It looks like the tail of wdiff (positive vlaues) is pretty valid but the head is extreme and nonsensical.  I doesn't stand to reason that a person would want to gain 110, 311, or 500.  Therefore, I would suggest using median and IQR to determine the average expected weight difference and variability.
+
+```{r}
+summary(cdc$wdiff)
+```
+
+While there are some extreme outliers, the overall data seems to have a right skew.  Additionally, givent the median and IQR, it appears the data is showing us that people generally indicate their ideal weight to be less than their current weight.
+
+###Question 5 - Using numerical summaries and a side-by-side box plot, determine if men tend to view their weight differently than women.
+
+First, i'll maket two new data frames, one for men and one for women.
+
+```{r}
+cdcm <- subset(cdc, gender=="m")
+cdcf <- subset(cdc, gender=="f")
+```
+
+next, i'll print the summary statistics for these 
+
+```{r}
+summary(cdcm$wdiff)
+summary(cdcf$wdiff)
+```
+
+Then I will print out the boxplot
+
+```{r}
+ggplot(cdc,aes(y=wdiff,x=gender)) + geom_boxplot()
+```
+
+It's hard to tell anything from the boxplots themselves due to the large difference for some samples; however, the summary statistics show that women tend to have a higher median wdiff which means that men tend to view their weight as closer to their desireable weight than women.  Additionally, the IQR for men is smaller so that inidcates there is less variability in their responses.
+
+###Question 6 - Now it’s time to get creative. Find the mean and standard deviation of weight and determine what proportion of the weights are within one standard deviation of the mean.
+
+Mean of weight
+
+```{r}
+mean(cdc$weight)
+```
+
+Standard deviation of weight
+
+```{r}
+sd(cdc$weight)
+```
+
+Proportion of weigths with one standard deviation of the mean
+
+```{r}
+sum(mean(cdc$weight)+sd(cdc$weight) > cdc$weight & mean(cdc$weight)-sd(cdc$weight) < cdc$weight) / nrow(cdc)
+```
+
+70.76% of the weights in the data set are within one standard deviation of the mean.

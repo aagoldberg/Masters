@@ -1,0 +1,132 @@
+---
+title: "Grando-4b"
+author: "John Grando"
+date: "February 27, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando-4b Lab
+
+Set working directory and source the data.
+
+```{r}
+setwd("~/Documents/Masters/DATA606/Week4/Lab/lab4b")
+load("more/ames.RData")
+library(DATA606)
+require(ggplot2)
+```
+
+####Exercise 1 - Describe the distribution of your sample. What would you say is the “typical” size within your sample? Also state precisely what you interpreted “typical” to mean.
+
+Answer:
+
+First I will generate the necessary graphs
+
+```{r}
+set.seed(0160)
+population <- ames$Gr.Liv.Area
+samp <- sample(population, 60)
+hist(samp, 15)
+qqnorm(samp)
+qqline(samp)
+summary(samp)
+table(samp)
+```
+
+The data appears to be right skewed, as indicated by the histogram and normal probability plot, with a mean of 1400 and median of 1369.  I interpret typical to mean the most reoccuring number; however, this would be the mode and the values are all slightly different (may unique entries).  It does not appear using mode would be good to find the "typical" value.  Given the skew, I would guess that the median would be the best approximator of a typical size.
+
+####Exercise 2 - Would you expect another student’s distribution to be identical to yours? Would you expect it to be similar? Why or why not?
+
+Answer:
+
+I would expect it to be simiar, but not the same, due to the variability between the samples taken.
+
+####Exercise 3 - For the confidence interval to be valid, the sample mean must be normally distributed and have standard error $s / \sqrt{n}$. What conditions must be met for this to be true?
+
+Answer:
+
+The important conditions for mean to be normally distributed and the standard error to be accurate are:
+
+1. The sample observations are independent.
+2. The sample size is large.
+3. The population distribution is not strongly skewed.  Note, the larger the sample size, the more lenient we can be with the sample's skew.
+
+####Exercise 4 - What does "95% confidence" mean? If you're not sure, see Section 4.2.2.
+
+Answer:
+
+95% confidence means we are 95% confident that the actual mean is within the referenced range (+/- 1.96 * SE) of the sample data.  If we took many samples and built a confidence interval from each sample, then 95% of those intervals would contain the actual mean.
+
+####Exercise 5 - Does your confidence interval capture the true average size of houses in Ames? If you are working on this lab in a classroom, does your neighbor's interval capture this value? 
+
+Answer:
+
+```{r}
+sample_mean <- mean(samp)
+se <- sd(samp) / sqrt(60)
+lower <- sample_mean - 1.96 * se
+upper <- sample_mean + 1.96 * se
+c(lower, upper)
+mean(population)
+```
+
+Yes, the true average size of houses was captured within my confidence interval.
+
+####Exercise 6 - Each student in your class should have gotten a slightly different confidence interval. What proportion of those intervals would you expect to capture the true population mean? Why? If you are working in this lab in a classroom, collect data on the intervals created by other students in the class and calculate the proportion of intervals that capture the true population mean.
+
+Answer:
+
+95% of the intervals would capture the true population mean.  From my previous response, the definition of a confidence interval is how confident one is that the true mean is within the interval found.  Since we selected a 95% confidence interval, we would expect 5% of the intervals to not contain the actual mean.
+
+####Question 1 - Using the following function (which was downloaded with the data set), plot all intervals. What proportion of your confidence intervals include the true population mean? Is this proportion exactly equal to the confidence level? If not, explain why.
+
+```{r}
+set.seed(9384)
+population <- ames$Gr.Liv.Area
+samp_mean <- rep(NA, 50)
+samp_sd <- rep(NA, 50)
+n <- 60
+for(i in 1:50){
+  samp <- sample(population, n) # obtain a sample of size n = 60 from the population
+  samp_mean[i] <- mean(samp)    # save sample mean in ith element of samp_mean
+  samp_sd[i] <- sd(samp)        # save sample sd in ith element of samp_sd
+}
+lower_vector <- samp_mean - 1.96 * samp_sd / sqrt(n) 
+upper_vector <- samp_mean + 1.96 * samp_sd / sqrt(n)
+plot_ci(lower_vector, upper_vector, mean(population))
+```
+
+Answer:
+
+Two intervals do not contain the true mean; therefore, $\left( \frac { \left( 50\quad -\quad 2 \right)  }{ 50 }  \right) =0.96$ of the intervals contain the true mean.  This value is not exactly equal to 95% because the data set is not perfectly normal and the confidence interval is only an estimate of the population data based on a normal distribution curve.
+
+####Question 2 - Pick a confidence level of your choosing, provided it is not 95%. What is the appropriate critical value?
+
+Answer:
+
+I will pick a 90% confidence interval.  The appropriate critical value is:
+
+```{r}
+p_value <- 0.9 + (1 - 0.9) / 2
+p_value
+z_value <- qnorm(p = p_value, mean = 0, sd = 1)
+z_value
+```
+
+####Question 3- Calculate 50 confidence intervals at the confidence level you chose in the previous question. You do not need to obtain new samples, simply calculate new intervals based on the sample means and standard deviations you have already collected. Using the plot_ci function, plot all intervals and calculate the proportion of intervals that include the true population mean. How does this percentage compare to the confidence level selected for the intervals?
+
+Answer:
+
+```{r}
+set.seed(852)
+lower_vector <- samp_mean - 1.64 * samp_sd / sqrt(n) 
+upper_vector <- samp_mean + 1.64 * samp_sd / sqrt(n)
+plot_ci(lower_vector, upper_vector, mean(population))
+```
+
+Five intervals did not contain the true mean; therefore, $\left( \frac { \left( 45\quad -\quad 2 \right)  }{ 50 }  \right) =0.90$ of the intervals contain the true mean.  This percentage happens to be exactly the same as the confidence level for the selected intervals.
