@@ -128,7 +128,7 @@ project_data_reduc$SubmittalTimePendingAdj <- ifelse(project_data_reduc$Platform
                                                      v2cutoff-project_data_reduc$RegistrationDate,
                                                      project_data_reduc$SubmittalTimePending)
 #Create a subset of completed projects that have relevant data.
-completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTime>0 & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)) & project_data_reduc$CertAfterNotice == FALSE)
+completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTime>0 & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)))
 ```
 
 ### Research question 
