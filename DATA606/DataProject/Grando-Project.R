@@ -123,6 +123,7 @@ require(ggplot2)
 
 #Density plots of the current data, split among various attributes.
 ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
+ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
 ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~RatingSystemFamily)
 ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~Platform)
@@ -130,6 +131,7 @@ ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 10
 ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()
 ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=RatingSystemFamily))+geom_boxplot()
 ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily)
+ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()+facet_wrap(~OwnerTypesAdj)
 
 completed_projects_BDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
 ggplot(completed_projects_BDC, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
