@@ -114,7 +114,7 @@ v2cutoff <- as.Date("11/15/2000","%m/%d/%Y") + maxv3days
 #Create an adjusted timeline for v2 projects
 project_data$TimeAdj <- ifelse(project_data$Platform=="v2",v2cutoff - project_data$RegistrationDate, NA)
 
-#taeka subset of data that only includes v3 projects and v2 projects with positive values.  A negative TimeAdj would indicate the individual project was in the beta program and registered before the actual launch.
+#take subset of data that only includes v3 projects and v2 projects with positive values.  A negative TimeAdj would indicate the individual project was in the beta program and registered before the actual launch.
 project_data_reduc <- subset(project_data, project_data$Platform=="v3" | (project_data$Platform=="v2" & project_data$TimeAdj>0))
 
 #Create the adjusted SubmittalTime for v2 projects, just take the original SubmittalTime for v3 projects 
@@ -128,16 +128,17 @@ project_data_reduc$SubmittalTimePendingAdj <- ifelse(project_data_reduc$Platform
                                                      v2cutoff-project_data_reduc$RegistrationDate,
                                                      project_data_reduc$SubmittalTimePending)
 #Create a subset of completed projects that have relevant data.
-completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTime>0 & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)))
+completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTimeAdj>0 & !(is.na(project_data_reduc$CertDate)) & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)) & !(project_data_reduc$RatingSystemFamily=="ND"))
+#Create a subset for open projects.
+open_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTimePendingAdj>0 & is.na(project_data_reduc$CertDate) & !(identical(project_data_reduc$RatingSystemFamily,character(0))) & !(is.na(project_data_reduc$Platform)) & !(project_data_reduc$RatingSystemFamily=="ND"))
+
 ```
 
 ### Research question 
 
 **You should phrase your research question in a way that matches up with the scope of inference your dataset allows for.**
 
-What is the expected number of days that a LEED project will certify after it has been registered?  Are there variables that influence this value?  
-
-Is there a variable that can predict the likelyhood of a project certifying, given that it has registered?
+Is there a significant difference between the number of submittal days between owner types, rating system families, and/or platform versions?   
 
 ### Cases 
 
@@ -167,15 +168,15 @@ The project data is collected by the United States Green Building Council and is
 
 **What is the response variable, and what type is it (numerical/categorical)?**
 
-Question 1 and 2: The response variable is number of days between a project's registration and certification date (SubmittalTime).  This is a discrete numerical value.
+Question 1: The response variable is number of days between a project's registration and certification date (SubmittalTime).  This is a discrete numerical value.
 
-Quesiton 3: The response variable is whether or not a project has certified. This is a ordinal categorical value.
+Quesiton 2: The response variable is whether or not a project has certified. This is a ordinal categorical value.
 
 ### Explanatory 
 
 **What is the explanatory variable, and what type is it (numerical/categorical)?**
 
-Question 1, 2, and 3: The explanatory variable are the variables selected to test influence.
+Question 1: The explanatory variables are the owner types, rating system families, and platform versions.
 
 ### Relevant summary statistics 
 
@@ -183,10 +184,15 @@ Question 1, 2, and 3: The explanatory variable are the variables selected to tes
 
 ```{r}
 require(ggplot2)
+table(completed_projects$OwnerTypesAdj)
+table(completed_projects$RatingSystemFamily)
+table(completed_projects$Platform)
 ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily)
 ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
-ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()+facet_wrap(~OwnerTypesAdj)
+ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
+ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
+ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~OwnerTypesAdj)
 ```
 

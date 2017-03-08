@@ -116,76 +116,62 @@ project_data_reduc$SubmittalTimePendingAdj <- ifelse(project_data_reduc$Platform
                                                      project_data_reduc$SubmittalTimePending)
 
 summary(project_data_reduc)
-completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTime>0 & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)) & project_data_reduc$CertAfterNotice == FALSE)
+completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTimeAdj>0 & !(is.na(project_data_reduc$CertDate)) & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)) & !(project_data_reduc$RatingSystemFamily=="ND"))
 
+open_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTimePendingAdj>0 & is.na(project_data_reduc$CertDate) & !(identical(project_data_reduc$RatingSystemFamily,character(0))) & !(is.na(project_data_reduc$Platform)) & !(project_data_reduc$RatingSystemFamily=="ND"))
 
 require(ggplot2)
 
 #Density plots of the current data, split among various attributes.
 ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
-ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
-ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
-ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~RatingSystemFamily)
-ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~Platform)
-
-ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()
-ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=RatingSystemFamily))+geom_boxplot()
-ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily)
-ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()+facet_wrap(~OwnerTypesAdj)
-
-completed_projects_BDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
-ggplot(completed_projects_BDC, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
-
-completed_projects_Homes <- subset(completed_projects, completed_projects$RatingSystemFamily=="Homes")
-ggplot(completed_projects_Homes, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
-
-completed_projects_IDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="IDC")
-ggplot(completed_projects_IDC, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
-
-completed_projects_ND <- subset(completed_projects, completed_projects$RatingSystemFamily=="ND")
-ggplot(completed_projects_ND, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
-
-completed_projects_OM <- subset(completed_projects, completed_projects$RatingSystemFamily=="OM")
-ggplot(completed_projects_OM, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
-
-
-
-#Projects which have registered, but not certified, and are not missing any important data.
-open_projects <- subset(project_data_reduc, is.na(project_data_reduc$CertDate) & !(is.na(project_data_reduc$RegistrationDate)) & !(identical(project_data_reduc$RatingSystemFamily,character(0))) & is.na(project_data_reduc$CertAfterNotice) & !(is.na(project_data_reduc$Platform)))
-summary(open_projects$SubmittalTimePendingAdj)
 ggplot(open_projects, aes(x=SubmittalTimePendingAdj, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
+
+ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
+ggplot(open_projects, aes(x=SubmittalTimePendingAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
+
+ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 ggplot(open_projects, aes(x=SubmittalTimePendingAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 
-open_projects_BDC <- subset(open_projects, open_projects$RatingSystemFamily=="BDC")
+ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~RatingSystemFamily)
+ggplot(open_projects, aes(x=SubmittalTimePendingAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~RatingSystemFamily)
+
+ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()
+ggplot(open_projects, aes(y=SubmittalTimePendingAdj, x=Platform))+geom_boxplot()
+
+ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=RatingSystemFamily))+geom_boxplot()
+ggplot(open_projects, aes(y=SubmittalTimePendingAdj, x=RatingSystemFamily))+geom_boxplot()
+
+ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily)
+ggplot(open_projects, aes(y=SubmittalTimePendingAdj, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily)
+
+ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()+facet_wrap(~OwnerTypesAdj)
+ggplot(open_projects, aes(y=SubmittalTimePendingAdj, x=Platform))+geom_boxplot()+facet_wrap(~OwnerTypesAdj)
 
 #Density plots by Rating System by certification year
-testnormv2 <- subset(completed_projects_BDC, completed_projects_BDC$Platform=="v2" & !(is.na(completed_projects_BDC$CertYear)))
+testnormv2 <- subset(completed_projects, completed_projects$Platform=="v2" & !(is.na(completed_projects$CertYear)))
 ggplot(testnormv2, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~RegYear)
 
-testnormv3 <- subset(completed_projects_BDC, completed_projects_BDC$Platform=="v3" & !(is.na(completed_projects_BDC$CertYear)))
+testnormv3 <- subset(completed_projects, completed_projects$Platform=="v3" & !(is.na(completed_projects$CertYear)))
 ggplot(testnormv3, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~RegYear)
 
 #plot histogram with registration year x axis and % certified from that group as y axis
 
-
-
-
 #Density plots by registration year with multiple rating systems
-comparison_year1 <- subset(completed_projects_BDC, (completed_projects_BDC$Platform=="v2" | completed_projects_BDC$Platform=="v3") & completed_projects_BDC$RegYear == "1" & !(is.na(completed_projects_BDC$RegYear)))
+comparison_year1 <- subset(completed_projects, (completed_projects$Platform=="v2" | completed_projects$Platform=="v3") & completed_projects$RegYear == "1" & !(is.na(completed_projects$RegYear)))
 ggplot(comparison_year1, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 v2check <- subset(comparison_year1, comparison_year1$Platform=="v2")
 summary(v2check$SubmittalTimeAdj)
 v3check <- subset(comparison_year1, comparison_year1$Platform=="v3")
 summary(v3check$SubmittalTimeAdj)
 
-comparison_year2 <- subset(completed_projects_BDC, (completed_projects_BDC$Platform=="v2" | completed_projects_BDC$Platform=="v3") & completed_projects_BDC$RegYear == "2" & !(is.na(completed_projects_BDC$RegYear)))
+comparison_year2 <- subset(completed_projects, (completed_projects$Platform=="v2" | completed_projects$Platform=="v3") & completed_projects$RegYear == "2" & !(is.na(completed_projects$RegYear)))
 ggplot(comparison_year2, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..))
 v2check <- subset(comparison_year2, comparison_year2$Platform=="v2")
 summary(v2check$SubmittalTimeAdj)
 v3check <- subset(comparison_year2, comparison_year2$Platform=="v3")
 summary(v3check$SubmittalTimeAdj)
 
-comparison_year3 <- subset(completed_projects_BDC, (completed_projects_BDC$Platform=="v2" | completed_projects_BDC$Platform=="v3") & completed_projects_BDC$RegYear == "3" & !(is.na(completed_projects_BDC$RegYear)))
+comparison_year3 <- subset(completed_projects, (completed_projects$Platform=="v2" | completed_projects$Platform=="v3") & completed_projects$RegYear == "3" & !(is.na(completed_projects$RegYear)))
 ggplot(comparison_year3, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..))
 v2check <- subset(comparison_year3, comparison_year3$Platform=="v2")
 summary(v2check$SubmittalTimeAdj)
