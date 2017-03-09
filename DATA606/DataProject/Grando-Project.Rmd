@@ -30,7 +30,7 @@ project_data$CertDate <- as.Date(project_data$CertDate,"%m/%d/%Y")
 project_data$RegistrationDate <- as.Date(project_data$RegistrationDate,"%m/%d/%Y")
 #Add two calculated columns.  SubtmittalTime is the number of days between certification and registration dates (completed projects).  SubmittalTimePending is the number of days between the date the information was pulled and the registration date (open projects). 
 project_data$SubmittalTime <- as.numeric(project_data$CertDate - project_data$RegistrationDate)
-project_data$SubmittalTimePending <- ifelse(is.na(project_data$CertDate)==TRUE,as.Date("3/2/2017","%m/%d/%Y")-project_data$RegistrationDate,NA)
+project_data$SubmittalTimePending <- ifelse(is.na(project_data$CertDate)==TRUE,as.Date("3/8/2017","%m/%d/%Y")-project_data$RegistrationDate,NA)
 #Run sapply() to do a table join between the project directory data and the SummaryVersionsMap file.  The latter file is a mapping scheme that provides further sub-category information to each project type.
 project_data$RatingSystemFamily <- sapply(project_data$LEEDSystemVersionDisplayName, 
                                           function(x){
@@ -106,7 +106,7 @@ project_data$OwnerTypesAdj <- sapply(project_data$OwnerTypes,
 #I am planning to do some comparions between Platforms v2 and v3.  These are two versions of the LEED Rating system and represent a significant change in prerequisite and credit requirements.  One major issue is that because v2 came first, the projects have had a much longer opportunity to stay open than the v3 projects.  In an attempt to normalize this, I have taken a snapshot of the v2 data at the same point in time as v3.  Specifically, I found how many days the v3 Platform has been open and made a cutoff date that was the same number of days after the v2 launch.  Any v2 projects that were open on that cutoff date were considered stil open and the SubmittalTimePending was calculated using the v2cutoff date - the registration date.
 
 #Days the v3 platform has been open since launch
-maxv3days <- as.numeric(as.Date("3/2/2017","%m/%d/%Y")- as.Date("4/27/2009","%m/%d/%Y"))
+maxv3days <- as.numeric(as.Date("3/8/2017","%m/%d/%Y")- as.Date("4/27/2009","%m/%d/%Y"))
 
 #Cutoff date for v2 which is maxv3days after the v2 launch
 v2cutoff <- as.Date("11/15/2000","%m/%d/%Y") + maxv3days
