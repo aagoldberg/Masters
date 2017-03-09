@@ -71,17 +71,6 @@ project_data$CertYear <- trunc(project_data$CertAfterLaunch / 365) + 1
 #date closures - check
 #######Doubtful projects are being rushed... sunset date was 2015, maybe just make it 1,000 or so days before the sunset date
 
-v2_close <- as.Date("3/2/2017","%m/%d/%Y")
-v3_close <- as.Date("3/2/2017","%m/%d/%Y")
-#v2_close <- as.Date("6/27/2008","%m/%d/%Y")
-#v3_close <- as.Date("5/30/2014","%m/%d/%Y")
-
-project_data$CertAfterNotice <- ifelse(is.na(project_data$CertDate),NA,
-                               ifelse(project_data$Platform == "v2" & project_data$CertDate > v2_close,TRUE,
-                               ifelse(project_data$Platform == "v3" & project_data$CertDate > v3_close,TRUE,
-                               FALSE)))
-
-
 project_data$OwnerTypesAdj <- sapply(project_data$OwnerTypes, 
                                      function(x){
                                        x <- ifelse(grepl("government",tolower(x)),"government",
@@ -101,38 +90,49 @@ table(project_data$OwnerTypesAdj)
 table(subset(project_data$OwnerTypes, project_data$OwnerTypesAdj=="other"))
 
 #v3 and v2 projects which were registered a maximum of the max v3 days after RSLaunch
-maxv3days <- as.numeric(as.Date("3/2/2017","%m/%d/%Y")- as.Date("4/27/2009","%m/%d/%Y"))
+maxv3days <- as.numeric(as.Date("3/8/2017","%m/%d/%Y")- as.Date("4/27/2009","%m/%d/%Y"))
 v2cutoff <- as.Date("11/15/2000","%m/%d/%Y") + maxv3days
 #v3 day comparison
-project_data$TimeAdj <- ifelse(project_data$Platform=="v2",v2cutoff - project_data$RegistrationDate, NA)
-project_data_reduc <- subset(project_data, project_data$Platform=="v3" | (project_data$Platform=="v2" & project_data$TimeAdj>0))
-project_data_reduc$SubmittalTimeAdj <- ifelse(project_data_reduc$Platform=="v2" & project_data_reduc$CertDate < v2cutoff, 
-                                              project_data_reduc$CertDate - project_data_reduc$RegistrationDate,
-                                              ifelse(project_data_reduc$Platform=="v3",
-                                                     project_data_reduc$SubmittalTime,
-                                                     NA))
-project_data_reduc$SubmittalTimePendingAdj <- ifelse(project_data_reduc$Platform=="v2" & (is.na(project_data_reduc$CertDate)==TRUE | project_data_reduc$CertDate > v2cutoff),
-                                                     v2cutoff-project_data_reduc$RegistrationDate,
-                                                     project_data_reduc$SubmittalTimePending)
+#project_data$TimeAdj <- ifelse(project_data$Platform=="v2",v2cutoff - project_data$RegistrationDate, NA)
+#project_data_reduc <- subset(project_data, project_data$Platform=="v3" | (project_data$Platform=="v2" & project_data$TimeAdj>0))
+#project_data_reduc$SubmittalTimeAdj <- ifelse(project_data_reduc$Platform=="v2" & project_data_reduc$CertDate < v2cutoff, 
+#                                              project_data_reduc$CertDate - project_data_reduc$RegistrationDate,
+#                                              ifelse(project_data_reduc$Platform=="v3",
+#                                                     project_data_reduc$SubmittalTime,
+#                                                     NA))
+#project_data_reduc$SubmittalTimePendingAdj <- ifelse(project_data_reduc$Platform=="v2" & (is.na(project_data_reduc$CertDate)==TRUE | project_data_reduc$CertDate > v2cutoff),
+#                                                     v2cutoff-project_data_reduc$RegistrationDate,
+#                                                     project_data_reduc$SubmittalTimePending)
 
+
+####Test
+project_data_reduc <- project_data
+project_data_reduc$SubmittalTimePending <- ifelse(project_data$Platform=="v2" & project_data$SubmittalTimePending > maxv3days,maxv3days,project_data$SubmittalTimePending)
+project_data_reduc$SubmittalTimePending <- ifelse(project_data$Platform=="v2" & project_data$SubmittalTime > maxv3days,maxv3days,project_data$SubmittalTimePending)
+project_data_reduc$SubmittalTime <- ifelse(project_data$Platform=="v2" & project_data$SubmittalTime>maxv3days,NA,project_data$SubmittalTime)
 summary(project_data_reduc)
-completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTimeAdj>0 & !(is.na(project_data_reduc$CertDate)) & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)) & !(project_data_reduc$RatingSystemFamily=="ND"))
 
-open_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTimePendingAdj>0 & is.na(project_data_reduc$CertDate) & !(identical(project_data_reduc$RatingSystemFamily,character(0))) & !(is.na(project_data_reduc$Platform)) & !(project_data_reduc$RatingSystemFamily=="ND"))
+completed_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTime>0 & !(is.na(project_data_reduc$CertDate)) & !(identical(project_data_reduc$RatingSystemFamily, character(0))) & !(is.na(project_data_reduc$RatingSystemFamily)) & !(project_data_reduc$RatingSystemFamily=="ND") & !(project_data_reduc$RatingSystemFamily=="Homes") & !(project_data_reduc$Platform=="v4"))
+
+open_projects <- subset(project_data_reduc, project_data_reduc$RegAfterLaunch>0 & project_data_reduc$SubmittalTimePending>0 & is.na(project_data_reduc$CertDate) & !(identical(project_data_reduc$RatingSystemFamily,character(0))) & !(is.na(project_data_reduc$Platform)) & !(project_data_reduc$RatingSystemFamily=="ND") & !(project_data_reduc$RatingSystemFamily=="Homes") & !(project_data_reduc$Platform=="v4"))
+
+table(completed_projects$OwnerTypesAdj)
+table(completed_projects$RatingSystemFamily)
+table(completed_projects$Platform)
 
 require(ggplot2)
 
 #Density plots of the current data, split among various attributes.
-ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
-ggplot(open_projects, aes(x=SubmittalTimePendingAdj, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
+ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
+ggplot(open_projects, aes(x=SubmittalTimePending, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 
-ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
-ggplot(open_projects, aes(x=SubmittalTimePendingAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
+ggplot(completed_projects, aes(x=SubmittalTime))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
+ggplot(open_projects, aes(x=SubmittalTimePending))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
 
-ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
+ggplot(completed_projects, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 ggplot(open_projects, aes(x=SubmittalTimePendingAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))
 
-ggplot(completed_projects, aes(x=SubmittalTimeAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~RatingSystemFamily)
+ggplot(completed_projects, aes(x=SubmittalTime))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~RatingSystemFamily)
 ggplot(open_projects, aes(x=SubmittalTimePendingAdj))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity",aes(y=..density..))+facet_wrap(~RatingSystemFamily)
 
 ggplot(completed_projects, aes(y=SubmittalTimeAdj, x=Platform))+geom_boxplot()
@@ -178,14 +178,14 @@ summary(v2check$SubmittalTimeAdj)
 v3check <- subset(comparison_year3, comparison_year3$Platform=="v3")
 summary(v3check$SubmittalTimeAdj)
 
-v2_days <- rep(NA,3000)
-v3_days <- rep(NA,3000)
-n <- 3000
-for(i in 1:3000){
+v2_days <- rep(NA,maxv3days)
+v3_days <- rep(NA,maxv3days)
+n <- maxv3days
+for(i in 1:maxv3days){
   v2_days[i] <- nrow(subset(project_data_reduc, project_data_reduc$Platform=="v2" & project_data_reduc$SubmittalTimeAdj < i)) / nrow(subset(project_data_reduc, project_data_reduc$Platform=="v2"))
   v3_days[i] <- nrow(subset(project_data_reduc, project_data_reduc$Platform=="v3" & project_data_reduc$SubmittalTimeAdj < i)) / nrow(subset(project_data_reduc, project_data_reduc$Platform=="v3"))
 }
-certification_ratio_df <- data.frame(c(1:3000))
+certification_ratio_df <- data.frame(c(1:maxv3days))
 names(certification_ratio_df) <- c("days")
 certification_ratio_df$v2 <- v2_days
 certification_ratio_df$v3 <- v3_days
@@ -194,6 +194,4 @@ ggplot()+geom_line(data = certification_ratio_df, aes(x=days, y=v2, color="v2"))
 v2_cert_proj <- nrow(subset(project_data, project_data$Platform=="v2" & project_data$IsCertified=="Yes")) / nrow(subset(project_data, project_data$Platform=="v2"))
 v3_cert_proj <- nrow(subset(project_data, project_data$Platform=="v3" & project_data$IsCertified=="Yes")) / nrow(subset(project_data, project_data$Platform=="v3"))
 
-
-ggplot(completed_projects, aes(x=SubmittalTimeAdj, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj)
-
+ggplot(subset(completed_projects,completed_projects$RegYear<8), aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~RegYear)
