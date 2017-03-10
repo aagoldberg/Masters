@@ -88,9 +88,9 @@ project_data$OwnerTypesAdj <- sapply(project_data$OwnerTypes,
 )
 table(project_data$OwnerTypesAdj)
 table(subset(project_data$OwnerTypes, project_data$OwnerTypesAdj=="other"))
-
+latest_date <- max(project_data$RegistrationDate, na.rm = TRUE)
 #v3 and v2 projects which were registered a maximum of the max v3 days after RSLaunch
-maxv3days <- as.numeric(as.Date("3/8/2017","%m/%d/%Y")- as.Date("4/27/2009","%m/%d/%Y"))
+maxv3days <- as.numeric(latest_date- as.Date("4/27/2009","%m/%d/%Y"))
 v2cutoff <- as.Date("11/15/2000","%m/%d/%Y") + maxv3days
 #v3 day comparison
 #project_data$TimeAdj <- ifelse(project_data$Platform=="v2",v2cutoff - project_data$RegistrationDate, NA)
@@ -178,20 +178,80 @@ summary(v2check$SubmittalTimeAdj)
 v3check <- subset(comparison_year3, comparison_year3$Platform=="v3")
 summary(v3check$SubmittalTimeAdj)
 
-v2_days <- rep(NA,maxv3days)
-v3_days <- rep(NA,maxv3days)
-n <- maxv3days
-for(i in 1:maxv3days){
-  v2_days[i] <- nrow(subset(project_data_reduc, project_data_reduc$Platform=="v2" & project_data_reduc$SubmittalTimeAdj < i)) / nrow(subset(project_data_reduc, project_data_reduc$Platform=="v2"))
-  v3_days[i] <- nrow(subset(project_data_reduc, project_data_reduc$Platform=="v3" & project_data_reduc$SubmittalTimeAdj < i)) / nrow(subset(project_data_reduc, project_data_reduc$Platform=="v3"))
+#test for likelyhood of certification
+BDC_sub <- subset(project_data_reduc, project_data_reduc$RatingSystemFamily=="BDC")
+IDC_sub <- subset(project_data_reduc, project_data_reduc$RatingSystemFamily=="IDC")
+OM_sub <- subset(project_data_reduc, project_data_reduc$RatingSystemFamily=="OM")
+maxv3years <- max(trunc(project_data_reduc$SubmittalTime / 365) + 1, na.rm = TRUE)
+v2_years <- rep(NA,maxv3years)
+v2_years_c <- rep(NA,maxv3years)
+v2_BDC_years <- rep(NA,maxv3years)
+v2_BDC_years_c <- rep(NA,maxv3years)
+v2_IDC_years <- rep(NA,maxv3years)
+v2_IDC_years_c <- rep(NA,maxv3years)
+v2_OM_years <- rep(NA,maxv3years)
+v2_OM_years_c <- rep(NA,maxv3years)
+v3_years <- rep(NA,maxv3years)
+v3_years_c <- rep(NA,maxv3years)
+v3_BDC_years <- rep(NA,maxv3years)
+v3_BDC_years_c <- rep(NA,maxv3years)
+v3_IDC_years <- rep(NA,maxv3years)
+v3_IDC_years_c <- rep(NA,maxv3years)
+v3_OM_years <- rep(NA,maxv3years)
+v3_OM_years_c <- rep(NA,maxv3years)
+n <- maxv3years
+for(i in 1:maxv3years){
+  v2_years[i] <- nrow(subset(project_data_reduc, project_data_reduc$Platform=="v2" & trunc(project_data_reduc$SubmittalTime / 365 + 1) == i)) / nrow(subset(project_data_reduc, project_data_reduc$Platform=="v2"))
+  v2_years_c[i] <- nrow(subset(project_data_reduc, project_data_reduc$Platform=="v2" & trunc(project_data_reduc$SubmittalTime / 365 + 1) < i)) / nrow(subset(project_data_reduc, project_data_reduc$Platform=="v2"))
+  v2_BDC_years[i] <- nrow(subset(BDC_sub, BDC_sub$Platform=="v2" & trunc(BDC_sub$SubmittalTime / 365 + 1) == i)) / nrow(subset(BDC_sub, BDC_sub$Platform=="v2"))
+  v2_BDC_years_c[i] <- nrow(subset(BDC_sub, BDC_sub$Platform=="v2" & trunc(BDC_sub$SubmittalTime / 365 + 1) < i)) / nrow(subset(BDC_sub, BDC_sub$Platform=="v2"))
+  v2_IDC_years[i] <- nrow(subset(IDC_sub, IDC_sub$Platform=="v2" & trunc(IDC_sub$SubmittalTime / 365 + 1) == i)) / nrow(subset(IDC_sub, IDC_sub$Platform=="v2"))
+  v2_IDC_years_c[i] <- nrow(subset(IDC_sub, IDC_sub$Platform=="v2" & trunc(IDC_sub$SubmittalTime / 365 + 1) < i)) / nrow(subset(IDC_sub, IDC_sub$Platform=="v2"))
+  v2_OM_years[i] <- nrow(subset(OM_sub, OM_sub$Platform=="v2" & trunc(OM_sub$SubmittalTime / 365 + 1) == i)) / nrow(subset(OM_sub, OM_sub$Platform=="v2"))
+  v2_OM_years_c[i] <- nrow(subset(OM_sub, OM_sub$Platform=="v2" & trunc(OM_sub$SubmittalTime / 365 + 1) < i)) / nrow(subset(OM_sub, OM_sub$Platform=="v2"))
+  v3_years[i] <- nrow(subset(project_data_reduc, project_data_reduc$Platform=="v3" & trunc(project_data_reduc$SubmittalTime / 365 + 1) == i )) / nrow(subset(project_data_reduc, project_data_reduc$Platform=="v3"))
+  v3_years_c[i] <- nrow(subset(project_data_reduc, project_data_reduc$Platform=="v3" & trunc(project_data_reduc$SubmittalTime / 365 + 1) < i )) / nrow(subset(project_data_reduc, project_data_reduc$Platform=="v3"))
+  v3_BDC_years[i] <- nrow(subset(BDC_sub, BDC_sub$Platform=="v3" & trunc(BDC_sub$SubmittalTime / 365 + 1) == i)) / nrow(subset(BDC_sub, BDC_sub$Platform=="v3"))
+  v3_BDC_years_c[i] <- nrow(subset(BDC_sub, BDC_sub$Platform=="v3" & trunc(BDC_sub$SubmittalTime / 365 + 1) < i)) / nrow(subset(BDC_sub, BDC_sub$Platform=="v3"))
+  v3_IDC_years[i] <- nrow(subset(IDC_sub, IDC_sub$Platform=="v3" & trunc(IDC_sub$SubmittalTime / 365 + 1) == i)) / nrow(subset(IDC_sub, IDC_sub$Platform=="v3"))
+  v3_IDC_years_c[i] <- nrow(subset(IDC_sub, IDC_sub$Platform=="v3" & trunc(IDC_sub$SubmittalTime / 365 + 1) < i)) / nrow(subset(IDC_sub, IDC_sub$Platform=="v3"))
+  v3_OM_years[i] <- nrow(subset(OM_sub, OM_sub$Platform=="v3" & trunc(OM_sub$SubmittalTime / 365 + 1) == i)) / nrow(subset(OM_sub, OM_sub$Platform=="v3"))
+  v3_OM_years_c[i] <- nrow(subset(OM_sub, OM_sub$Platform=="v3" & trunc(OM_sub$SubmittalTime / 365 + 1) < i)) / nrow(subset(OM_sub, OM_sub$Platform=="v3"))
 }
-certification_ratio_df <- data.frame(c(1:maxv3days))
-names(certification_ratio_df) <- c("days")
-certification_ratio_df$v2 <- v2_days
-certification_ratio_df$v3 <- v3_days
-ggplot()+geom_line(data = certification_ratio_df, aes(x=days, y=v2, color="v2"))+geom_line(data = certification_ratio_df, aes(x=days, y=v3, color="v3"))
+certification_ratio_df <- data.frame(c(1:maxv3years))
+names(certification_ratio_df) <- c("years")
+certification_ratio_df$v2 <- v2_years
+certification_ratio_df$v3 <- v3_years
+certification_ratio_df$v2_BDC <- v2_BDC_years
+certification_ratio_df$v2_IDC <- v2_IDC_years
+certification_ratio_df$v2_OM <- v2_OM_years
+certification_ratio_df$v3_BDC <- v3_BDC_years
+certification_ratio_df$v3_IDC <- v3_IDC_years
+certification_ratio_df$v3_OM <- v3_OM_years
 
-v2_cert_proj <- nrow(subset(project_data, project_data$Platform=="v2" & project_data$IsCertified=="Yes")) / nrow(subset(project_data, project_data$Platform=="v2"))
-v3_cert_proj <- nrow(subset(project_data, project_data$Platform=="v3" & project_data$IsCertified=="Yes")) / nrow(subset(project_data, project_data$Platform=="v3"))
+certification_ratio_df_c <- data.frame(c(1:maxv3years))
+names(certification_ratio_df_c) <- c("years")
+certification_ratio_df_c$v2 <- v2_years_c
+certification_ratio_df_c$v3 <- v3_years_c
+certification_ratio_df_c$v2_BDC <- v2_BDC_years_c
+certification_ratio_df_c$v2_IDC <- v2_IDC_years_c
+certification_ratio_df_c$v2_OM <- v2_OM_years_c
+certification_ratio_df_c$v3_BDC <- v3_BDC_years_c
+certification_ratio_df_c$v3_IDC <- v3_IDC_years_c
+certification_ratio_df_c$v3_OM <- v3_OM_years_c
 
-ggplot(subset(completed_projects,completed_projects$RegYear<8), aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~RegYear)
+require(reshape2)
+certification_ratio_df_reshape <- melt(certification_ratio_df[,1:9], id.vars = "years")
+certification_ratio_df_reshape_c <- melt(certification_ratio_df_c[,1:9], id.vars = "years")
+certification_ratio_df_reshape$Platform <- sapply(certification_ratio_df_reshape$variable, 
+                                                     function(x){
+                                                       x <- ifelse(grepl("v2",x),"v2","v3") 
+                                                     }
+)
+certification_ratio_df_reshape_c$Platform <- sapply(certification_ratio_df_reshape_c$variable, 
+                                                  function(x){
+                                                    x <- ifelse(grepl("v2",x),"v2","v3") 
+                                                  }
+)
+ggplot(certification_ratio_df_reshape, aes(y = value, x=years, fill=variable))+geom_bar(stat = "identity", position = "dodge")+facet_wrap(~Platform)+labs(y="Percent of Certified Projects By Year")
+ggplot(certification_ratio_df_reshape_c, aes(y = value, x=years, fill=variable))+geom_bar(stat = "identity", position = "dodge")+facet_wrap(~Platform)+labs(y="Percent of Certified Projects Cumulatively")
