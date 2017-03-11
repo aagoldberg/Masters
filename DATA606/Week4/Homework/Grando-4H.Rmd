@@ -73,7 +73,7 @@ $$\frac { s }{ \sqrt { n }  } =\frac { 9.4 }{ \sqrt { 507 }  } =\quad 0.417$$
 
 Answer:
 
-False, we are 100% confident of the 436 American adults mean spending since it is the data recorded.  The point estimate is always within the confidence interval.
+False, this statement refers to the surveyed 436 American adults mean spending.  The confidence interval makes inference on the population.  The point estimate is always within the confidence interval.
 
 ####(b) This confidence interval is not valid since the distribution of spending in the sample is right skewed.
 
@@ -117,7 +117,7 @@ n / 507
 
 Answer:
 
-True, the margin of error is have the interval.
+True, the margin of error is half the interval.
 
 ```{r}
 (89.11 - 80.31) / 2

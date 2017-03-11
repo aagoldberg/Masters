@@ -15,7 +15,11 @@ knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
 Set working directory and source the data.
 
 ```{r}
-setwd("~/Documents/Masters/DATA606/Week4/Lab/lab4b")
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Week4/Lab/lab4b")
+} else {
+  setwd("~/Documents/Masters/DATA606/Week4/Lab/lab4b")
+}
 load("more/ames.RData")
 library(DATA606)
 require(ggplot2)
@@ -103,7 +107,7 @@ plot_ci(lower_vector, upper_vector, mean(population))
 
 Answer:
 
-Two intervals do not contain the true mean; therefore, $\left( \frac { \left( 50\quad -\quad 2 \right)  }{ 50 }  \right) =0.96$ of the intervals contain the true mean.  This value is not exactly equal to 95% because the data set is not perfectly normal and the confidence interval is only an estimate of the population data based on a normal distribution curve.
+Two intervals do not contain the true mean; therefore, $\left( \frac { \left( 50\quad -\quad 2 \right)  }{ 50 }  \right) =0.96$ of the intervals contain the true mean.  This value is not exactly equal to 95% because there is variability between the samples and the confidence interval is only an estimate of the population data based on a normal distribution curve.
 
 ####Question 2 - Pick a confidence level of your choosing, provided it is not 95%. What is the appropriate critical value?
 

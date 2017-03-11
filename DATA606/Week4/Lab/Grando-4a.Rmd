@@ -15,7 +15,11 @@ knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
 Set working directory and source the data.
 
 ```{r}
-setwd("~/Documents/Masters/DATA606/Week4/Lab/lab4a")
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Week4/Lab/lab4a")
+} else {
+  setwd("~/Documents/Masters/DATA606/Week4/Lab/lab4a")
+}
 load("more/ames.RData")
 library(DATA606)
 require(ggplot2)
@@ -74,7 +78,7 @@ samp_combined <- rbind(samp1_df, samp2_df)
 ggplot(samp_combined, aes(x=data, fill=type))+geom_histogram(binwidth = 200, alpha=0.5, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="red",args=list(mean=mean(samp1_df$data),sd(samp1_df$data)))+stat_function(fun=dnorm,color="blue",args=list(mean=mean(samp2_df$data),sd(samp2_df$data)))+labs(x="area")
 ```
 
-Both samples appear to have the same general mean and distribution.  The more samples we take, the more accurate our estimate will become because we will have a better overall picture of the population data.
+Both samples appear to have the same general mean and distribution.  The more samples we take, the more accurate our estimate will become because we will have a better overall picture of the population data and the more normally distributed it will appear.
 
 ####Exercise 4 - How many elements are there in sample_means50? Describe the sampling distribution, and be sure to specifically note its center. Would you expect the distribution to change if we instead collected 50,000 sample means?
 
@@ -119,7 +123,7 @@ There are 100 elements in the sample_means_small set:
 length(sample_means_small)
 ```
 
-Each element represents a simple random sample of size 50 from the vector "area".
+Each element represents a mean of 50 simple random samples from the vector "area".
 
 ####Exercise 6 - When the sample size is larger, what happens to the center? What about the spread?
 
