@@ -42,7 +42,7 @@ summary(samp)
 table(samp)
 ```
 
-The data appears to be right skewed, as indicated by the histogram and normal probability plot, with a mean of 1400 and median of 1369.  I interpret typical to mean the most reoccuring number; however, this would be the mode and the values are all slightly different (may unique entries).  It does not appear using mode would be good to find the "typical" value.  Given the skew, I would guess that the median would be the best approximator of a typical size.
+The data appears to be right skewed, as indicated by the histogram and normal probability plot, with a mean of 1400 and median of 1369.  I interpret typical to mean the most reccuring number; however, this would be the mode and the values are all slightly different (may unique entries).  It does not appear using mode would be good to find the "typical" value.  Given the skew, I would guess that the median would be the best approximator of a typical size.
 
 ####Exercise 2 - Would you expect another student’s distribution to be identical to yours? Would you expect it to be similar? Why or why not?
 
@@ -133,4 +133,4 @@ upper_vector <- samp_mean + 1.64 * samp_sd / sqrt(n)
 plot_ci(lower_vector, upper_vector, mean(population))
 ```
 
-Five intervals did not contain the true mean; therefore, $\left( \frac { \left( 45\quad -\quad 2 \right)  }{ 50 }  \right) =0.90$ of the intervals contain the true mean.  This percentage happens to be exactly the same as the confidence level for the selected intervals.
+Five intervals did not contain the true mean; therefore, $\left( \frac { \left( 45\quad -\quad 5 \right)  }{ 50 }  \right) =0.90$ of the intervals contain the true mean.  This percentage happens to be exactly the same as the confidence level for the selected intervals.

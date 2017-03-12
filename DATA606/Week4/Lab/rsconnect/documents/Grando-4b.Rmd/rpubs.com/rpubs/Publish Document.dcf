@@ -1,0 +1,8 @@
+name: Publish Document
+title:
+account: rpubs
+server: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/257496/4dc1f709aadf4f63b71f31166aa947e6
+bundleId: https://api.rpubs.com/api/v1/document/257496/4dc1f709aadf4f63b71f31166aa947e6
+url: http://rpubs.com/john-grando/257496
+when: 1489342822.43868
