@@ -276,3 +276,13 @@ certification_ratio_df_reshape_c$Platform <- sapply(certification_ratio_df_resha
 ggplot(certification_ratio_df_reshape, aes(y = value, x=years, fill=variable))+geom_bar(stat = "identity", position = "dodge")+facet_wrap(~Platform)+labs(y="Percent of Certified Projects By Year")
 ggplot(certification_ratio_df_reshape_c, aes(y = value, x=years, fill=variable))+geom_bar(stat = "identity", position = "dodge")+facet_wrap(~Platform)+labs(y="Percent of Certified Projects Cumulatively")
 
+completed_projects_v3_BDC <- subset(completed_projects, completed_projects$Platform=="v3" & completed_projects$RatingSystemFamily=="BDC")
+ggplot(completed_projects_v3_BDC, aes(y=PointsAchieved, x=SubmittalTime, color=CertLevel))+geom_point()
+completed_projects_v3_IDC <- subset(completed_projects, completed_projects$Platform=="v3" & completed_projects$RatingSystemFamily=="IDC")
+ggplot(completed_projects_v3_IDC, aes(y=PointsAchieved, x=SubmittalTime, color=CertLevel))+geom_point()
+completed_projects_v3_OM <- subset(completed_projects, completed_projects$Platform=="v3" & completed_projects$RatingSystemFamily=="OM")
+ggplot(completed_projects_v3_OM, aes(y=PointsAchieved, x=SubmittalTime, color=CertLevel))+geom_point()
+#I have scaled the y axis to exclude some outliers in favor of seeing the main data set more clearly
+ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime, color=RatingSystemFamily))+geom_point() + scale_y_continuous(limits = c(0,5000000))
+#When a facet wrap is applied, it is a little more clear there may be some association
+ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime))+geom_point() + facet_wrap(~RatingSystemFamily)  + scale_y_continuous(limits = c(0,5000000))
