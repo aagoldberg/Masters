@@ -111,15 +111,15 @@ maxv3days <- as.numeric(latest_date- as.Date("4/27/2009","%m/%d/%Y"))
 project_data_adjusted <- project_data
 #If a v2 project is pending longer than the maximum amount of days v3 has been open, then change the length to that time
 project_data_adjusted$SubmittalTimePending <- ifelse(project_data_adjusted$Platform=="v2" & project_data_adjusted$SubmittalTimePending > maxv3days,maxv3days,project_data_adjusted$SubmittalTimePending)
-#If a v2 project submittal time was longer than the maximum amount of v3 days, then consider it an open project with the maximum v3 days of pending time.
+#If it took a v2 project to certify longer than the maximum amount of v3 days, then we will consider it an open project with the maximum v3 days of pending time.
 project_data_adjusted$SubmittalTimePending <- ifelse(project_data_adjusted$Platform=="v2" & project_data_adjusted$SubmittalTime > maxv3days,maxv3days,project_data_adjusted$SubmittalTimePending)
-#For the same issue noted above, make sure the SubmittalTime column registers an NA for theses projects
+#For the same issue noted above, make sure the SubmittalTime column (days the project was registered but not certified) returns an NA for theses projects.
 project_data_adjusted$SubmittalTime <- ifelse(project_data_adjusted$Platform=="v2" & project_data$SubmittalTime>maxv3days,NA,project_data_adjusted$SubmittalTime)
 
 #Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.
 completed_projects <- subset(project_data_adjusted, project_data_adjusted$RegAfterLaunch>0 & project_data_adjusted$SubmittalTime>0 & !(is.na(project_data_adjusted$CertDate)) & !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
 
-#Same as above.
+#Same as above but with projects that have not certified.
 open_projects <- subset(project_data_adjusted, project_data_adjusted$RegAfterLaunch>0 & project_data_adjusted$SubmittalTimePending>0 & is.na(project_data_adjusted$CertDate) & !(identical(project_data_adjusted$RatingSystemFamily,character(0))) & !(is.na(project_data_adjusted$Platform)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
 ```
 
@@ -182,45 +182,45 @@ table(completed_projects$RatingSystemFamily)
 table(completed_projects$Platform)
 
 #General Rating System Family histogram
-ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+labs(x="Days Between Registration and Certification") + ggtitle("Project Age vs. Rating System Family")
+ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+labs(x="Days Between Registration and Certification") + ggtitle("Project Age vs. Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
 #General Platform ~ Rating System Family boxplot
-ggplot(completed_projects, aes(y=SubmittalTime, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily) + labs(y="Days Between Registration and Certification")
+ggplot(completed_projects, aes(y=SubmittalTime, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily) + labs(y="Days Between Registration and Certification") + ggtitle("Project Age Broken Down By Platform and Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
 
 
 #Graph by owner types
-ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj) + labs(x="Days Between Registration and Certification") + ggtitle("Owner Type Breakdown")
+ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj) + labs(x="Days Between Registration and Certification") + ggtitle("Owner Type Breakdown") + theme(plot.title = element_text(hjust = 0.5))
 
 ####Rating System Family Tests
 completed_projects_BDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
-ggplot(completed_projects_BDC, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects")
+ggplot(completed_projects_BDC, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects") + theme(plot.title = element_text(hjust = 0.5))
 
 completed_projects_IDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="IDC")
-ggplot(completed_projects_IDC, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("ID+C Projects")
+ggplot(completed_projects_IDC, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("ID+C Projects") + theme(plot.title = element_text(hjust = 0.5))
 
 completed_projects_OM <- subset(completed_projects, completed_projects$RatingSystemFamily=="OM")
-ggplot(completed_projects_OM, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("OM Projects")
+ggplot(completed_projects_OM, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("OM Projects") + theme(plot.title = element_text(hjust = 0.5))
 
 ####Gross floor area vs. submittal time tests
 
 #I have scaled the y axis to exclude some outliers in favor of seeing the main data set more clearly
 
-ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime, color=RatingSystemFamily))+geom_point() + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area")
+ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime, color=RatingSystemFamily))+geom_point() + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area") + theme(plot.title = element_text(hjust = 0.5))
 
 #When a facet wrap is applied, it is a little more clear there may be some association
 
-ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime))+geom_point() + facet_wrap(~RatingSystemFamily)  + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area By Rating System Family")
+ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime))+geom_point() + facet_wrap(~RatingSystemFamily)  + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area By Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
 
 #This is a test to see if project timelines decrease as the time between the registration date and the launch date increases
 #Create a data frame of completed v2 projects that are at least as old as the v3 launch.  This is so that we know we aren't creating a bias with recently registered projects that certified quickly.
 completed_projects_v2 <- subset(completed_projects, completed_projects$Platform=="v2" & completed_projects$RegistrationDate < (latest_date - maxv3days))
 table(completed_projects_v2$RegYear) 
 completed_projects_v2 <- subset(completed_projects_v2, completed_projects_v2$RegYear < 5)
-ggplot(completed_projects_v2, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v2 Projects By Number of Years Registered after Platform Launch")
+ggplot(completed_projects_v2, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v2 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
 
 completed_projects_v3 <- subset(completed_projects, completed_projects$Platform=="v3")
 table(completed_projects_v3$RegYear)
 completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$RegYear < 5)
-ggplot(completed_projects_v3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v3 Projects By Number of Years Registered after Platform Launch")
+ggplot(completed_projects_v3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v3 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Additional graphs that are outside of the current project scope but may be useful
@@ -301,8 +301,8 @@ certification_ratio_df_reshape_c$Platform <- sapply(certification_ratio_df_resha
                                                     x <- ifelse(grepl("v2",x),"v2","v3") 
                                                   }
 )
-ggplot(certification_ratio_df_reshape, aes(y = value, x=years, fill=variable))+geom_bar(stat = "identity", position = "dodge")+facet_wrap(~Platform)+labs(x = "Years", y="Percent of Certified Projects By Year") + ggtitle("Project Certifications By Year After Registered")
-ggplot(certification_ratio_df_reshape_c, aes(y = value, x=years, fill=variable))+geom_bar(stat = "identity", position = "dodge")+facet_wrap(~Platform)+labs(x = "Years", y="Percent of Certified Projects By Year Cumulatively") + ggtitle("Project Certifications By Year After Registered - Cumulative")
+ggplot(certification_ratio_df_reshape, aes(y = value, x=years, fill=variable))+geom_bar(stat = "identity", position = "dodge")+facet_wrap(~Platform)+labs(x = "Years", y="Percent of Certified Projects By Year") + ggtitle("Project Certifications By Year After Registered") + theme(plot.title = element_text(hjust = 0.5)) + scale_x_continuous(breaks = c(1:8))
+ggplot(certification_ratio_df_reshape_c, aes(y = value, x=years, fill=variable))+geom_bar(stat = "identity", position = "dodge")+facet_wrap(~Platform)+labs(x = "Years", y="Percent of Certified Projects By Year Cumulatively") + ggtitle("Project Certifications By Year After Registered - Cumulative") + theme(plot.title = element_text(hjust = 0.5)) + scale_x_continuous(breaks = c(1:8))
 ```
 
 
