@@ -113,7 +113,7 @@ project_data_adjusted <- project_data
 project_data_adjusted$SubmittalTimePending <- ifelse(project_data_adjusted$Platform=="v2" & project_data_adjusted$SubmittalTimePending > maxv3days,maxv3days,project_data_adjusted$SubmittalTimePending)
 #If it took a v2 project to certify longer than the maximum amount of v3 days, then we will consider it an open project with the maximum v3 days of pending time.
 project_data_adjusted$SubmittalTimePending <- ifelse(project_data_adjusted$Platform=="v2" & project_data_adjusted$SubmittalTime > maxv3days,maxv3days,project_data_adjusted$SubmittalTimePending)
-#For the same issue noted above, make sure the SubmittalTime column (days the project was registered but not certified) returns an NA for theses projects.
+#For the same issue noted above, make sure the SubmittalTime column (days the project was registered before being certified) returns an NA for theses projects.
 project_data_adjusted$SubmittalTime <- ifelse(project_data_adjusted$Platform=="v2" & project_data$SubmittalTime>maxv3days,NA,project_data_adjusted$SubmittalTime)
 
 #Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.
@@ -177,7 +177,6 @@ I have prepared a data set which includes calculations that determine the length
 require(ggplot2)
 
 ####Graphs based on present assumptions
-table(completed_projects$OwnerTypesAdj)
 table(completed_projects$RatingSystemFamily)
 table(completed_projects$Platform)
 
@@ -186,9 +185,18 @@ ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_h
 #General Platform ~ Rating System Family boxplot
 ggplot(completed_projects, aes(y=SubmittalTime, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily) + labs(y="Days Between Registration and Certification") + ggtitle("Project Age Broken Down By Platform and Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
 
+#Summary Tables
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
 
-#Graph by owner types
-ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj) + labs(x="Days Between Registration and Certification") + ggtitle("Owner Type Breakdown") + theme(plot.title = element_text(hjust = 0.5))
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="IDC")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
+
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="OM")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
 
 ####Rating System Family Tests
 completed_projects_BDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
@@ -206,7 +214,7 @@ ggplot(completed_projects_OM, aes(x=SubmittalTime, fill=Platform))+geom_histogra
 
 ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime, color=RatingSystemFamily))+geom_point() + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area") + theme(plot.title = element_text(hjust = 0.5))
 
-#When a facet wrap is applied, it is a little more clear there may be some association
+#When a facet wrap is applied, it is a little more clear there may be some association with at least one rating system.
 
 ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime))+geom_point() + facet_wrap(~RatingSystemFamily)  + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area By Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
 
@@ -223,9 +231,14 @@ completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$Reg
 ggplot(completed_projects_v3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v3 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-Additional graphs that are outside of the current project scope but may be useful
+Additional graphs that are outside of the current project scope but may be useful.
 
 ```{r}
+#Owner type table
+table(completed_projects$OwnerTypesAdj)
+#Graph by owner types
+ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+facet_wrap(~OwnerTypesAdj) + labs(x="Days Between Registration and Certification") + ggtitle("Owner Type Breakdown") + theme(plot.title = element_text(hjust = 0.5))
+
 #test for likelyhood of certification
 BDC_sub <- subset(project_data_adjusted, project_data_adjusted$RatingSystemFamily=="BDC")
 IDC_sub <- subset(project_data_adjusted, project_data_adjusted$RatingSystemFamily=="IDC")
