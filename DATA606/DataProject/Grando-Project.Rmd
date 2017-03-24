@@ -117,10 +117,10 @@ project_data_adjusted$SubmittalTimePending <- ifelse(project_data_adjusted$Platf
 project_data_adjusted$SubmittalTime <- ifelse(project_data_adjusted$Platform=="v2" & project_data$SubmittalTime>maxv3days,NA,project_data_adjusted$SubmittalTime)
 
 #Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.
-completed_projects <- subset(project_data_adjusted, project_data_adjusted$RegAfterLaunch>0 & project_data_adjusted$SubmittalTime>0 & !(is.na(project_data_adjusted$CertDate)) & !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
+completed_projects <- subset(project_data_adjusted,  project_data_adjusted$SubmittalTime>0 & !(is.na(project_data_adjusted$CertDate)) & !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
 
 #Same as above but with projects that have not certified.
-open_projects <- subset(project_data_adjusted, project_data_adjusted$RegAfterLaunch>0 & project_data_adjusted$SubmittalTimePending>0 & is.na(project_data_adjusted$CertDate) & !(identical(project_data_adjusted$RatingSystemFamily,character(0))) & !(is.na(project_data_adjusted$Platform)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
+open_projects <- subset(project_data_adjusted, project_data_adjusted$SubmittalTimePending>0 & is.na(project_data_adjusted$CertDate) & !(identical(project_data_adjusted$RatingSystemFamily,character(0))) & !(is.na(project_data_adjusted$Platform)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
 ```
 
 
@@ -134,7 +134,7 @@ Is there a significant difference between the number of days it takes for a proj
 
 **What are the cases, and how many are there?**
 
-Each case represents a registered LEED project.  There are `r nrow(project_data)` observations in the given data set.
+Each case represents a registered LEED project.  There are `r nrow(project_data)` observations in the overall data set.  After filtering to projects with sufficient information, and pertinent categories, there are `r nrow(completed_projects) + nrow(open_projects)` observations.
 
 ### Data collection 
 
@@ -152,7 +152,7 @@ This is an observational study.
 
 **If you collected the data, state self-collected. If not, provide a citation/link.**
 
-The project data is collected by the United States Green Building Council and is available online here: http://www.usgbc.org/project-download-all.  The version mapping table is not publicly available in a single format. however, all the infomration needed to create this data set is available on http://www.usgbc.org.
+The project data is collected by the United States Green Building Council and is available online here: http://www.usgbc.org/project-download-all.  The version mapping table, used to break projects down into sub-categories, is not publicly available in a single format. however, all the infomration needed to create this data set is available on http://www.usgbc.org.
 
 ### Response 
 
@@ -171,7 +171,7 @@ The explanatory variables are the rating system families (categorical, nominal) 
 **Provide summary statistics relevant to your research question. For example, if you’re comparing means across groups provide means, SDs, sample sizes of each group. This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
 
 
-I have prepared a data set which includes calculations that determine the length of time it took for each project to certify.  Since v3 projects can only have been open for `r maxv3days` days, v2 projects which were certified after `r maxv3days` days were considered to be un-certified.  These calcuations do not consider how long after the Rating System was launched when the project was registered.  This assumption for the data set would be okay as long as we can consider that the amount of time it takes to certify a project does not change as the time between registration date and rating system launch date increases.  There are graphs to check this at the end of this section.
+I have prepared a data set which includes calculations that determine the length of time it took for each project to certify.  Since v3 projects can only have been open for `r maxv3days` days, v2 projects (previous version) which were certified after `r maxv3days` days were considered to be un-certified.  These calcuations do not consider how long after the Rating System was launched when the project was registered.  This assumption for the data set would be okay as long as we can consider that the amount of time it takes to certify a project does not change as the time between registration date and rating system launch date increases.  There are graphs to check this at the end of this section.
 
 ```{r}
 require(ggplot2)
@@ -220,14 +220,14 @@ ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime))+geom_point() + f
 
 #This is a test to see if project timelines decrease as the time between the registration date and the launch date increases
 #Create a data frame of completed v2 projects that are at least as old as the v3 launch.  This is so that we know we aren't creating a bias with recently registered projects that certified quickly.
-completed_projects_v2 <- subset(completed_projects, completed_projects$Platform=="v2" & completed_projects$RegistrationDate < (latest_date - maxv3days))
+completed_projects_v2 <- subset(completed_projects, completed_projects$Platform=="v2" & project_data_adjusted$RegYear>0)
 table(completed_projects_v2$RegYear) 
-completed_projects_v2 <- subset(completed_projects_v2, completed_projects_v2$RegYear < 5)
+completed_projects_v2 <- subset(completed_projects_v2, completed_projects_v2$RegYear < 5 & completed_projects_v2$RegYear>0)
 ggplot(completed_projects_v2, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v2 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
 
 completed_projects_v3 <- subset(completed_projects, completed_projects$Platform=="v3")
 table(completed_projects_v3$RegYear)
-completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$RegYear < 5)
+completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$RegYear < 5 & completed_projects_v3$RegYear>0)
 ggplot(completed_projects_v3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v3 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
