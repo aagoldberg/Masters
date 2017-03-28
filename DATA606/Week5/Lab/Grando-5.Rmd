@@ -19,4 +19,144 @@ if (Sys.info()["sysname"]=="Windows"){
   setwd("~/Documents/Masters/DATA606/Week5/Lab/Lab5")
 }
 require(ggplot2)
+load("more/nc.RData")
 ```
+
+####Exercise 1 - What are the cases in this data set? How many cases are there in our sample?
+
+Answer:
+
+The cases are children born in the state of North Carolina.  There are `r nrow(nc)` cases in the sample.
+
+####Exercise 2 - Make a side-by-side boxplot of habit and weight. What does the plot highlight about the relationship between these two variables?
+
+Answer:
+
+```{r}
+ggplot(nc, aes(y=weight, x=habit))+geom_boxplot() + labs(x = "Smoking Habit", y="Weight") + ggtitle("Smoking Habit vs. Weight") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+There are a few cases which have NA recorded in the habit attribute so I will filter them out.
+
+```{r}
+nc_filtered <- subset(nc, !(is.na(nc$habit)))
+ggplot(nc_filtered, aes(y=weight, x=habit))+geom_boxplot() + labs(x = "Smoking Habit", y="Weight") + ggtitle("Smoking Habit vs. Weight Without NAs") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+The plot highlights the difference between the birthweights of children based on the smoking habit of the mother.  It appears the median, Q1, and whisker limit of the children born to smokers are all less than their respective values for non-smokers.  It appears the plot highlights that the average weight of children born to smoing mothers may be less than that of non-smoking mothers.
+
+####Exercise 3 -Check if the conditions necessary for inference are satisfied. Note that you will need to obtain sample sizes to check the conditions. You can compute the group size using the same by command above but replacing mean with  length.
+
+The conditions necessary for inference are as follows:
+
+1. The sample observations are independent.
+
+From the description provided at the beggining of the lab, this is a random sample.
+
+2. The sample size is large (when not using a t-test).
+
+```{r}
+by(nc$weight, nc$habit, length)
+```
+
+
+3. The population distribution is not strongly skewed.  Note, the larger the sample size, the more lenient we can be with the sample's skew.
+
+```{r}
+smoker_mean <- mean(subset(nc$weight, nc$habit=="smoker"))
+smoker_sd <- sd(subset(nc$weight, nc$habit=="smoker"))
+nonsmoker_mean <- mean(subset(nc$weight, nc$habit=="nonsmoker"))
+nonsmoker_sd <- sd(subset(nc$weight, nc$habit=="nonsmoker"))
+ggplot(nc_filtered, aes(x=weight, fill=habit))+ geom_histogram(binwidth=0.5, alpha = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm, color="blue", args=list(mean=smoker_mean,sd=smoker_sd)) + stat_function(fun=dnorm, color="red", args=list(mean=nonsmoker_mean,sd=nonsmoker_sd))
+
+qqnorm(subset(nc$weight, nc$habit=="smoker"))
+qqline(subset(nc$weight, nc$habit=="smoker"))
+
+qqnorm(subset(nc$weight, nc$habit=="nonsmoker"))
+qqline(subset(nc$weight, nc$habit=="nonsmoker"))
+```
+
+The distributions appear to be slightly to moderately left-skeweed; however, the sample sizes are much larger than 30 so the conditions for inference appear to have been met.
+
+####Exercise 4 - Write the hypotheses for testing if the average weights of babies born to smoking and non-smoking mothers are different.
+
+Answer:
+
+$$H0: mu_nonsmoker - mu_smoker = 0 
+HA: mu_nonsmoker - mu_smoker != 0 $$
+
+####Exercise 5 - Change the type argument to "ci" to construct and record a confidence interval for the difference between the weights of babies born to smoking and non-smoking mothers.
+
+Answer:
+
+```{r}
+inference(y = nc$weight, x = nc$habit, est = "mean", type = "ci", null = 0, alternative = "twosided", method = "theoretical")
+```
+
+We are 95% confident that the average birthweight for children born to nonsmoking mothers is between .0534 and 0.577 pounds more than the average birthweight for children born to smoking mothers. 
+
+####Question 1 - Calculate a 95% confidence interval for the average length of pregnancies (weeks) and interpret it in context. Note that since you’re doing inference on a single population parameter, there is no explanatory variable, so you can omit the x variable from the function.
+
+Answer:
+
+It appears it is also appropriate to remove the null value since we are not testing the difference of means.
+
+```{r}
+inference(y=nc$weeks, est = "mean", type = "ci", alternative = "twosided", method = "theoretical", conflevel = 0.95)
+```
+
+We are 95% confident that the average length of pregenancy for the population is between 38.1528 and 38.5165 weeks.
+
+####Question 2 - Calculate a new confidence interval for the same parameter at the 90% confidence level. You can change the confidence level by adding a new argument to the function: conflevel = 0.90.
+
+Answer:
+
+```{r}
+inference(y=nc$weeks, est = "mean", type = "ci", alternative = "twosided", method = "theoretical", conflevel = 0.90)
+```
+
+We are 90% confident that the average length of pregenancy for the population is between 38.182 and 38.4873 weeks.
+
+####Question 3 - Conduct a hypothesis test evaluating whether the average weight gained by younger mothers is different than the average weight gained by mature mothers.
+
+Answer:
+
+```{r}
+inference(y = nc$gained, x = nc$mature, est = "mean", type = "ht", null = 0, alternative = "twosided", method = "theoretical")
+```
+
+There is not sufficient evidence to reject the null Hypothesis.  Therefore, we fail to reject the hypothesis that there is a difference between the average weight gained between younger and mature mothers.
+
+####Question 4 - Now, a non-inference task: Determine the age cutoff for younger and mature mothers. Use a method of your choice, and explain how your method works.
+
+Answer:
+
+We can find the cutoff by taking the maximum age of younger mothers and the minimum age of mature mothers:
+
+```{r}
+max(subset(nc$mage, nc$mature=="younger mom"), na.rm = TRUE)
+min(subset(nc$mage, nc$mature=="mature mom"), na.rm = TRUE)
+```
+
+The cutoff appears to be that any mother who gives birth at 34 or younger is considered a younger mother while a mother who gives birth at 35 or over is considered an older mother.  My assumption is that the age is truncated (rounded down) to determine the age. 
+
+####Question #5 - Pick a pair of numerical and categorical variables and come up with a research question evaluating the relationship between these variables. Formulate the question in a way that it can be answered using a hypothesis test and/or a confidence interval. Answer your question using the inference function, report the statistical results, and also provide an explanation in plain language.
+
+Answer:
+
+Research Question - Is the average age of the father different between premie and full term children that were born?
+
+$$ Hypothesis Test $$
+
+```{r}
+inference(y = nc$fage, x = nc$premie, est = "mean", type = "ht", null = 0, alternative = "twosided", method = "theoretical")
+```
+
+There is not sufficient evidence to reject the null hypothesis.  Therefore, we fail to reject the hypothesis that there is a difference of age between the fathers of premie and full term children.
+
+```{r}
+inference(y = nc$fage, x = nc$premie, est = "mean", type = "ci", null = 0, alternative = "twosided", method = "theoretical", conflevel = 0.95)
+```
+
+We are 95% confident that the average difference of the fathers age between premie and full term children is -1.5486 and 1.4016 years.
