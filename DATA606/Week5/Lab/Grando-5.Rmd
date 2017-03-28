@@ -77,21 +77,20 @@ qqnorm(subset(nc$weight, nc$habit=="nonsmoker"))
 qqline(subset(nc$weight, nc$habit=="nonsmoker"))
 ```
 
-The distributions appear to be slightly to moderately left-skeweed; however, the sample sizes are much larger than 30 so the conditions for inference appear to have been met.
+The distributions appear to be slightly to moderately left-skewed; however, the sample sizes are much larger than 30 so the conditions for inference appear to have been met.
 
 ####Exercise 4 - Write the hypotheses for testing if the average weights of babies born to smoking and non-smoking mothers are different.
 
 Answer:
 
-$$H0: mu_nonsmoker - mu_smoker = 0 
-HA: mu_nonsmoker - mu_smoker != 0 $$
+$${ H }_{ O }:\quad { \mu  }_{ nonsmoker }\quad -\quad { \mu  }_{ smoker }\quad =\quad 0\\ { H }_{ A }:\quad { \mu  }_{ nonsmoker }\quad -\quad { \mu  }_{ smoker }\quad \neq \quad 0$$
 
 ####Exercise 5 - Change the type argument to "ci" to construct and record a confidence interval for the difference between the weights of babies born to smoking and non-smoking mothers.
 
 Answer:
 
 ```{r}
-inference(y = nc$weight, x = nc$habit, est = "mean", type = "ci", null = 0, alternative = "twosided", method = "theoretical")
+inference(y = nc$weight, x = nc$habit, est = "mean", type = "ci", null = 0, alternative = "twosided", method = "theoretical", order = c("nonsmoker","smoker"),)
 ```
 
 We are 95% confident that the average birthweight for children born to nonsmoking mothers is between .0534 and 0.577 pounds more than the average birthweight for children born to smoking mothers. 
@@ -123,7 +122,7 @@ We are 90% confident that the average length of pregenancy for the population is
 Answer:
 
 ```{r}
-inference(y = nc$gained, x = nc$mature, est = "mean", type = "ht", null = 0, alternative = "twosided", method = "theoretical")
+inference(y = nc$gained, x = nc$mature, est = "mean", type = "ht", null = 0, alternative = "twosided", method = "theoretical", order = c("mature mom","younger mom"))
 ```
 
 There is not sufficient evidence to reject the null Hypothesis.  Therefore, we fail to reject the hypothesis that there is a difference between the average weight gained between younger and mature mothers.
@@ -147,16 +146,16 @@ Answer:
 
 Research Question - Is the average age of the father different between premie and full term children that were born?
 
-$$ Hypothesis Test $$
+$${ H }_{ O }:\quad { \mu  }_{ (Father's\quad Age|full\quad term) }\quad -\quad { \mu  }_{ (Father's\quad Age|premie) }\quad =\quad 0\\ { H }_{ A }:\quad { \mu  }_{ (Father's\quad Age|full\quad term) }\quad -\quad { \mu  }_{ (Father's\quad Age|premie) }\quad \neq \quad 0$$
 
 ```{r}
-inference(y = nc$fage, x = nc$premie, est = "mean", type = "ht", null = 0, alternative = "twosided", method = "theoretical")
+inference(y = nc$fage, x = nc$premie, est = "mean", type = "ht", null = 0, alternative = "twosided", method = "theoretical", order = c("full term","premie"))
 ```
 
 There is not sufficient evidence to reject the null hypothesis.  Therefore, we fail to reject the hypothesis that there is a difference of age between the fathers of premie and full term children.
 
 ```{r}
-inference(y = nc$fage, x = nc$premie, est = "mean", type = "ci", null = 0, alternative = "twosided", method = "theoretical", conflevel = 0.95)
+inference(y = nc$fage, x = nc$premie, est = "mean", type = "ci", null = 0, alternative = "twosided", method = "theoretical", order = c("full term","premie"), conflevel = 0.95)
 ```
 
 We are 95% confident that the average difference of the fathers age between premie and full term children is -1.5486 and 1.4016 years.

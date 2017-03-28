@@ -25,6 +25,34 @@ require(ggplot2)
 
 Answer:
 
+The sample mean is the mid-point in the confidence interval:
+
+```{r}
+(77-65)/2 + 65
+```
+
+The margin of error is half the distance of the confidence interval.
+
+```{r}
+(77-65)/2
+```
+
+The sample standard deviation can be determined  by rearranging the following formula:
+
+$$Margin\quad of\quad Error\quad (ME)\quad =\quad Z\quad *\quad SE\\ ME\quad =\quad Z\quad *\quad \frac { s }{ \sqrt { n }  }$$
+
+```{r}
+p_range <- pnorm(q = 1.65, mean = 0, sd =1) - pnorm(q = -1.65, mean = 0, sd =1)
+p_range
+```
+
+```{r}
+6 * sqrt(25) / 1.65
+```
+
+
+$$s\quad =\quad ME\quad *\quad \sqrt { n } \quad /\quad Z\quad =\quad 6\quad *\quad \sqrt { 25 } \quad /\quad 1.65\quad =\quad 18.185$$
+
 
 
 ####5.14 SAT scores. SAT scores of students at an Ivy League college are distributed with a standard deviation of 250 points. Two statistics students, Raina and Luke, want to estimate the average SAT score of students at this college as part of a class project. They want their margin of error to be no more than 25 points.
@@ -33,37 +61,57 @@ Answer:
 
 Answer:
 
+As indicated in the previous response, the formula for the margin of error is the following:
 
+$$Margin\quad of\quad Error\quad (ME)\quad =\quad Z\quad *\quad SE\\ ME\quad =\quad Z\quad *\quad \frac { s }{ \sqrt { n }  }$$
+
+By rearranging the formula, we can get the answer:
+
+$$n\quad =\quad { (Z\quad *\quad s\quad /\quad ME) }^{ 2 }$$
+
+```{r}
+ceiling((1.65*250/25)^2)
+```
+
+$$n\quad =\quad { (1.65\quad *\quad 250\quad /\quad 25) }^{ 2 } = 273$$
 
 ####(b) Luke wants to use a 99% confidence interval. Without calculating the actual sample size, determine whether his sample should be larger or smaller than Raina’s, and explain your reasoning.
 
 Answer:
 
-
+From the formula provided in answer (a), we can see that as the Z value increases (which happens when we move from a confidence interval of 90% to 99%) the sample size increases.  This makes sense because if the margin of error is to remain the same, then when the numerator gets larger (Z * s), the denominator must also increase in size ($\sqrt(n)$)
 
 ####(c) Calculate the minimum required sample size for Luke.
 
 Answer:
 
+```{r}
+p_range <- pnorm(q = 2.57, mean = 0, sd =1) - pnorm(q = -2.57, mean = 0, sd =1)
+p_range
+ceiling((2.57*250/25)^2)
+```
 
+$$n\quad =\quad { (2.57\quad *\quad 250\quad /\quad 25) }^{ 2 } = 661$$
 
-####5.20 High School and Beyond, Part I. The National Center of Education Statistics conducted a survey of high school seniors, collecting test data on reading, writing, and several other subjects. Here we examine a simple random sample of 200 students from this survey. Side-by-side box plots of reading and writing scores as well as a histogram of the di↵erences in scores are shown below.
+####5.20 High School and Beyond, Part I. The National Center of Education Statistics conducted a survey of high school seniors, collecting test data on reading, writing, and several other subjects. Here we examine a simple random sample of 200 students from this survey. Side-by-side box plots of reading and writing scores as well as a histogram of the differences in scores are shown below.
 
-####(a) Is there a clear di↵erence in the average reading and writing scores?
+####(a) Is there a clear difference in the average reading and writing scores?
 
 Answer:
 
-
+No, there does not appear to be a clear difference.
 
 ####(b) Are the reading and writing scores of each student independent of each other?
 
 Answer:
 
-
+No, some students may perform better on standardized tests, be more intelligent than average, etc. which means that their reading and writing scores would generally be higher than the average, thus not being independent of one another.
 
 ####(c) Create hypotheses appropriate for the following research question: is there an evident difference in the average scores of students in the reading and writing exam?
 
 Answer:
+
+$${ H }_{ O }:\quad { \mu  }_{ reading score }\quad -\quad { \mu  }_{ writing score }\quad =\quad 0\\ { H }_{ A }:\quad { \mu  }_{ reading score }\quad -\quad { \mu  }_{ writing score }\quad \neq \quad 0$$
 
 
 
@@ -71,9 +119,15 @@ Answer:
 
 Answer:
 
+The conditions required to copmlete this test are as follows:
 
+1. Independence of observations: From the description provided, it appears a random sample was taken and we can assume that our results represent less than 10% of the population.
 
-####(e) The average observed di↵erence in scores is x̄ read write = 0.545, and the standard deviation of the di↵erences is 8.887 points. Do these data provide convincing evidence of a difference between the average scores on the two exams?
+2. Observations come from a nearly normal distribution: From the boxplots and histograms provided, there do not appear to be any significant outliers and the data appears to be normally distributed.  We do not have the individual histograms for reading and writing scores but we can assume they are normal as well.
+
+3. Paired data: Each student reading score observation has an associated writing score.
+
+####(e) The average observed difference in scores is x̄ read write = 0.545, and the standard deviation of the di↵erences is 8.887 points. Do these data provide convincing evidence of a difference between the average scores on the two exams?
 
 Answer:
 
@@ -85,7 +139,11 @@ Answer:
 
 
 
-####(g) Based on the results of this hypothesis test, would you expect a confidence interval for the average di↵erence between the reading and writing scores to include 0? Explain your reasoning.
+####(g) Based on the results of this hypothesis test, would you expect a confidence interval for the average difference between the reading and writing scores to include 0? Explain your reasoning.
+
+Answer
+
+
 
 ####5.32 Fuel efficiency of manual and automatic cars, Part I. Each year the US Environmental Protection Agency (EPA) releases fuel economy data on cars manufactured in that year. Below are summary statistics on fuel efficiency (in miles/gallon) from random samples of cars with manual and automatic transmissions manufactured in 2012. Do these data provide strong evidence of a difference between the average fuel efficiency of cars with manual and automatic transmissions in terms of their average city mileage? Assume that conditions for inference are satisfied.
 
