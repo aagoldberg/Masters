@@ -127,31 +127,76 @@ The conditions required to copmlete this test are as follows:
 
 3. Paired data: Each student reading score observation has an associated writing score.
 
-####(e) The average observed difference in scores is x̄ read write = 0.545, and the standard deviation of the di↵erences is 8.887 points. Do these data provide convincing evidence of a difference between the average scores on the two exams?
+####(e) The average observed difference in scores is x̄ read write = 0.545, and the standard deviation of the differences is 8.887 points. Do these data provide convincing evidence of a difference between the average scores on the two exams?
 
 Answer:
 
+Since it is not specified, we will use a two tail test with a significance level of $\alpha = 0.05$ 
 
+```{r}
+se <- 8.87 / sqrt(200)
+t_value <- (0.545-0)/se
+pt(q = t_value, df = 199, lower.tail = FALSE)
+
+lb <- -4
+ub <- 4
+t1 <- qt(p = .025, df = 199)
+t2 <- qt(p = (1-.025), df = 199)
+pick_line1 <- round(t_value,digits = 2)
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = list(df=199)) + stat_function(fun = dt, args = list(df=199), xlim = c(lb, t1),geom = "area", alpha=0.5) + stat_function(fun = dt, args = list(df=199), xlim = c(t2, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("T = %s\n", pick_line1)), color="black", angle=90)
+```
+
+The data does not provide convincing evidence that there is a diference between the reading and writing scores; therefore, we fail to reject the null hypothesis that the reading and writing scores are equal.
 
 ####(f) What type of error might we have made? Explain what the error means in the context of the application.
 
 Answer:
 
-
+Since we have failed to reject the null hypothesis, we might have made a Type II error.  There may be a diffeence between the reading and writing scores for a student; however, we might have failed to detect it.
 
 ####(g) Based on the results of this hypothesis test, would you expect a confidence interval for the average difference between the reading and writing scores to include 0? Explain your reasoning.
 
 Answer
 
-
+Yes, since we have failed to reject the null hypothesis (the population mean is equal to zero), then it is likely it would be included in the confidence interval.
 
 ####5.32 Fuel efficiency of manual and automatic cars, Part I. Each year the US Environmental Protection Agency (EPA) releases fuel economy data on cars manufactured in that year. Below are summary statistics on fuel efficiency (in miles/gallon) from random samples of cars with manual and automatic transmissions manufactured in 2012. Do these data provide strong evidence of a difference between the average fuel efficiency of cars with manual and automatic transmissions in terms of their average city mileage? Assume that conditions for inference are satisfied.
 
 Answer:
 
+First, we calculate the standard error from the two groups:
 
+```{r}
+sa <- 3.58
+sm <- 4.51
+na <- 26
+nm <- 26
+se <- sqrt(sa^2/na + sm^2/nm)
+```
 
-####5.48 Work hours and education. The General Social Survey collects data on demographics, education, and work, among many other characteristics of US residents. 47 Using ANOVA, we can consider educational attainment levels for all 1,172 respondents at once. Below are the distributions of hours worked by educational attainment and relevant summary statistics that will be helpful in carrying out this analysis.
+Then we calcuate the t-value:
+
+```{r}
+xa <- 16.12
+xm <- 19.85
+t_value <- (xa - xm) / se
+```
+
+Since the sample sizes are equal, we can use a conservative estimate of df = 25. Also, since a significance level hasn't been set, we will use $\alpha = 0.05$ for a two-sided test
+
+```{r}
+lb <- -4
+ub <- 4
+t1 <- qt(p = .025, df = 25)
+t2 <- qt(p = (1-.025), df = 25)
+pick_line1 <- round(t_value,digits = 2)
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = list(df=25)) + stat_function(fun = dt, args = list(df=25), xlim = c(lb, t1),geom = "area", alpha=0.5) + stat_function(fun = dt, args = list(df=25), xlim = c(t2, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("T = %s\n", pick_line1)), color="black", angle=90)
+```
+
+There is significant evidence to suggest that there is a difference between the two groups; therefore, we reject the null hypothesis that there is no difference between the average fuel efficiency of cars with manual and automatic transmissions
+in terms of their average city mileage.
+
+####5.48 Work hours and education. The General Social Survey collects data on demographics, education, and work, among many other characteristics of US residents. Using ANOVA, we can consider educational attainment levels for all 1,172 respondents at once. Below are the distributions of hours worked by educational attainment and relevant summary statistics that will be helpful in carrying out this analysis.
 
 ####(a) Write hypotheses for evaluating whether the average number of hours worked varies across the five groups.
 
@@ -163,11 +208,29 @@ Answer:
 
 Answer:
 
+Independence: The cases are survey responses.  Since all respondents have responded we can reason there isn't a bias  
 
+Approximately normal: It appears a few of the groups may have some skew; however, the standard deviations are less than the mean and each group has a large sample size.
+
+Constant variance: The standard deviations are all similar between the groups and there do not appear to be any significant outliers in any one group.
 
 ####(c) Below is part of the output associated with this test. Fill in the empty cells.
 
 Answer:
+
+```{r}
+MSG <- (1/(5-1))
+```
+
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "  # simple table creation here
+          |   Df  |  Sum Sq  |  Mean Sq  |  F Value  |  Pr(>F)  |
+degree    |    4  |          |   501.54  |           | 0.0682 
+residuals | 1,167 | 267,382  |           |
+Total     | 1,171 |          |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
 
 
 
