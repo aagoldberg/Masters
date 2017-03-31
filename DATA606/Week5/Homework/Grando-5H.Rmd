@@ -202,13 +202,13 @@ in terms of their average city mileage.
 
 Answer:
 
-
+$${ H }_{ O }:\quad { \mu  }_{ less than HS }\quad =\quad { \mu  }_{ HS }\quad =\quad { \mu  }_{ Jr Coll }\quad =\quad { \mu  }_{ Bachelors }\quad=\quad { \mu  }_{ Graduate }\quad\\ { H }_{ A }:\quad { At\ least\ onemean\ is\ different  }\quad$$
 
 ####(b) Check conditions and describe any assumptions you must make to proceed with the test.
 
 Answer:
 
-Independence: The cases are survey responses.  Since all respondents have responded we can reason there isn't a bias  
+Independence: All groups are randomly sampled and represent less than 10% of the population.  We can assume that the number of hours worked per week by one peopole within in the same gorup in the sample are independent of another, and the number of hours worked per week by different groups is also independent.
 
 Approximately normal: It appears a few of the groups may have some skew; however, the standard deviations are less than the mean and each group has a large sample size.
 
@@ -229,10 +229,14 @@ SST <- SSG + SSE
 ```
 
 ```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
-tabl <- "  # simple table creation here
-          |   Df  |  Sum Sq  |  Mean Sq  |  F Value  |  Pr(>F)  |
-degree    |    4  | 2,006.2  |   229.13  |    2.19   | 0.0682 
+tabl <- "
+
+|   Df  |  Sum Sq  |  Mean Sq  |  F Value  |  Pr(>F)  | 
+
+degree    |    4  | 2,006.2  |   229.13  |    2.19   | 0.0682
+
 residuals | 1,167 | 267,382  |   2364.9  |
+
 Total     | 1,171 | 269,388  |
 "
 cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
@@ -244,13 +248,13 @@ cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 
 Answer:
 
-Given that we have not been provided a significance level, we will use `\alpha = 0.05`.  Since the p-value is greater than 0.05, there is not sufficient evidence to reject the null hypothesis.  Therefore we do not reject the null hypothesis that the number of hours worked between the different levels of educational attainment is equal.
+Given that we have not been provided a significance level, we will use $\alpha = 0.05$.  Since the p-value is greater than 0.05, there is not sufficient evidence to reject the null hypothesis.  Therefore we do not reject the null hypothesis that the number of hours worked between the different levels of educational attainment is equal.
 
 ```{r}
 lb <- 0
 ub <- 4
 f1 <- qf(p = (1-.05), df1 = 4, df2=1167)
 pick_line1 <- round(f_value,digits = 2)
-ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = df, args = list(df1=4, df2=1167)) + stat_function(fun = df, args = list(df1=4, df2=1167), xlim = c(f1, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("T = %s\n", pick_line1)), color="black", angle=90)
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = df, args = list(df1=4, df2=1167)) + stat_function(fun = df, args = list(df1=4, df2=1167), xlim = c(f1, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("T = %s\n", pick_line1)), color="black", angle=90) + labs(x="F Value")
 ```
 
