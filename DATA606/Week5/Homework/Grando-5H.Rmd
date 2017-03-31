@@ -219,15 +219,21 @@ Constant variance: The standard deviations are all similar between the groups an
 Answer:
 
 ```{r}
-MSG <- (1/(5-1))
+df1 <- (5-1)
+MSG <- 501.54
+f_value <- qf(p = (1-.0682), df1 = 4, df2 = 1167)
+MSE <- MSG / f_value
+SSG <- MSG * df1
+SSE <- 267382
+SST <- SSG + SSE
 ```
 
 ```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 tabl <- "  # simple table creation here
           |   Df  |  Sum Sq  |  Mean Sq  |  F Value  |  Pr(>F)  |
-degree    |    4  |          |   501.54  |           | 0.0682 
-residuals | 1,167 | 267,382  |           |
-Total     | 1,171 |          |
+degree    |    4  | 2,006.2  |   229.13  |    2.19   | 0.0682 
+residuals | 1,167 | 267,382  |   2364.9  |
+Total     | 1,171 | 269,388  |
 "
 cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ```
@@ -237,4 +243,14 @@ cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ####What is the conclusion of the test?
 
 Answer:
+
+Given that we have not been provided a significance level, we will use `\alpha = 0.05`.  Since the p-value is greater than 0.05, there is not sufficient evidence to reject the null hypothesis.  Therefore we do not reject the null hypothesis that the number of hours worked between the different levels of educational attainment is equal.
+
+```{r}
+lb <- 0
+ub <- 4
+f1 <- qf(p = (1-.05), df1 = 4, df2=1167)
+pick_line1 <- round(f_value,digits = 2)
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = df, args = list(df1=4, df2=1167)) + stat_function(fun = df, args = list(df1=4, df2=1167), xlim = c(f1, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("T = %s\n", pick_line1)), color="black", angle=90)
+```
 
