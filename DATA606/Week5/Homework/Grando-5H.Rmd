@@ -202,7 +202,7 @@ in terms of their average city mileage.
 
 Answer:
 
-$${ H }_{ O }:\quad { \mu  }_{ less than HS }\quad =\quad { \mu  }_{ HS }\quad =\quad { \mu  }_{ Jr Coll }\quad =\quad { \mu  }_{ Bachelors }\quad=\quad { \mu  }_{ Graduate }\quad\\ { H }_{ A }:\quad { At\ least\ onemean\ is\ different  }\quad$$
+$${ H }_{ O }:\quad { \mu  }_{ less than HS }\quad =\quad { \mu  }_{ HS }\quad =\quad { \mu  }_{ Jr Coll }\quad =\quad { \mu  }_{ Bachelors }\quad=\quad { \mu  }_{ Graduate }\quad\\ { H }_{ A }:\quad { At\ least\ one\ mean\ is\ different  }\quad$$
 
 ####(b) Check conditions and describe any assumptions you must make to proceed with the test.
 
@@ -220,29 +220,19 @@ Answer:
 
 ```{r}
 df1 <- (5-1)
+df2 <- 1172 - 5
 MSG <- 501.54
 f_value <- qf(p = (1-.0682), df1 = 4, df2 = 1167)
 MSE <- MSG / f_value
 SSG <- MSG * df1
 SSE <- 267382
 SST <- SSG + SSE
+
+f_table <- data.frame(c(df1,df2,df1+df2),round(c(SSG,SSE,SST),digits = 2),round(c(MSG, MSE,NA), digits = 2),round(c(f_value, NA, NA), digits = 2),c(0.0682, NA, NA))
+names(f_table) <- c("Df","Sum Sq","Mean Sq","F value","Pr(>F)")
+rownames(f_table) <- c("degree","residuals","Total")
+f_table
 ```
-
-```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
-tabl <- "
-
-|   Df  |  Sum Sq  |  Mean Sq  |  F Value  |  Pr(>F)  | 
-
-degree    |    4  | 2,006.2  |   229.13  |    2.19   | 0.0682
-
-residuals | 1,167 | 267,382  |   2364.9  |
-
-Total     | 1,171 | 269,388  |
-"
-cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
-```
-
-
 
 ####What is the conclusion of the test?
 
