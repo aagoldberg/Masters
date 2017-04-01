@@ -51,7 +51,7 @@ p_range
 ```
 
 
-$$s\quad =\quad ME\quad *\quad \sqrt { n } \quad /\quad Z\quad =\quad 6\quad *\quad \sqrt { 25 } \quad /\quad 1.65\quad =\quad 18.185$$
+$$s\quad =\quad ME\quad *\quad \sqrt { n } \quad /\quad Z\quad =\quad 6\quad *\quad \sqrt { 25 } \quad /\quad 1.65\quad =\quad 18.18$$
 
 
 
@@ -245,6 +245,6 @@ lb <- 0
 ub <- 4
 f1 <- qf(p = (1-.05), df1 = 4, df2=1167)
 pick_line1 <- round(f_value,digits = 2)
-ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = df, args = list(df1=4, df2=1167)) + stat_function(fun = df, args = list(df1=4, df2=1167), xlim = c(f1, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("T = %s\n", pick_line1)), color="black", angle=90) + labs(x="F Value")
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = df, args = list(df1=4, df2=1167)) + stat_function(fun = df, args = list(df1=4, df2=1167), xlim = c(f1, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.25, label=sprintf("F = %s\n", pick_line1)), color="black", angle=90) + labs(x="F Value")
 ```
 

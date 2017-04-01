@@ -125,7 +125,7 @@ Answer:
 inference(y = nc$gained, x = nc$mature, est = "mean", type = "ht", null = 0, alternative = "twosided", method = "theoretical", order = c("mature mom","younger mom"))
 ```
 
-There is not sufficient evidence to reject the null Hypothesis.  Therefore, we fail to reject the hypothesis that there is a difference between the average weight gained between younger and mature mothers.
+There is not sufficient evidence to reject the null Hypothesis.  Therefore, we fail to reject the hypothesis that there is no difference between the average weight gained between younger and mature mothers.
 
 ####Question 4 - Now, a non-inference task: Determine the age cutoff for younger and mature mothers. Use a method of your choice, and explain how your method works.
 
@@ -152,7 +152,7 @@ $${ H }_{ O }:\quad { \mu  }_{ (Father's\quad Age|full\quad term) }\quad -\quad 
 inference(y = nc$fage, x = nc$premie, est = "mean", type = "ht", null = 0, alternative = "twosided", method = "theoretical", order = c("full term","premie"))
 ```
 
-There is not sufficient evidence to reject the null hypothesis.  Therefore, we fail to reject the hypothesis that there is a difference of age between the fathers of premie and full term children.
+There is not sufficient evidence to reject the null hypothesis.  Therefore, we fail to reject the hypothesis that there is no difference of age between the fathers of premie and full term children.
 
 ```{r}
 inference(y = nc$fage, x = nc$premie, est = "mean", type = "ci", null = 0, alternative = "twosided", method = "theoretical", order = c("full term","premie"), conflevel = 0.95)
