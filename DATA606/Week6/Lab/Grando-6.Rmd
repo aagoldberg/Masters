@@ -1,0 +1,113 @@
+---
+title: "Grando-6"
+author: "John Grando"
+date: "April 5, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando 6 Lab
+
+```{r}
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Week6/Lab/Lab6")
+} else {
+  setwd("~/Documents/Masters/DATA606/Week6/Lab/Lab5")
+}
+require(ggplot2)
+```
+
+####Exercise 1 - In the first paragraph, several key findings are reported. Do these percentages appear to be sample statistics (derived from the data sample) or population parameters?
+
+Answer:
+
+
+
+####Exercise 2 - The title of the report is “Global Index of Religiosity and Atheism”. To generalize the report’s findings to the global human population, what must we assume about the sampling method? Does that seem like a reasonable assumption?
+
+Answer:
+
+
+
+####Exercise 3 - What does each row of Table 6 correspond to? What does each row of atheism correspond to?
+
+Answer:
+
+
+
+####Exercise 4 - Using the command below, create a new dataframe called us12 that contains only the rows in atheism associated with respondents to the 2012 survey from the United States. Next, calculate the proportion of atheist responses. Does it agree with the percentage in Table 6? If not, why?
+
+Answer:
+
+
+
+####Exercise 5 - Write out the conditions for inference to construct a 95% confidence interval for the proportion of atheists in the United States in 2012. Are you confident all conditions are met?
+
+Answer:
+
+
+
+####Exercise 6 - Based on the R output, what is the margin of error for the estimate of the proportion of the proportion of atheists in US in 2012?
+
+Answer:
+
+
+
+####Exercise 7 - Using the inference function, calculate confidence intervals for the proportion of atheists in 2012 in two other countries of your choice, and report the associated margins of error. Be sure to note whether the conditions for inference are met. It may be helpful to create new data sets for each of the two countries first, and then use these data sets in the inference function to construct the confidence intervals.
+
+Answer:
+
+
+
+####Exercise 8 - Describe the relationship between p and me.
+
+Answer:
+
+
+
+####Exercise 9 - Describe the sampling distribution of sample proportions at n=1040n=1040 and p=0.1p=0.1. Be sure to note the center, spread, and shape.  Hint: Remember that R has functions such as mean to calculate summary statistics.
+
+Answer:
+
+
+
+####Exercise 10 - Repeat the above simulation three more times but with modified sample sizes and proportions: for n=400n=400 and p=0.1p=0.1, n=1040n=1040 and p=0.02p=0.02, and n=400n=400 and p=0.02p=0.02. Plot all four histograms together by running the  par(mfrow = c(2, 2)) command before creating the histograms. You may need to expand the plot window to accommodate the larger two-by-two plot. Describe the three new sampling distributions. Based on these limited plots, how does nn appear to affect the distribution of p^p^? How does pp affect the sampling distribution?
+
+Answer:
+
+
+
+####Exercose 11 - If you refer to Table 6, you’ll find that Australia has a sample proportion of 0.1 on a sample size of 1040, and that Ecuador has a sample proportion of 0.02 on 400 subjects. Let’s suppose for this exercise that these point estimates are actually the truth. Then given the shape of their respective sampling distributions, do you think it is sensible to proceed with inference and report margin of errors, as the reports does?
+
+Answer:
+
+
+
+####Question 1 - Answer the following two questions using the inference function. As always, write out the hypotheses for any tests you conduct and outline the status of the conditions for inference.
+
+####a. Is there convincing evidence that Spain has seen a change in its atheism index between 2005 and 2012? Hint: Create a new data set for respondents from Spain. Form confidence intervals for the true proportion of athiests in both years, and determine whether they overlap.
+
+Answer:
+
+
+
+####b. Is there convincing evidence that the United States has seen a change in its atheism index between 2005 and 2012?
+
+Answer:
+
+
+
+####Question 2 - If in fact there has been no change in the atheism index in the countries listed in Table 4, in how many of those countries would you expect to detect a change (at a significance level of 0.05) simply by chance? Hint: Look in the textbook index under Type 1 error.
+
+Answer:
+
+
+
+####Question 3 - Suppose you’re hired by the local government to estimate the proportion of residents that attend a religious service on a weekly basis. According to the guidelines, the estimate must have a margin of error no greater than 1% with 95% confidence. You have no idea what to expect for pp. How many people would you have to sample to ensure that you are within the guidelines? Hint: Refer to your plot of the relationship between pp and margin of error. Do not use the data set to answer this question.
+
+Answer:
+
