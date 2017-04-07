@@ -1,0 +1,26 @@
+---
+title: "Grando-6H"
+author: "John Grando"
+date: "April 7, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando 6 Homework
+
+```{r}
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Week6/Homework")
+} else {
+  setwd("~/Documents/Masters/DATA606/Week6/Homework")
+}
+require(ggplot2)
+```
+
+####6.6 - 
+
+Graded: 6.6, 6.12, 6.20, 6.28, 6.44, 6.48

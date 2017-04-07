@@ -16,7 +16,7 @@ knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
 if (Sys.info()["sysname"]=="Windows"){
   setwd("~/Masters/DATA606/Week6/Lab/Lab6")
 } else {
-  setwd("~/Documents/Masters/DATA606/Week6/Lab/Lab5")
+  setwd("~/Documents/Masters/DATA606/Week6/Lab/Lab6")
 }
 require(ggplot2)
 ```
@@ -25,19 +25,24 @@ require(ggplot2)
 
 Answer:
 
-
+The percentages appear to be sample statistics.
 
 ####Exercise 2 - The title of the report is “Global Index of Religiosity and Atheism”. To generalize the report’s findings to the global human population, what must we assume about the sampling method? Does that seem like a reasonable assumption?
 
 Answer:
 
-
+The sampling method must be random.  The sample represents less than 10% of the population and each country had much more than 30 samples taken.  Since the question indicates that we are looking at the entire world, it's unclear if there is some bias from not sampling the harder to reach countries.  However, the number of surveys are extensive so it appears that the randomness assumption is reasonable.
 
 ####Exercise 3 - What does each row of Table 6 correspond to? What does each row of atheism correspond to?
 
 Answer:
 
+```{r}
+load("more/atheism.RData")
+```
 
+
+Each row from Table 6 is a different country that was sampled for the study.
 
 ####Exercise 4 - Using the command below, create a new dataframe called us12 that contains only the rows in atheism associated with respondents to the 2012 survey from the United States. Next, calculate the proportion of atheist responses. Does it agree with the percentage in Table 6? If not, why?
 
