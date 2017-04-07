@@ -18,6 +18,7 @@ if (Sys.info()["sysname"]=="Windows"){
 } else {
   setwd("~/Documents/Masters/DATA606/Week6/Lab/Lab6")
 }
+load("more/atheism.RData")
 require(ggplot2)
 ```
 
@@ -38,46 +39,136 @@ The sampling method must be random.  The sample represents less than 10% of the 
 Answer:
 
 ```{r}
-load("more/atheism.RData")
+summary(atheism)
 ```
 
 
-Each row from Table 6 is a different country that was sampled for the study.
+Each row from Table 6 is a different country that was sampled for the study.  For each country the sample size is reported along with the proportions of who responded as religious, non-religious, atheist, and uncertain.
+
+Each row of the atheism data table is an individual survey response.  For each person, the table reports the nationality, whether the person considers themself an atheist or non-atheist, and what year the response was recorded.
 
 ####Exercise 4 - Using the command below, create a new dataframe called us12 that contains only the rows in atheism associated with respondents to the 2012 survey from the United States. Next, calculate the proportion of atheist responses. Does it agree with the percentage in Table 6? If not, why?
 
 Answer:
 
+```{r}
+us12 <- subset(atheism, nationality == "United States" & year == "2012")
+us12_atheist <- subset(atheism, nationality == "United States" & year == "2012" & response=="atheist")
+p_atheist_us <- nrow (us12_atheist) / nrow(us12)
+p_atheist_us
 
+#using the inference function
+inference(us12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+```
+
+The response rate for atheist in the United States for the 2012 survey is approximately 5%.  The result is consistent with Table 6 which reports a response of 5% for "convinced atheist".
 
 ####Exercise 5 - Write out the conditions for inference to construct a 95% confidence interval for the proportion of atheists in the United States in 2012. Are you confident all conditions are met?
 
 Answer:
 
+1. the sample observations are independent.
 
+Yes, the number of surveys are less than 10% of the population and appear to be random.
+
+2. we expected to see at least 10 successes and 10 failures in our sample, i.e. np 10 and n(1 p) 10. This is called the success-failure condition.
+
+Yes, the number of successes (atheist) are `r nrow(us12_atheist)` and failures (non-athiest) are `r nrow(us12)`.
 
 ####Exercise 6 - Based on the R output, what is the margin of error for the estimate of the proportion of the proportion of atheists in US in 2012?
 
 Answer:
 
+The margin of error is:
 
+```{r}
+n_us <- nrow(us12)
+ME <- 1.96 * sqrt(p_atheist_us*(1-p_atheist_us)/n_us)
+ME
+```
 
 ####Exercise 7 - Using the inference function, calculate confidence intervals for the proportion of atheists in 2012 in two other countries of your choice, and report the associated margins of error. Be sure to note whether the conditions for inference are met. It may be helpful to create new data sets for each of the two countries first, and then use these data sets in the inference function to construct the confidence intervals.
 
 Answer:
 
+I will select Germany and Peru for this problem.  First, I will perform the analysis for Germany:
 
+```{r}
+g12 <- subset(atheism, nationality == "Germany" & year == "2012")
+g12_atheist <- subset(atheism, nationality == "Germany" & year == "2012" & response=="atheist")
+```
+
+As with the US sample, it appears we can assume the samples were independent.  Additionally, the number of successes (atheist) are `r nrow(g12_atheist)` and failures (non-athiest) are `r nrow(g12)`.
+
+The margin of error for german respondents is:
+
+```{r}
+p_atheist_g <- nrow (g12_atheist) / nrow(g12)
+n_g <- nrow(g12)
+ME <- 1.96 * sqrt(p_atheist_g*(1-p_atheist_g)/n_g)
+ME
+
+#using the inference function
+inference(g12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+```
+
+We are 95% confident that the proportion of german residents who consider themselves athesists is between 0.1182 and 0.1806.
+
+Peru:
+
+```{r}
+p12 <- subset(atheism, nationality == "Peru" & year == "2012")
+p12_atheist <- subset(atheism, nationality == "Peru" & year == "2012" & response=="atheist")
+```
+
+As with the US sample, it appears we can assume the samples were independent for those respondents from Peru.  Additionally, the number of successes (atheist) are `r nrow(p12_atheist)` and failures (non-athiest) are `r nrow(p12)`.
+
+The margin of error for respondents from Peru is:
+
+```{r}
+p_atheist_p <- nrow (p12_atheist) / nrow(p12)
+n_p <- nrow(p12)
+ME <- 1.96 * sqrt(p_atheist_p*(1-p_atheist_p)/n_p)
+ME
+
+#using the inference function
+inference(p12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+```
+
+We are 95% confident that the proportion of peruvian residents who consider themselves athesists is between 0.0202 and 0.0394.
 
 ####Exercise 8 - Describe the relationship between p and me.
 
 Answer:
 
+```{r}
+n <- 1000
+p <- seq(0, 1, 0.01)
+me <- 2 * sqrt(p * (1 - p)/n)
+plot(me ~ p, ylab = "Margin of Error", xlab = "Population Proportion")
+```
 
 
-####Exercise 9 - Describe the sampling distribution of sample proportions at n=1040n=1040 and p=0.1p=0.1. Be sure to note the center, spread, and shape.  Hint: Remember that R has functions such as mean to calculate summary statistics.
+As p increases from 0 to 0.5, the margin of error increases.  As p increases from 0.5 to 0, it decreases.  The increase and decrease are mirrored acrosse the x = 0.5 vertical line.  The maximum margin of error happens when p = 0.5.
+
+####Exercise 9 - Describe the sampling distribution of sample proportions at n=1040 and p=0.1. Be sure to note the center, spread, and shape.  Hint: Remember that R has functions such as mean to calculate summary statistics.
 
 Answer:
 
+```{r}
+p <- 0.1
+n <- 1040
+p_hats <- rep(0, 5000)
+
+for(i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), n, replace = TRUE, prob = c(p, 1-p))
+  p_hats[i] <- sum(samp == "atheist")/n
+}
+
+hist(p_hats, main = "p = 0.1, n = 1040", xlim = c(0, 0.18))
+```
+
+Enter description......
 
 
 ####Exercise 10 - Repeat the above simulation three more times but with modified sample sizes and proportions: for n=400n=400 and p=0.1p=0.1, n=1040n=1040 and p=0.02p=0.02, and n=400n=400 and p=0.02p=0.02. Plot all four histograms together by running the  par(mfrow = c(2, 2)) command before creating the histograms. You may need to expand the plot window to accommodate the larger two-by-two plot. Describe the three new sampling distributions. Based on these limited plots, how does nn appear to affect the distribution of p^p^? How does pp affect the sampling distribution?
