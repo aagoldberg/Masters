@@ -168,28 +168,107 @@ for(i in 1:5000){
 hist(p_hats, main = "p = 0.1, n = 1040", xlim = c(0, 0.18))
 ```
 
-Enter description......
+Summary statistics:
 
+```{r}
+summary(p_hats)
+sd(p_hats)
+```
 
-####Exercise 10 - Repeat the above simulation three more times but with modified sample sizes and proportions: for n=400n=400 and p=0.1p=0.1, n=1040n=1040 and p=0.02p=0.02, and n=400n=400 and p=0.02p=0.02. Plot all four histograms together by running the  par(mfrow = c(2, 2)) command before creating the histograms. You may need to expand the plot window to accommodate the larger two-by-two plot. Describe the three new sampling distributions. Based on these limited plots, how does nn appear to affect the distribution of p^p^? How does pp affect the sampling distribution?
+The distribution is centered around `r mean(p_hats)` with a standard deviation of .00925 and IQR of `r unname(summary(p_hats))[5] - unname(summary(p_hats))[2]`.  The data appear to be normally distributed with a standard deviation of `r sd(p_hats)`
+
+####Exercise 10 - Repeat the above simulation three more times but with modified sample sizes and proportions: for n=400 and p=0.1, n=1040 and p=0.02, and n=400 and p=0.02. Plot all four histograms together by running the  par(mfrow = c(2, 2)) command before creating the histograms. You may need to expand the plot window to accommodate the larger two-by-two plot. Describe the three new sampling distributions. Based on these limited plots, how does nn appear to affect the distribution of p^p^? How does pp affect the sampling distribution?
 
 Answer:
 
+```{r}
+p <- 0.1
+n <- 400
+p_hats_2 <- rep(0, 5000)
 
+for(i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), n, replace = TRUE, prob = c(p, 1-p))
+  p_hats_2[i] <- sum(samp == "atheist")/n
+}
+
+p <- 0.02
+n <- 1040
+p_hats_3 <- rep(0, 5000)
+
+for(i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), n, replace = TRUE, prob = c(p, 1-p))
+  p_hats_3[i] <- sum(samp == "atheist")/n
+}
+
+p <- 0.02
+n <- 400
+p_hats_4 <- rep(0, 5000)
+
+for(i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), n, replace = TRUE, prob = c(p, 1-p))
+  p_hats_4[i] <- sum(samp == "atheist")/n
+}
+
+par(mfrow = c(2, 2))
+hist(p_hats, main = "p = 0.1, n = 1040", xlim = c(0, 0.18))
+hist(p_hats_2, main = "p = 0.1, n = 400", xlim = c(0, 0.18))
+hist(p_hats_3, main = "p = 0.02, n = 1040", xlim = c(0, 0.18))
+hist(p_hats_4, main = "p = 0.02, n = 400", xlim = c(0, 0.18))
+par(mfrow = c(1, 1))
+```
+
+It appears that the larger the n is, the spread decreases.  As p decreases, it appears the spread (standard deviation) also decreases along with the center obviously changing as well.
 
 ####Exercose 11 - If you refer to Table 6, you’ll find that Australia has a sample proportion of 0.1 on a sample size of 1040, and that Ecuador has a sample proportion of 0.02 on 400 subjects. Let’s suppose for this exercise that these point estimates are actually the truth. Then given the shape of their respective sampling distributions, do you think it is sensible to proceed with inference and report margin of errors, as the reports does?
 
 Answer:
 
+```{r}
+au12 <- subset(atheism, nationality == "Australia" & year == "2012")
+au12_atheist <- subset(atheism, nationality == "Australia" & year == "2012" & response=="atheist")
+```
 
+The number of successes (atheist) are `r nrow(au12_atheist)` and failures (non-athiest) are `r nrow(au12)` for the australian respondents.  This meets the minimum requirements to proceed.
+
+```{r}
+ec12 <- subset(atheism, nationality == "Ecuador" & year == "2012")
+ec12_atheist <- subset(atheism, nationality == "Ecuador" & year == "2012" & response=="atheist")
+```
+
+The number of successes (atheist) are `r nrow(ec12_atheist)` and failures (non-athiest) are `r nrow(ec12)` for the Ecuadorian respondents.  There are not enough successes to meet the minimum requirements (10 successes) so a margin of error estimate would not be appropriate for these results.
 
 ####Question 1 - Answer the following two questions using the inference function. As always, write out the hypotheses for any tests you conduct and outline the status of the conditions for inference.
+
+
 
 ####a. Is there convincing evidence that Spain has seen a change in its atheism index between 2005 and 2012? Hint: Create a new data set for respondents from Spain. Form confidence intervals for the true proportion of athiests in both years, and determine whether they overlap.
 
 Answer:
 
+Since we have already determined independence, we only need to check for a minimum of 10 samples for each success and failure
 
+The hypothesis for this question is:
+
+$${ H }_{ O }:\quad { p }_{ 2012 }\quad -\quad { p }_{ 2005 }\quad =\quad 0\quad \\ \quad { H }_{ A }:\quad { p }_{ 2012 }\quad -\quad { p }_{ 2005 }\quad \neq \quad 0\\ $$
+
+
+
+```{r}
+sp05 <- subset(atheism, nationality == "Spain" & year == "2005")
+sp05_atheist <- subset(atheism, nationality == "Spain" & year == "2005" & response=="atheist")
+sp12 <- subset(atheism, nationality == "Spain" & year == "2012")
+sp12_atheist <- subset(atheism, nationality == "Spain" & year == "2012" & response=="atheist")
+```
+
+The number of successes (atheist) are `r nrow(sp05_atheist)` and failures (non-athiest) are `r nrow(sp05)` for the 2005 data.  The number of successes (atheist) are `r nrow(sp12_atheist)` and failures (non-athiest) are `r nrow(sp12)` for the 2012 data.  The minimum number of successes and failures have been met.
+
+```{r}
+inference(sp05$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+
+inference(sp12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+```
+
+We are 95% confident that the proportion of Spanish residents who considered themselves athesists in 2005 is between 0.083 and 0.1177.  We are also 95% confident that the proportion of Spanish residents who considered themselves athesists in 2012 is between 0.0734 and 0.1065.  Since these confidence intevals overlap, there is not sufficient evidence to reject the null hypothesis.  We fail to reject the null hypothesis that there is no difference in the proportion of Spanish respondents between 2005 and 2012.
 
 ####b. Is there convincing evidence that the United States has seen a change in its atheism index between 2005 and 2012?
 
