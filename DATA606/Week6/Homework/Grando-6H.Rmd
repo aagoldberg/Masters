@@ -65,9 +65,18 @@ Answer:
 ns = 1259
 p_hat = 0.48
 z = 1.96
-ME = 1.96 * sqrt(p_hat*(1-p_hat)/ns)
+se <- sqrt(p_hat*(1-p_hat)/ns)
+ME = 1.96 * se
 p_hat - ME
 p_hat + ME
+
+lb <- p_hat - se * 4
+ub <- p_hat + se * 4
+z1 <- round(p_hat - ME, digits = 2)
+z2 <- round(p_hat + ME, digits = 2)
+pick_line1 <- z1
+pick_line2 <- z2
+ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm, args = list(mean=p_hat, sd=se)) + stat_function(fun = dnorm, args = list(mean=p_hat, sd=se), xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=10, label=sprintf("p = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=10, label=sprintf("p = %s\n", pick_line2)), color="black", angle=90) + labs(x="proportion")
 ```
 
 We are 95% confident that the number of US residents who think the use of marijuana should be made legal is between 45.2% and 50.8%.
@@ -105,11 +114,53 @@ $$ME\quad =\quad z*\sqrt { \frac { p(1-p) }{ n }  } <\quad 0.02\\ ME\quad =\quad
 ceiling(1.96^2 * 0.48*(1-0.48)/0.02^2)
 ```
 
-####6.28 Sleep deprivation, CA vs. OR, Part I. According to a report on sleep deprivation by the Centers for Disease Control and Prevention, the proportion of California residents who reported insufficient rest or sleep during each of the preceding 30 days is 8.0%, while this proportion is 8.8% for Oregon residents. These data are based on simple random samples of 11,545 California and 4,691 Oregon residents. Calculate a 95% confidence interval for the di↵erence between the proportions of Californians and Oregonians who are sleep deprived and interpret it in context of the data.
+####6.28 Sleep deprivation, CA vs. OR, Part I. According to a report on sleep deprivation by the Centers for Disease Control and Prevention, the proportion of California residents who reported insufficient rest or sleep during each of the preceding 30 days is 8.0%, while this proportion is 8.8% for Oregon residents. These data are based on simple random samples of 11,545 California and 4,691 Oregon residents. Calculate a 95% confidence interval for the difference between the proportions of Californians and Oregonians who are sleep deprived and interpret it in context of the data.
 
 Answer:
 
+First, let's test the conditions for inference:
 
+1. Each sample follows a normal model.
+
+1a. Independence: The reports are indicated to be based on a simple random sample, so it appears okay to proceed.
+
+1b. success-failure condition:
+
+```{r}
+phat_CA <- 0.08
+n_CA <- 11545
+phat_OR <- 0.088
+n_OR <- 4691
+CA_success <- formatC(phat_CA * n_CA, format = "d", big.mark = ",")
+CA_failure <- formatC((1-phat_CA) * n_CA, format = "d", big.mark = ",")
+OR_success <- formatC(phat_OR * n_OR, format = "d", big.mark = ",")
+OR_failure <- formatC((1-phat_OR) * n_OR, format = "d", big.mark = ",")
+```
+
+The number of successes (insufficient sleep) are `r CA_success` and failures (other) are `r CA_failure` for California residents.  The number of successes (insufficient sleep) are `r OR_success` and failures (other) are `r OR_failure` for Oregon residents.  The minimum number of successes and failures have been met.
+
+The confidence interval for the difference between the proportions of Californians and Oregonians who are sleep deprived is:
+
+```{r}
+z_value <- 1.96
+se_CA <- phat_CA * (1 - phat_CA) / n_CA
+se_OR <- phat_OR * (1 - phat_OR) / n_OR
+se <- sqrt(se_CA + se_OR)
+p_hat <- phat_CA - phat_OR
+ME <- z_value * se
+p_hat - ME
+p_hat + ME
+
+lb <- p_hat - se * 4
+ub <- p_hat + se * 4
+z1 <- round(p_hat - ME, digits = 4)
+z2 <- round(p_hat + ME, digits = 4)
+pick_line1 <- z1
+pick_line2 <- z2
+ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dnorm, args = list(mean=p_hat, sd=se)) + stat_function(fun = dnorm, args = list(mean=p_hat, sd=se), xlim = c(z1, z2),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=40, label=sprintf("p = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=40, label=sprintf("p = %s\n", pick_line2)), color="black", angle=90) + labs(x="proportion")
+```
+
+We are 95% confident that the difference between the proportions of Californians and Oregonians who are sleep deprived is between -0.0175 and 0.0015.  Since the value of 0 is within the confidence interval, it appears that we would fail to reject the hypothesis that there is no difference between the two groups.
 
 ####6.44 Barking deer. Microhabitat factors associated with forage and bed sites of barking deer in Hainan Island, China were examined from 2001 to 2002. In this region woods make up 4.8% of the land, cultivated grass plot makes up 14.7% and deciduous forests makes up 39.6%. Of the 426 sites where the deer forage, 4 were categorized as woods, 16 as cultivated grassplot, and 61 as deciduous forests. The table below summarizes these data.
 
@@ -117,19 +168,23 @@ Answer:
 
 Answer:
 
-
+$${ H }_{ O }:\quad The\quad observed\quad data\quad is\quad a\quad random\quad sample,\quad\\ i.e.\quad there\quad is\quad no\quad prefered\quad habit\quad for\quad deer\quad to\quad forage\quad in,\\\quad and\quad the\quad observed\quad counts\quad reflect\quad natural\quad sampling\quad fluctuations\\ \quad \\ { H }_{ A }:\quad The\quad observed\quad data\quad is\quad not\quad the\quad result\quad of\quad a\quad random\quad sample,\\\quad i.e.\quad there\quad is\quad a\quad bias\quad in\quad the\quad preference\quad of\quad foraged\quad areas$$
 
 ####(b) What type of test can we use to answer this research question?
 
 Answer:
 
-
+We can use a chi-square test.
 
 ####(c) Check if the assumptions and conditions required for this test are satisfied.
 
 Answer:
 
+The conditions for inference for a chi-square test is as follows:
 
+1. Independence: Each case that contributes a count to the table must be indepen dent of all the other cases in the table.
+
+2. Sample size / distribution: Each particular scenario (i.e. cell count) must have at least 5 expected cases.
 
 ####(d) Do these data provide convincing evidence that barking deer prefer to forage in certain habitats over others? Conduct an appropriate hypothesis test to answer this research question.
 
@@ -137,7 +192,7 @@ Answer:
 
 
 
-####6.48 Co↵ee and Depression. Researchers conducted a study investigating the relationship between ca↵einated co↵ee consumption and risk of depression in women. They collected data on 50,739 women free of depression symptoms at the start of the study in the year 1996, and these women were followed through 2006. The researchers used questionnaires to collect data on ca↵einated co↵ee consumption, asked each individual about physician-diagnosed depression, and also asked about the use of antidepressants. The table below shows the distribution of incidences of depression by amount of caffeinated coffee consumption.
+####6.48 Coffee and Depression. Researchers conducted a study investigating the relationship between ca↵einated co↵ee consumption and risk of depression in women. They collected data on 50,739 women free of depression symptoms at the start of the study in the year 1996, and these women were followed through 2006. The researchers used questionnaires to collect data on ca↵einated co↵ee consumption, asked each individual about physician-diagnosed depression, and also asked about the use of antidepressants. The table below shows the distribution of incidences of depression by amount of caffeinated coffee consumption.
 
 ####(a) What type of test is appropriate for evaluating if there is an association between co↵ee intake and depression?
 
