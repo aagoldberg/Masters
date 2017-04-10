@@ -245,11 +245,11 @@ The number of successes (atheist) are `r nrow(ec12_atheist)` and failures (non-a
 
 Answer:
 
-Since we have already determined independence, we only need to check for a minimum of 10 samples for each success and failure
+Since we have already determined independence for the overall survey setup, we only need to check for a minimum of 10 samples for each success and failure
 
 The hypothesis for this question is:
 
-$${ H }_{ O }:\quad { p }_{ 2012 }\quad -\quad { p }_{ 2005 }\quad =\quad 0\quad \\ \quad { H }_{ A }:\quad { p }_{ 2012 }\quad -\quad { p }_{ 2005 }\quad \neq \quad 0\\ $$
+$${ H }_{ O }:\quad { p }_{ Spain\ 2012 }\quad -\quad { p }_{ Spain\ 2005 }\quad =\quad 0\quad \\ \quad { H }_{ A }:\quad { p }_{ Spain\ 2012 }\quad -\quad { p }_{ Spain\ 2005 }\quad \neq \quad 0\\ $$
 
 
 
@@ -274,15 +274,45 @@ We are 95% confident that the proportion of Spanish residents who considered the
 
 Answer:
 
+Since we have already determined independence for the overall survey setup, we only need to check for a minimum of 10 samples for each success and failure
 
+The hypothesis for this question is:
+
+$${ H }_{ O }:\quad { p }_{ United\ States\ 2012 }\quad -\quad { p }_{ United\ States\ 2005 }\quad =\quad 0\quad \\ \quad { H }_{ A }:\quad { p }_{ United\ States\ 2012 }\quad -\quad { p }_{ United\ States\ 2005 }\quad \neq \quad 0\\ $$
+
+
+
+```{r}
+us05 <- subset(atheism, nationality == "United States" & year == "2005")
+us05_atheist <- subset(atheism, nationality == "United States" & year == "2005" & response=="atheist")
+us12 <- subset(atheism, nationality == "United States" & year == "2012")
+us12_atheist <- subset(atheism, nationality == "United States" & year == "2012" & response=="atheist")
+```
+
+The number of successes (atheist) are `r nrow(us05_atheist)` and failures (non-athiest) are `r nrow(us05)` for the 2005 data.  The number of successes (atheist) are `r nrow(us12_atheist)` and failures (non-athiest) are `r nrow(us12)` for the 2012 data.  The minimum number of successes and failures have been met.
+
+```{r}
+inference(us05$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+
+inference(us12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+```
+
+We are 95% confident that the proportion of American residents who considered themselves athesists in 2005 is between 0.0038 and 0.0161.  We are also 95% confident that the proportion of American residents who considered themselves athesists in 2012 is between 0.0364 and 0.0634.  Since these confidence intevals do not overlap, there is sufficient evidence to reject the null hypothesis.  We reject the null hypothesis that there is no difference in the proportion of American respondents between 2005 and 2012.
 
 ####Question 2 - If in fact there has been no change in the atheism index in the countries listed in Table 4, in how many of those countries would you expect to detect a change (at a significance level of 0.05) simply by chance? Hint: Look in the textbook index under Type 1 error.
 
 Answer:
 
+Since we are using a significance level of 0.05, we would expect to detect a change in 5% of the countries that, in fact, had no change.
 
-
-####Question 3 - Suppose you’re hired by the local government to estimate the proportion of residents that attend a religious service on a weekly basis. According to the guidelines, the estimate must have a margin of error no greater than 1% with 95% confidence. You have no idea what to expect for pp. How many people would you have to sample to ensure that you are within the guidelines? Hint: Refer to your plot of the relationship between pp and margin of error. Do not use the data set to answer this question.
+####Question 3 - Suppose you’re hired by the local government to estimate the proportion of residents that attend a religious service on a weekly basis. According to the guidelines, the estimate must have a margin of error no greater than 1% with 95% confidence. You have no idea what to expect for p. How many people would you have to sample to ensure that you are within the guidelines? Hint: Refer to your plot of the relationship between p and margin of error. Do not use the data set to answer this question.
 
 Answer:
 
+The following fomula summarizes the formula, and rearrangement, for margin of error for a proportional sample.  The largest margin of error occurs when p = 0.5; therefore, to make a conservative estimate, we should use this proportion to ensure we will sample the necessary amount of people.  The number of people necessary to sample is:
+
+$$ME\quad =\quad z*\sqrt { \frac { p(1-p) }{ n }  } <\quad 0.01\\ ME\quad =\quad 1.96*\sqrt { \frac { 0.5(1-0.5) }{ n }  } <\quad 0.01\\ ME\quad =\quad { 1.96 }^{ 2 }*\frac { 0.5(1-0.5) }{ n } <\quad { 0.01 }^{ 2 }\\ ME\quad =\quad { 1.96 }^{ 2 }*\frac { 0.5(1-0.5) }{ { 0.01 }^{ 2 } } <\quad n$$
+
+```{r}
+ceiling(1.96^2 * 0.5*(1-0.5)/0.01^2)
+```

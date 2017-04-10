@@ -27,25 +27,27 @@ require(ggplot2)
 
 Answer:
 
-
+False. A confidence interval estimates the population proportion and not the sample proportion.
 
 ####(b) We are 95% confident that between 43% and 49% of Americans support the decision of the U.S. Supreme Court on the 2010 healthcare law.
 
 Answer:
 
-
+True.  The statement indicates that the margin of error was calculated based on a 95% confidence level which resulted in a value of 3% and a mean of 46%.
 
 ####(c) If we considered many random samples of 1,012 Americans, and we calculated the sample proportions of those who support the decision of the U.S. Supreme Court, 95% of those sample proportions will be between 43% and 49%.
 
 Answer:
 
-
+True.  This is the definition of a confidence interval.
 
 ####(d) The margin of error at a 90% confidence level would be higher than 3%.
 
 Answer:
 
+False, the margin of error would be lower since the z value at a 90% confidence level would be less than that for a 95% confidence interval and the formula for margin of error is as follows:
 
+$$ME\quad =\quad z*\sqrt { \frac { p(1-p) }{ n }  }$$
 
 ####6.12 Legalization of marijuana, Part I. The 2010 General Social Survey asked 1,259 US residents: “Do you think the use of marijuana should be made legal, or not?” 48% of the respondents said it should be made legal.
 
@@ -53,29 +55,55 @@ Answer:
 
 Answer:
 
-
+It is a sample statistic since it represents the average proportion of the people surveyed responding in the affirmative.
 
 ####(b) Construct a 95% confidence interval for the proportion of US residents who think marijuana should be made legal, and interpret it in the context of the data.
 
 Answer:
 
+```{r}
+ns = 1259
+p_hat = 0.48
+z = 1.96
+ME = 1.96 * sqrt(p_hat*(1-p_hat)/ns)
+p_hat - ME
+p_hat + ME
+```
 
+We are 95% confident that the number of US residents who think the use of marijuana should be made legal is between 45.2% and 50.8%.
 
 ####(c) A critic points out that this 95% confidence interval is only accurate if the statistic follows a normal distribution, or if the normal model is a good approximation. Is this true for these data? Explain.
 
 Answer:
 
+We must check the survey for the following elements:
+
+1. Independence: Given that this is an organized survey, and has supporting documentation provided in the footnotes, we can assume that the surveys were sufficiently performed in order to justify that the sample observations were independent.
+
+2. success-failure condition:
+
+The number of successes (affirmatives) are `r ns*p_hat` and failures (negatives) are `r ns*(1-p_hat)`.  The minimum number of successes and failures have been met.
+
+Since both of these conditions are met, we can assume the data follows an approximately normal distribution.
+
+
 ####(d) A news piece on this survey’s findings states, “Majority of Americans think marijuana should be legalized.” Based on your confidence interval, is this news piece’s statement justified?
 
 Answer:
 
-
+No.  The conficence interval spans between 45.2% and 50.8%.  This means that we are 95% confident that the true mean falls betwen these values which are above (majority) and below (minority) 50%.
 
 ####6.20 Legalize Marijuana, Part II. As discussed in Exercise 6.12, the 2010 General Social Survey reported a sample where about 48% of US residents thought marijuana should be made legal. If we wanted to limit the margin of error of a 95% confidence interval to 2%, about how many Americans would we need to survey ?
 
 Answer:
 
+The following fomula summarizes the formula, and rearrangement, for margin of error for a proportional sample.  Since the sample returned a value of p = 0.48, we should use this proportion.  The number of people necessary to sample is:
 
+$$ME\quad =\quad z*\sqrt { \frac { p(1-p) }{ n }  } <\quad 0.02\\ ME\quad =\quad 1.96*\sqrt { \frac { 0.48(1-0.48) }{ n }  } <\quad 0.02\\ ME\quad =\quad { 1.96 }^{ 2 }*\frac { 0.48(1-0.48) }{ n } <\quad { 0.02 }^{ 2 }\\ ME\quad =\quad { 1.96 }^{ 2 }*\frac { 0.48(1-0.48) }{ { 0.02 }^{ 2 } } <\quad n$$
+
+```{r}
+ceiling(1.96^2 * 0.48*(1-0.48)/0.02^2)
+```
 
 ####6.28 Sleep deprivation, CA vs. OR, Part I. According to a report on sleep deprivation by the Centers for Disease Control and Prevention, the proportion of California residents who reported insufficient rest or sleep during each of the preceding 30 days is 8.0%, while this proportion is 8.8% for Oregon residents. These data are based on simple random samples of 11,545 California and 4,691 Oregon residents. Calculate a 95% confidence interval for the di↵erence between the proportions of Californians and Oregonians who are sleep deprived and interpret it in context of the data.
 
