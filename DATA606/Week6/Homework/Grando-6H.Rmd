@@ -182,55 +182,128 @@ Answer:
 
 The conditions for inference for a chi-square test is as follows:
 
-1. Independence: Each case that contributes a count to the table must be indepen dent of all the other cases in the table.
+1. Independence: Each case that contributes a count to the table must be independent of all the other cases in the table.
+
+Assuming that the study has a way of tracking the deer separately, it can be assumed each count of deer contributes a count to the table that is independent of other cases.
 
 2. Sample size / distribution: Each particular scenario (i.e. cell count) must have at least 5 expected cases.
+
+```{r}
+total_deer <- 426
+woods_area <- 0.048
+grassplot_area <- 0.147
+forest_area <- 0.396
+other_area <- 1 - woods_area - grassplot_area - forest_area
+woods_expected <- woods_area * total_deer
+grassplot_expected <- grassplot_area * total_deer
+forest_expected <- forest_area * total_deer
+other_expected <- other_area * total_deer
+```
+
+
+There is one scenario that may not meet the requirements (Woods = 4); however, the expected number of deer in the woods area is 20.4, which is over the minimum of 5, so we can continue.
 
 ####(d) Do these data provide convincing evidence that barking deer prefer to forage in certain habitats over others? Conduct an appropriate hypothesis test to answer this research question.
 
 Answer:
 
+```{r}
+chisq_woods <- (4 - woods_expected)^2 / woods_expected
+chisq_grassplot <- (16 - grassplot_expected)^2 / grassplot_expected
+chisq_forest <- (67 - forest_expected)^2 / forest_expected
+chisq_other <- (345 - other_expected)^2 / other_expected
+chi_square_value <- chisq_woods + chisq_grassplot + chisq_forest + chisq_other
+df_chi_square <- 5 - 1
+pchisq(q = chi_square_value, df = df_chi_square,lower.tail = FALSE)
 
+lb <- 0
+ub <- 300
+z1 <- round(chi_square_value, digits = 2)
+z2 <- round(chi_square_value, digits = 2)
+pick_line1 <- z1
+pick_line2 <- z2
+ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dchisq, args = list(df=df_chi_square))  + stat_function(fun = dchisq, args = list(df=df_chi_square), xlim = c(z1, ub),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.1, label=sprintf("Chi-square = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.1, label=sprintf("Chi-square = %s\n", pick_line2)), color="black", angle=90) + labs(x="Chi Square Value")
+```
 
-####6.48 Coffee and Depression. Researchers conducted a study investigating the relationship between ca↵einated co↵ee consumption and risk of depression in women. They collected data on 50,739 women free of depression symptoms at the start of the study in the year 1996, and these women were followed through 2006. The researchers used questionnaires to collect data on ca↵einated co↵ee consumption, asked each individual about physician-diagnosed depression, and also asked about the use of antidepressants. The table below shows the distribution of incidences of depression by amount of caffeinated coffee consumption.
+Using a 95% confidence level, there is singificant evidence to reject the null hypothesis that barking deer do not prefer to forage in certain habitats over others.
 
-####(a) What type of test is appropriate for evaluating if there is an association between co↵ee intake and depression?
+####6.48 Coffee and Depression. Researchers conducted a study investigating the relationship between caffeinated co↵ee consumption and risk of depression in women. They collected data on 50,739 women free of depression symptoms at the start of the study in the year 1996, and these women were followed through 2006. The researchers used questionnaires to collect data on ca↵einated co↵ee consumption, asked each individual about physician-diagnosed depression, and also asked about the use of antidepressants. The table below shows the distribution of incidences of depression by amount of caffeinated coffee consumption.
+
+####(a) What type of test is appropriate for evaluating if there is an association between coffee intake and depression?
 
 Answer:
 
-
+A chi-square test for two way tables
 
 ####(b) Write the hypotheses for the test you identified in part (a).
 
 Answer:
 
+HO: There is no difference in the clinical depression rates of women between the groups of caffeinated coffee consumption.
 
+HA; There is some difference in the clinical depression rates of women between the groups of caffeinated coffee consumption.
 
-####(c) Calculate the overall proportion of women who do and do not su↵er from depression.
+####(c) Calculate the overall proportion of women who do and do not suffer from depression.
 
 Answer:
 
+```{r}
+depression_yes <- round(2607 / 50739, digits = 2)
+depression_no <- round(48132 / 50739, digits = 2)
+```
 
+The proportion of women in this test who suffer from depression is `r depression_yes` and the proportion who do not suffer from depression is `r depression_no`.
 
 ####(d) Identify the expected count for the highlighted cell, and calculate the contribution of this cell to the test statistic, i.e. (Observed − Expected)2/Expected.
 
 Answer:
 
+```{r}
+row1_total <- 2607
+table_total <- 50739
+column2_total <- 6627
+expected_count <- (row1_total / table_total) * column2_total
+test_statistic <- (373 - expected_count)^2 / expected_count
+test_statistic
+```
 
 
 ####(e) The test statistic is #2 = 20.93. What is the p-value?
 
 Answer:
 
+First, we must determine the degrees of freedom:
 
+```{r}
+table_rows <- 2
+table_columns <- 5
+df_table <- (table_rows-1) * (table_columns-1)
+```
+
+Now, we can deterime the p-value of the chi-square quantile:
+
+```{r}
+p_value <- pchisq(q = 20.93, df = df_table, lower.tail = FALSE)
+
+lb <- 0
+ub <- 35
+z1 <- 20.93
+z2 <- 20.93
+pick_line1 <- z1
+pick_line2 <- z2
+ggplot(data.frame(x = c(lb, ub)), aes(x))+ stat_function(fun = dchisq, args = list(df=df_chi_square))  + stat_function(fun = dchisq, args = list(df=df_chi_square), xlim = c(z1, ub),geom = "area", alpha=0.5)+geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.1, label=sprintf("Chi-square = %s\n", pick_line1)), color="black", angle=90)+geom_vline(xintercept=pick_line2, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line2, y=0.1, label=sprintf("Chi-square = %s\n", pick_line2)), color="black", angle=90) + labs(x="Chi Square Value")
+```
+
+The p-value is `r format(round(p_value, digits = 6), nsmall = 6)`
 
 ####(f) What is the conclusion of the hypothesis test?
 
 Answer:
 
+The p-value is less than a significance level of $\alpha = 0.05$; therefore, we reject the null hypothesis that there is no difference in the clinical depression rates of women between the groups of caffeinated coffee consumption.
 
-
-####(g) One of the authors of this study was quoted on the NYTimes as saying it was “too early to recommend that women load up on extra co↵ee” based on just this study.64 Do you agree with this statement? Explain your reasoning.
+####(g) One of the authors of this study was quoted on the NYTimes as saying it was “too early to recommend that women load up on extra coffee” based on just this study. Do you agree with this statement? Explain your reasoning.
 
 Answer:
 
+Yes, a two-way table chi-square test only determines goodness of fit, in this case whether each group is represntative of the population.  Therefore, no further conclusions can be drawn from this analysis other than whether the data do or do not have the same distribution for each group as the general population.
