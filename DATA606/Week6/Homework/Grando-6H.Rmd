@@ -89,9 +89,7 @@ We must check the survey for the following elements:
 
 1. Independence: Given that this is an organized survey, and has supporting documentation provided in the footnotes, we can assume that the surveys were sufficiently performed in order to justify that the sample observations were independent.
 
-2. success-failure condition:
-
-The number of successes (affirmatives) are `r ns*p_hat` and failures (negatives) are `r ns*(1-p_hat)`.  The minimum number of successes and failures have been met.
+2. success-failure condition: The number of successes (affirmatives) are `r ns*p_hat` and failures (negatives) are `r ns*(1-p_hat)`.  The minimum number of successes and failures have been met.
 
 Since both of these conditions are met, we can assume the data follows an approximately normal distribution.
 
@@ -143,9 +141,9 @@ The confidence interval for the difference between the proportions of California
 
 ```{r}
 z_value <- 1.96
-se_CA <- phat_CA * (1 - phat_CA) / n_CA
-se_OR <- phat_OR * (1 - phat_OR) / n_OR
-se <- sqrt(se_CA + se_OR)
+se2_CA <- phat_CA * (1 - phat_CA) / n_CA
+se2_OR <- phat_OR * (1 - phat_OR) / n_OR
+se <- sqrt(se2_CA + se2_OR)
 p_hat <- phat_CA - phat_OR
 ME <- z_value * se
 p_hat - ME
@@ -184,20 +182,20 @@ The conditions for inference for a chi-square test is as follows:
 
 1. Independence: Each case that contributes a count to the table must be independent of all the other cases in the table.
 
-Assuming that the study has a way of tracking the deer separately, it can be assumed each count of deer contributes a count to the table that is independent of other cases.
+Since the number of beds/forage sites were counted and wouldn't be in two places at once, it can be assumed each counts in the table is independent of other cases.
 
 2. Sample size / distribution: Each particular scenario (i.e. cell count) must have at least 5 expected cases.
 
 ```{r}
-total_deer <- 426
+total_sites <- 426
 woods_area <- 0.048
 grassplot_area <- 0.147
 forest_area <- 0.396
 other_area <- 1 - woods_area - grassplot_area - forest_area
-woods_expected <- woods_area * total_deer
-grassplot_expected <- grassplot_area * total_deer
-forest_expected <- forest_area * total_deer
-other_expected <- other_area * total_deer
+(woods_expected <- woods_area * total_sites)
+(grassplot_expected <- grassplot_area * total_sites)
+(forest_expected <- forest_area * total_sites)
+(other_expected <- other_area * total_sites)
 ```
 
 
@@ -261,7 +259,7 @@ Answer:
 ```{r}
 row1_total <- 2607
 table_total <- 50739
-column2_total <- 6627
+column2_total <- 6617
 expected_count <- (row1_total / table_total) * column2_total
 test_statistic <- (373 - expected_count)^2 / expected_count
 test_statistic
@@ -277,7 +275,7 @@ First, we must determine the degrees of freedom:
 ```{r}
 table_rows <- 2
 table_columns <- 5
-df_table <- (table_rows-1) * (table_columns-1)
+(df_table <- (table_rows-1) * (table_columns-1))
 ```
 
 Now, we can deterime the p-value of the chi-square quantile:
