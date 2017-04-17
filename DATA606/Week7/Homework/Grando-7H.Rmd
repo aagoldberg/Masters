@@ -1,0 +1,22 @@
+---
+title: "Grando-7H"
+author: "John Grando"
+date: "April 17, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando 7 Homework
+
+```{r}
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Week7/Homework")
+} else {
+  setwd("~/Documents/Masters/DATA606/Week7/Homework")
+}
+require(ggplot2)
+```
