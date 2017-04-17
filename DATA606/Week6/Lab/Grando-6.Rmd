@@ -73,7 +73,7 @@ Yes, the number of surveys are less than 10% of the population and appear to be 
 
 2. we expected to see at least 10 successes and 10 failures in our sample, i.e. np 10 and n(1 p) 10. This is called the success-failure condition.
 
-Yes, the number of successes (atheist) are `r nrow(us12_atheist)` and failures (non-athiest) are `r nrow(us12)`.
+Yes, the number of successes (atheist) are `r nrow(us12_atheist)` and failures (non-athiest) are `r nrow(us12)-nrow(us12_atheist)`.
 
 ####Exercise 6 - Based on the R output, what is the margin of error for the estimate of the proportion of the proportion of atheists in US in 2012?
 
@@ -98,7 +98,7 @@ g12 <- subset(atheism, nationality == "Germany" & year == "2012")
 g12_atheist <- subset(atheism, nationality == "Germany" & year == "2012" & response=="atheist")
 ```
 
-As with the US sample, it appears we can assume the samples were independent.  Additionally, the number of successes (atheist) are `r nrow(g12_atheist)` and failures (non-athiest) are `r nrow(g12)`.
+As with the US sample, it appears we can assume the samples were independent.  Additionally, the number of successes (atheist) are `r nrow(g12_atheist)` and failures (non-athiest) are `r nrow(g12)-nrow(g12_atheist)`.
 
 The margin of error for german respondents is:
 
@@ -121,7 +121,7 @@ p12 <- subset(atheism, nationality == "Peru" & year == "2012")
 p12_atheist <- subset(atheism, nationality == "Peru" & year == "2012" & response=="atheist")
 ```
 
-As with the US sample, it appears we can assume the samples were independent for those respondents from Peru.  Additionally, the number of successes (atheist) are `r nrow(p12_atheist)` and failures (non-athiest) are `r nrow(p12)`.
+As with the US sample, it appears we can assume the samples were independent for those respondents from Peru.  Additionally, the number of successes (atheist) are `r nrow(p12_atheist)` and failures (non-athiest) are `r nrow(p12)-nrow(p12_atheist)`.
 
 The margin of error for respondents from Peru is:
 
@@ -228,14 +228,14 @@ au12 <- subset(atheism, nationality == "Australia" & year == "2012")
 au12_atheist <- subset(atheism, nationality == "Australia" & year == "2012" & response=="atheist")
 ```
 
-The number of successes (atheist) are `r nrow(au12_atheist)` and failures (non-athiest) are `r nrow(au12)` for the australian respondents.  This meets the minimum requirements to proceed.
+The number of successes (atheist) are `r nrow(au12_atheist)` and failures (non-athiest) are `r nrow(au12)-nrow(au12_atheist)` for the australian respondents.  This meets the minimum requirements to proceed.
 
 ```{r}
 ec12 <- subset(atheism, nationality == "Ecuador" & year == "2012")
 ec12_atheist <- subset(atheism, nationality == "Ecuador" & year == "2012" & response=="atheist")
 ```
 
-The number of successes (atheist) are `r nrow(ec12_atheist)` and failures (non-athiest) are `r nrow(ec12)` for the Ecuadorian respondents.  There are not enough successes to meet the minimum requirements (10 successes) so a margin of error estimate would not be appropriate for these results.
+The number of successes (atheist) are `r nrow(ec12_atheist)` and failures (non-athiest) are `r nrow(ec12)-nrow(ec12_atheist)` for the Ecuadorian respondents.  There are not enough successes to meet the minimum requirements (10 successes) so a margin of error estimate would not be appropriate for these results.
 
 ####Question 1 - Answer the following two questions using the inference function. As always, write out the hypotheses for any tests you conduct and outline the status of the conditions for inference.
 
@@ -260,7 +260,7 @@ sp12 <- subset(atheism, nationality == "Spain" & year == "2012")
 sp12_atheist <- subset(atheism, nationality == "Spain" & year == "2012" & response=="atheist")
 ```
 
-The number of successes (atheist) are `r nrow(sp05_atheist)` and failures (non-athiest) are `r nrow(sp05)` for the 2005 data.  The number of successes (atheist) are `r nrow(sp12_atheist)` and failures (non-athiest) are `r nrow(sp12)` for the 2012 data.  The minimum number of successes and failures have been met.
+The number of successes (atheist) are `r nrow(sp05_atheist)` and failures (non-athiest) are `r nrow(sp05)-nrow(sp05_atheist)` for the 2005 data.  The number of successes (atheist) are `r nrow(sp12_atheist)` and failures (non-athiest) are `r nrow(sp12)-nrow(sp12_atheist)` for the 2012 data.  The minimum number of successes and failures have been met.
 
 ```{r}
 inference(sp05$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
@@ -289,7 +289,7 @@ us12 <- subset(atheism, nationality == "United States" & year == "2012")
 us12_atheist <- subset(atheism, nationality == "United States" & year == "2012" & response=="atheist")
 ```
 
-The number of successes (atheist) are `r nrow(us05_atheist)` and failures (non-athiest) are `r nrow(us05)` for the 2005 data.  The number of successes (atheist) are `r nrow(us12_atheist)` and failures (non-athiest) are `r nrow(us12)` for the 2012 data.  The minimum number of successes and failures have been met.
+The number of successes (atheist) are `r nrow(us05_atheist)` and failures (non-athiest) are `r nrow(us05)-nrow(us05_atheist)` for the 2005 data.  The number of successes (atheist) are `r nrow(us12_atheist)` and failures (non-athiest) are `r nrow(us12)-nrow(us12_atheist)` for the 2012 data.  The minimum number of successes and failures have been met.
 
 ```{r}
 inference(us05$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
