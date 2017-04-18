@@ -47,7 +47,7 @@ summary(e1.lm)
 residuals <- resid(e1.lm)
 residuals <- data.frame(cbind(mlb11$at_bats, residuals))
 names(residuals) <- c("at_bats", "residuals")
-ggplot(residuals, aes(y=residuals, x=at_bats))+geom_point()
+ggplot(residuals, aes(y=residuals, x=at_bats))+geom_point()+geom_hline(yintercept = 0)
 ```
 
 
@@ -117,6 +117,7 @@ Since the intercept is `r round(m1_int, digits = 2)` and the slopw is `r round(m
 
 Answer:
 
+
 There does not appear to be a pattern in the residuals plot.  This indicates that a linear regression may be the best predictor for these data points since there does not appear to be a obvious non-linear relationship.
 
 ####Exercise 7 - Based on the histogram and the normal probability plot, does the nearly normal residuals condition appear to be met?
@@ -152,6 +153,11 @@ ggplot(mlb11, aes(y=runs, x=bat_avg)) + geom_point() + geom_smooth(method = lm, 
 bat.cor <- cor(mlb11$bat_avg, mlb11$runs)^2
 lm.bat <- lm(runs ~ bat_avg, data = mlb11)
 summary(lm.bat)
+
+residuals <- resid(lm.bat)
+residuals <- data.frame(cbind(mlb11$bat_avg, residuals))
+names(residuals) <- c("bat_avg", "residuals")
+ggplot(residuals, aes(y=residuals, x=bat_avg))+geom_point()+geom_hline(yintercept = 0)
 ```
 
 Yes, given the scatter plot and initial correlation coeefficient of `r round(bat.cor, digits = 2)`, it appears there is a linear relationship between batting average and runs.
@@ -167,71 +173,76 @@ This relationship has a stronger linear correlation than the relationship betwee
 Answer:
 
 ```{r}
-#at_bats
-m1 <- lm(runs ~ at_bats, data = mlb11)
-summary(m1)
-ggplot(mlb11, aes(y=runs, x=at_bats)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
-hist(m1$residuals)
-qqnorm(m1$residuals)
-qqline(m1$residuals)
+# #at_bats
+# m1 <- lm(runs ~ at_bats, data = mlb11)
+# cor(mlb11$at_bats, mlb11$runs)^2
+# summary(m1)
+# ggplot(mlb11, aes(y=runs, x=at_bats)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+# hist(m1$residuals)
+# qqnorm(m1$residuals)
+# qqline(m1$residuals)
+# 
+# #hits
+# m2 <- lm(runs ~ hits, data = mlb11)
+# cor(mlb11$hits, mlb11$runs)^2
+# summary(m2)
+# ggplot(mlb11, aes(y=runs, x=hits)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+# hist(m2$residuals)
+# qqnorm(m2$residuals)
+# qqline(m2$residuals)
+# 
+# #homeruns
+# m3 <- lm(runs ~ homeruns, data = mlb11)
+# cor(mlb11$homeruns, mlb11$runs)^2
+# summary(m3)
+# ggplot(mlb11, aes(y=runs, x=homeruns)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+# hist(m3$residuals)
+# qqnorm(m3$residuals)
+# qqline(m3$residuals)
 
-#hits
-m2 <- lm(runs ~ hits, data = mlb11)
-summary(m2)
-ggplot(mlb11, aes(y=runs, x=hits)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
-hist(m2$residuals)
-qqnorm(m2$residuals)
-qqline(m2$residuals)
-
-#homeruns
-m3 <- lm(runs ~ homeruns, data = mlb11)
-summary(m3)
-ggplot(mlb11, aes(y=runs, x=homeruns)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
-hist(m3$residuals)
-qqnorm(m3$residuals)
-qqline(m3$residuals)
-
-#homeruns
+#batting average
 m4 <- lm(runs ~ bat_avg, data = mlb11)
+cor(mlb11$bat_avg, mlb11$runs)^2
 summary(m4)
 ggplot(mlb11, aes(y=runs, x=bat_avg)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
 hist(m4$residuals)
 qqnorm(m4$residuals)
 qqline(m4$residuals)
 
-#strikeouts
-m5 <- lm(runs ~ strikeouts, data = mlb11)
-summary(m5)
-ggplot(mlb11, aes(y=runs, x=strikeouts)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
-hist(m5$residuals)
-qqnorm(m5$residuals)
-qqline(m5$residuals)
+residuals <- resid(m4)
+residuals <- data.frame(cbind(mlb11$bat_avg, residuals))
+names(residuals) <- c("bat_avg", "residuals")
+ggplot(residuals, aes(y=residuals, x=bat_avg))+geom_point()+geom_hline(yintercept = 0)
 
-#stolen bases
-m6 <- lm(runs ~ stolen_bases, data = mlb11)
-summary(m6)
-ggplot(mlb11, aes(y=runs, x=stolen_bases)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
-hist(m6$residuals)
-qqnorm(m6$residuals)
-qqline(m6$residuals)
-
-#stolen bases
-m7 <- lm(runs ~ stolen_bases, data = mlb11)
-summary(m7)
-ggplot(mlb11, aes(y=runs, x=stolen_bases)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
-hist(m7$residuals)
-qqnorm(m7$residuals)
-qqline(m7$residuals)
-
-#wins
-m8 <- lm(runs ~ wins, data = mlb11)
-summary(m8)
-ggplot(mlb11, aes(y=runs, x=wins)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
-hist(m8$residuals)
-qqnorm(m8$residuals)
-qqline(m8$residuals)
+# #strikeouts
+# m5 <- lm(runs ~ strikeouts, data = mlb11)
+# cor(mlb11$strikeouts, mlb11$runs)^2
+# summary(m5)
+# ggplot(mlb11, aes(y=runs, x=strikeouts)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+# hist(m5$residuals)
+# qqnorm(m5$residuals)
+# qqline(m5$residuals)
+# 
+# #stolen bases
+# m6 <- lm(runs ~ stolen_bases, data = mlb11)
+# cor(mlb11$stolen_bases, mlb11$runs)^2
+# summary(m6)
+# ggplot(mlb11, aes(y=runs, x=stolen_bases)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+# hist(m6$residuals)
+# qqnorm(m6$residuals)
+# qqline(m6$residuals)
+# 
+# #wins
+# m7 <- lm(runs ~ wins, data = mlb11)
+# cor(mlb11$wins, mlb11$runs)^2
+# summary(m7)
+# ggplot(mlb11, aes(y=runs, x=wins)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+# hist(m7$residuals)
+# qqnorm(m7$residuals)
+# qqline(m7$residuals)
 ```
 
+It appears that batting average predicts runs using linear regression models.  The summary of this model is displayed above and all other analyses have been commented out, as requested.
 
 ####Question 4 - Now examine the three newer variables. These are the statistics used by the author of Moneyball to predict a teams success. In general, are they more or less effective at predicting runs that the old variables? Explain using appropriate graphical and numerical evidence. Of all ten variables we’ve analyzed, which seems to be the best predictor of runs? Using the limited (or not so limited) information you know about these baseball statistics, does your result make sense?
 
@@ -239,32 +250,52 @@ Answer:
 
 ```{r}
 #on base
-m9 <- lm(runs ~ new_onbase, data = mlb11)
-summary(m9)
+m8 <- lm(runs ~ new_onbase, data = mlb11)
+cor(mlb11$new_onbase, mlb11$runs)^2
+summary(m8)
 ggplot(mlb11, aes(y=runs, x=new_onbase)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m8$residuals)
+qqnorm(m8$residuals)
+qqline(m8$residuals)
+
+residuals <- resid(m8)
+residuals <- data.frame(cbind(mlb11$new_onbase, residuals))
+names(residuals) <- c("new_onbase", "residuals")
+ggplot(residuals, aes(y=residuals, x=new_onbase))+geom_point()+geom_hline(yintercept = 0)
+
+#slug
+m9 <- lm(runs ~ new_slug, data = mlb11)
+cor(mlb11$new_slug, mlb11$runs)^2
+summary(m9)
+ggplot(mlb11, aes(y=runs, x=new_slug)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
 hist(m9$residuals)
 qqnorm(m9$residuals)
 qqline(m9$residuals)
 
-#slug
-m10 <- lm(runs ~ new_slug, data = mlb11)
+residuals <- resid(m9)
+residuals <- data.frame(cbind(mlb11$new_onbase, residuals))
+names(residuals) <- c("new_slug", "residuals")
+ggplot(residuals, aes(y=residuals, x=new_slug))+geom_point()+geom_hline(yintercept = 0)
+
+#obs
+m10 <- lm(runs ~ new_obs, data = mlb11)
+cor(mlb11$new_obs, mlb11$runs)^2
 summary(m10)
-ggplot(mlb11, aes(y=runs, x=new_slug)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+ggplot(mlb11, aes(y=runs, x=new_obs)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
 hist(m10$residuals)
 qqnorm(m10$residuals)
 qqline(m10$residuals)
 
-#obs
-m11 <- lm(runs ~ new_obs, data = mlb11)
-summary(m11)
-ggplot(mlb11, aes(y=runs, x=new_obs)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
-hist(m11$residuals)
-qqnorm(m11$residuals)
-qqline(m11$residuals)
+residuals <- resid(m10)
+residuals <- data.frame(cbind(mlb11$new_obs, residuals))
+names(residuals) <- c("new_obs", "residuals")
+ggplot(residuals, aes(y=residuals, x=new_obs))+geom_point()+geom_hline(yintercept = 0)
 ```
 
+All three new statistics are indicated to be better predictors (using linear regression) than the best old variable.  As can be seen from the summary above, all new variable r-sqaured values are above the best old variable r-squared value and the residual plots show that the regession appears to be appropriate.  The best predictor for runs appears to be obs (on-base plus slugging).  This makes sense since it is a combination of on-base percentage and slugging, both of which have been shown to have high correlations to runs on their own.  While it is not guaranteed that combining the two would have a better correlation, it seems to make sense and the results show that is the case in this instance.
 
 ####Question 5 - Check the model diagnostics for the regression model with the variable you decided was the best predictor for runs.
 
 Answer:
 
+Model diagnostics have been provided as a response to question 4.

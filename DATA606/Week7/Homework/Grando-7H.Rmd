@@ -28,25 +28,25 @@ require(ggplot2)
 
 Answer:
 
-
+There is a weak to moderate positive linear relationship between calories and carbohydrates.
 
 ####(b) In this scenario, what are the explanatory and response variables?
 
 Answer:
 
-
+The explanatory variable is the calorie count and the response variable is the amount of carbohydrates
 
 ####(c) Why might we want to fit a regression line to these data?
 
 Answer:
 
-
+We can predict the number of carbohydrates in an item based on the number of calories it is indicated to have.  If we were on a diet and wanted to limit not just calorie intake, but also carbohydrate intake, we could use this prediction to make a resonable estimate on the number of carbohydrates in a given item.
 
 ####(d) Do these data meet the conditions required for fitting a least squares line?
 
 Answer:
 
-
+The variability of the data around the line increases with larger values of calories, which indicates that a linear regression model insufficient to apply to the data.
 
 ####7.26 Body measurements, Part III. Exercise 7.15 introduces data on shoulder girth and height of a group of individuals. The mean shoulder girth is 107.20 cm with a standard deviation of 10.37 cm. The mean height is 171.14 cm with a standard deviation of 9.41 cm. The correlation between height and shoulder girth is 0.67.
 
@@ -118,7 +118,7 @@ Answer:
 
 
 
-####7.40 Rate my professor. Many college courses conclude by giving students the opportunity to evaluate the course and the instructor anonymously. However, the use of these student evaluations as an indicator of course quality and teaching e↵ectiveness is often criticized because these measures may reflect the influence of non-teaching related characteristics, such as the physical appearance of the instructor. Researchers at University of Texas, Austin collected data on teaching evaluation score (higher score means better) and standardized beauty score (a score of 0 means average, negative score means below average, and a positive score means above average) for a sample of 463 professors. The scatterplot below shows the relationship between these variables, and also provided is a regression output for predicting teaching evaluation score from beauty score.
+####7.40 Rate my professor. Many college courses conclude by giving students the opportunity to evaluate the course and the instructor anonymously. However, the use of these student evaluations as an indicator of course quality and teaching effectiveness is often criticized because these measures may reflect the influence of non-teaching related characteristics, such as the physical appearance of the instructor. Researchers at University of Texas, Austin collected data on teaching evaluation score (higher score means better) and standardized beauty score (a score of 0 means average, negative score means below average, and a positive score means above average) for a sample of 463 professors. The scatterplot below shows the relationship between these variables, and also provided is a regression output for predicting teaching evaluation score from beauty score.
 
 ####(a) Given that the average standardized beauty score is -0.0883 and average teaching evaluation score is 3.9983, calculate the slope. Alternatively, the slope may be computed using just the information provided in the model summary table.
 
