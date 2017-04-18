@@ -167,7 +167,69 @@ This relationship has a stronger linear correlation than the relationship betwee
 Answer:
 
 ```{r}
+#at_bats
+m1 <- lm(runs ~ at_bats, data = mlb11)
+summary(m1)
+ggplot(mlb11, aes(y=runs, x=at_bats)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m1$residuals)
+qqnorm(m1$residuals)
+qqline(m1$residuals)
 
+#hits
+m2 <- lm(runs ~ hits, data = mlb11)
+summary(m2)
+ggplot(mlb11, aes(y=runs, x=hits)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m2$residuals)
+qqnorm(m2$residuals)
+qqline(m2$residuals)
+
+#homeruns
+m3 <- lm(runs ~ homeruns, data = mlb11)
+summary(m3)
+ggplot(mlb11, aes(y=runs, x=homeruns)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m3$residuals)
+qqnorm(m3$residuals)
+qqline(m3$residuals)
+
+#homeruns
+m4 <- lm(runs ~ bat_avg, data = mlb11)
+summary(m4)
+ggplot(mlb11, aes(y=runs, x=bat_avg)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m4$residuals)
+qqnorm(m4$residuals)
+qqline(m4$residuals)
+
+#strikeouts
+m5 <- lm(runs ~ strikeouts, data = mlb11)
+summary(m5)
+ggplot(mlb11, aes(y=runs, x=strikeouts)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m5$residuals)
+qqnorm(m5$residuals)
+qqline(m5$residuals)
+
+#stolen bases
+m6 <- lm(runs ~ stolen_bases, data = mlb11)
+summary(m6)
+ggplot(mlb11, aes(y=runs, x=stolen_bases)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m6$residuals)
+qqnorm(m6$residuals)
+qqline(m6$residuals)
+
+#stolen bases
+m7 <- lm(runs ~ stolen_bases, data = mlb11)
+summary(m7)
+ggplot(mlb11, aes(y=runs, x=stolen_bases)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m7$residuals)
+qqnorm(m7$residuals)
+qqline(m7$residuals)
+
+#wins
+m8 <- lm(runs ~ wins, data = mlb11)
+summary(m8)
+ggplot(mlb11, aes(y=runs, x=wins)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m8$residuals)
+qqnorm(m8$residuals)
+qqline(m8$residuals)
 ```
 
 
@@ -175,6 +237,31 @@ Answer:
 
 Answer:
 
+```{r}
+#on base
+m9 <- lm(runs ~ new_onbase, data = mlb11)
+summary(m9)
+ggplot(mlb11, aes(y=runs, x=new_onbase)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m9$residuals)
+qqnorm(m9$residuals)
+qqline(m9$residuals)
+
+#slug
+m10 <- lm(runs ~ new_slug, data = mlb11)
+summary(m10)
+ggplot(mlb11, aes(y=runs, x=new_slug)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m10$residuals)
+qqnorm(m10$residuals)
+qqline(m10$residuals)
+
+#obs
+m11 <- lm(runs ~ new_obs, data = mlb11)
+summary(m11)
+ggplot(mlb11, aes(y=runs, x=new_obs)) + geom_point() + geom_smooth(method = lm, fullrange = TRUE)
+hist(m11$residuals)
+qqnorm(m11$residuals)
+qqline(m11$residuals)
+```
 
 
 ####Question 5 - Check the model diagnostics for the regression model with the variable you decided was the best predictor for runs.
