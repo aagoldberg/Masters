@@ -1,0 +1,100 @@
+---
+title: "Grando-7"
+author: "John Grando"
+date: "April 17, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Grando 7 Lab
+
+```{r}
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/Week7/Lab/Lab7")
+} else {
+  setwd("~/Documents/Masters/DATA606/Week7/Lab/Lab7")
+}
+load("more/mlb11.RData")
+require(ggplot2)
+```
+
+####Exercise 1 - What type of plot would you use to display the relationship between runs and one of the other numerical variables? Plot this relationship using the variable at_bats as the predictor. Does the relationship look linear? If you knew a team’s at_bats, would you be comfortable using a linear model to predict the number of runs?
+
+Answer:
+
+
+
+####Exercise 2 -Looking at your plot from the previous exercise, describe the relationship between these two variables. Make sure to discuss the form, direction, and strength of the relationship as well as any unusual observations.
+
+Answer:
+
+
+
+####Exercise 3 - Using plot_ss, choose a line that does a good job of minimizing the sum of squares. Run the function several times. What was the smallest sum of squares that you got? How does it compare to your neighbors?
+
+Answer:
+
+
+
+####Exercise 4 - Fit a new model that uses homeruns to predict runs. Using the estimates from the R output, write the equation of the regression line. What does the slope tell us in the context of the relationship between success of a team and its home runs?
+
+Answer:
+
+
+
+####Exercise 5 - If a team manager saw the least squares regression line and not the actual data, how many runs would he or she predict for a team with 5,578 at-bats? Is this an overestimate or an underestimate, and by how much? In other words, what is the residual for this prediction?
+
+Answer:
+
+
+
+####Exercise 6 - Is there any apparent pattern in the residuals plot? What does this indicate about the linearity of the relationship between runs and at-bats?
+
+Answer:
+
+
+
+####Exercise 7 - Based on the histogram and the normal probability plot, does the nearly normal residuals condition appear to be met?
+
+Answer:
+
+
+
+####Exercise 8 - Based on the plot in (1), does the constant variability condition appear to be met?
+
+Answer:
+
+
+
+####Question 1 - Choose another traditional variable from mlb11 that you think might be a good predictor of runs. Produce a scatterplot of the two variables and fit a linear model. At a glance, does there seem to be a linear relationship?
+
+Answer:
+
+
+
+####Question 2 - How does this relationship compare to the relationship between runs and at_bats? Use the R22 values from the two model summaries to compare. Does your variable seem to predict runs better than at_bats? How can you tell?
+
+Answer:
+
+
+
+####Question 3 - Now that you can summarize the linear relationship between two variables, investigate the relationships between runs and each of the other five traditional variables. Which variable best predicts runs? Support your conclusion using the graphical and numerical methods we’ve discussed (for the sake of conciseness, only include output for the best variable, not all five).
+
+Answer:
+
+
+
+####Question 4 - Now examine the three newer variables. These are the statistics used by the author of Moneyball to predict a teams success. In general, are they more or less effective at predicting runs that the old variables? Explain using appropriate graphical and numerical evidence. Of all ten variables we’ve analyzed, which seems to be the best predictor of runs? Using the limited (or not so limited) information you know about these baseball statistics, does your result make sense?
+
+Answer:
+
+
+
+####Question 5 - Check the model diagnostics for the regression model with the variable you decided was the best predictor for runs.
+
+Answer:
+
