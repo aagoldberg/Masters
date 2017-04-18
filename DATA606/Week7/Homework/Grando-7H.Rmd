@@ -54,37 +54,75 @@ The variability of the data around the line increases with larger values of calo
 
 Answer:
 
+First, calculate the slope:
 
+```{r}
+sx <- 10.37
+sy <- 9.41
+r <- 0.67
+(b1 <- 0.67 * sy / sx)
+```
+
+Next, the least squares regression line passes through $\overline { y } =\quad { b }_{ O }\quad +\quad { b }_{ 1 }\quad *\quad \overline { x }$.  Therefore, ${ b }_{ O }$ is equal to ${ b }_{ O }=\quad \overline { y } \quad -\quad { b }_{ 1 }\quad *\quad \overline { x } $
+
+```{r}
+y_bar <- 171.14
+x_bar <- 107.2
+(b0 <- y_bar - b1 * x_bar)
+```
+
+Therefore, the linear regression line is represented with this equation:
+
+$$height\quad =\quad 105.97\quad +\quad 0.67\quad *\quad shoulder\quad girth$$
 
 ####(b) Interpret the slope and the intercept in this context.
 
 Answer:
 
+The slope (b1): For each additional centimeter in shoulder girth, the model predicts an additional 0.67 cm in height.
 
+The intercept (b0): When the shoulder girth measured is zero, the expected height is 105.97.  However, it is not expected than an actual measurement of zero would be correct.
 
 ####(c) Calculate R2 of the regression line for predicting height from shoulder girth, and interpret it in the context of the application.
 
 Answer:
 
+The r-squared value is the square of correlation, so r-squared is:
 
+```{r}
+0.67^2
+```
+
+About 44.9% of the variability in height is accounted for by the model, i.e. explained by the shoulder girth.
 
 ####(d) A randomly selected student from your class has a shoulder girth of 100 cm. Predict the height of this student using the model.
 
 Answer:
 
+The expected height is:
+
+```{r}
+b0 + b1 * 100
+```
 
 
 ####(e) The student from part (d) is 160 cm tall. Calculate the residual, and explain what this residual means.
 
 Answer:
 
+A residual is the expected value subtracted from the observed, which in this case is:
 
+```{r}
+160 - (b0 + b1 * 100)
+```
+
+A negative value means that the model overestimates the height of this person.
 
 ####(f) A one year old has a shoulder girth of 56 cm. Would it be appropriate to use this linear model to predict the height of this child?
 
 Answer:
 
-
+No, the data appear to be for adults since the mean shoulder girth is `r round(x_bar, digits = 2)` and the standard deviation is `r round(sx, digits = 2)`.  A measurement of 56 cm is `r round((x_bar - 56) / sx)` standard deviations from the mean, which appears to be outside of the data set and would be considered an extrapolation.
 
 ####7.30 Cats, Part I. The following regression output is for predicting the heart weight (in g) of cats from their body weight (in kg). The coefficients are estimated using a dataset of 144 domestic cats.
 
