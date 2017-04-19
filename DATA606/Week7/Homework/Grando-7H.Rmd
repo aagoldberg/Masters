@@ -130,30 +130,35 @@ No, the data appear to be for adults since the mean shoulder girth is `r round(x
 
 Answer:
 
-
+$$heart\quad weight\quad (g)\quad =\quad -0.357\quad +\quad 4.034\quad *\quad body\quad weight\quad (kg)$$
 
 ####(b) Interpret the intercept.
 
 Answer:
 
-
+The expected heart weight for a body weight of zero kilograms is -0.357 grams.
 
 ####(c) Interpret the slope.
 
 Answer:
 
-
+For each additional increase of one kilogram in body weight, we expect an increase in heart weight of 4.034 grams.
 
 ####(d) Interpret R2.
 
 Answer:
 
-
+Body weight (kg) explains 64.66% of variability of in the heart weight (g)
 
 ####(e) Calculate the correlation coefficient.
 
 Answer:
 
+The correlation coefficient is the square root of the r-squared value; therefore, the correlation coefficient is:
+
+```{r}
+sqrt(0.6466)
+```
 
 
 ####7.40 Rate my professor. Many college courses conclude by giving students the opportunity to evaluate the course and the instructor anonymously. However, the use of these student evaluations as an indicator of course quality and teaching effectiveness is often criticized because these measures may reflect the influence of non-teaching related characteristics, such as the physical appearance of the instructor. Researchers at University of Texas, Austin collected data on teaching evaluation score (higher score means better) and standardized beauty score (a score of 0 means average, negative score means below average, and a positive score means above average) for a sample of 463 professors. The scatterplot below shows the relationship between these variables, and also provided is a regression output for predicting teaching evaluation score from beauty score.
@@ -162,15 +167,46 @@ Answer:
 
 Answer:
 
+Using the information given:
 
+$$\overline { y } =\quad { b }_{ O }\quad +\quad { b }_{ 1 }\quad *\quad \overline { x }$$
+
+$$\frac { \overline { y } -\quad { b }_{ O } }{ \overline { x }  } \quad =\quad { b }_{ 1 }$$
+
+```{r}
+y_bar <- 3.9983
+x_bar <- -0.0883
+b0 <- 4.010
+((y_bar - b0) / x_bar)
+```
+
+Using the table provided:
+
+```{r}
+t_value <- 4.13
+se <- 0.0322
+t_value * se
+```
 
 ####(b) Do these data provide convincing evidence that the slope of the relationship between teaching evaluation and beauty is positive? Explain your reasoning.
 
 Answer:
 
+Yes, the probability of the slope shows that the p-value is approximately zero, which means that we would expect to see 0% of seeing another point estimate as extreme as the one we saw, given that the null hypothesis (slope = 0 ) is true
 
 
 ####(c) List the conditions required for linear regression and check if each one is satisfied for this model based on the following diagnostic plots.
 
 Answer:
 
+When fitting a least squares line, we generally require:
+
+1. Linearity: Given the p-values indicated, and that the graph of the actual data points has not been provided, we can assume the data appear to be linear.
+
+2. Nearly normal residuals: The data appear to have a left skew based on the histogram and normal probability plot, which is a cause for concern when fitting the data to a linear model.
+
+3. Constant variability: The residual plots appear to show that the data has the same amount of variability regardless of the x value.
+
+4. Independent observations: It appears there is a time-series plot provided as one of the residual graphs.  There does not appear to be a trend in this data.
+
+The data provided appear to meet all the conditions except the requirement for nearly normal residuals; therefore, we should investigate this issue or procede with caution.

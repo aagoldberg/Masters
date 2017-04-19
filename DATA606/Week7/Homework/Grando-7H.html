@@ -216,22 +216,29 @@ x_bar &lt;- 107.2
 <div id="a-write-out-the-linear-model." class="section level4">
 <h4>(a) Write out the linear model.</h4>
 <p>Answer:</p>
+<p><span class="math display">\[heart\quad weight\quad (g)\quad =\quad -0.357\quad +\quad 4.034\quad *\quad body\quad weight\quad (kg)\]</span></p>
 </div>
 <div id="b-interpret-the-intercept." class="section level4">
 <h4>(b) Interpret the intercept.</h4>
 <p>Answer:</p>
+<p>The expected heart weight for a body weight of zero kilograms is -0.357 grams.</p>
 </div>
 <div id="c-interpret-the-slope." class="section level4">
 <h4>(c) Interpret the slope.</h4>
 <p>Answer:</p>
+<p>For each additional increase of one kilogram in body weight, we expect an increase in heart weight of 4.034 grams.</p>
 </div>
 <div id="d-interpret-r2." class="section level4">
 <h4>(d) Interpret R2.</h4>
 <p>Answer:</p>
+<p>Body weight (kg) explains 64.66% of variability of in the heart weight (g)</p>
 </div>
 <div id="e-calculate-the-correlation-coefficient." class="section level4">
 <h4>(e) Calculate the correlation coefficient.</h4>
 <p>Answer:</p>
+<p>The correlation coefficient is the square root of the r-squared value; therefore, the correlation coefficient is:</p>
+<pre class="r"><code>sqrt(0.6466)</code></pre>
+<pre><code>## [1] 0.8041144</code></pre>
 </div>
 <div id="rate-my-professor.-many-college-courses-conclude-by-giving-students-the-opportunity-to-evaluate-the-course-and-the-instructor-anonymously.-however-the-use-of-these-student-evaluations-as-an-indicator-of-course-quality-and-teaching-effectiveness-is-often-criticized-because-these-measures-may-reflect-the-influence-of-non-teaching-related-characteristics-such-as-the-physical-appearance-of-the-instructor.-researchers-at-university-of-texas-austin-collected-data-on-teaching-evaluation-score-higher-score-means-better-and-standardized-beauty-score-a-score-of-0-means-average-negative-score-means-below-average-and-a-positive-score-means-above-average-for-a-sample-of-463-professors.-the-scatterplot-below-shows-the-relationship-between-these-variables-and-also-provided-is-a-regression-output-for-predicting-teaching-evaluation-score-from-beauty-score." class="section level4">
 <h4>7.40 Rate my professor. Many college courses conclude by giving students the opportunity to evaluate the course and the instructor anonymously. However, the use of these student evaluations as an indicator of course quality and teaching effectiveness is often criticized because these measures may reflect the influence of non-teaching related characteristics, such as the physical appearance of the instructor. Researchers at University of Texas, Austin collected data on teaching evaluation score (higher score means better) and standardized beauty score (a score of 0 means average, negative score means below average, and a positive score means above average) for a sample of 463 professors. The scatterplot below shows the relationship between these variables, and also provided is a regression output for predicting teaching evaluation score from beauty score.</h4>
@@ -239,14 +246,36 @@ x_bar &lt;- 107.2
 <div id="a-given-that-the-average-standardized-beauty-score-is--0.0883-and-average-teaching-evaluation-score-is-3.9983-calculate-the-slope.-alternatively-the-slope-may-be-computed-using-just-the-information-provided-in-the-model-summary-table." class="section level4">
 <h4>(a) Given that the average standardized beauty score is -0.0883 and average teaching evaluation score is 3.9983, calculate the slope. Alternatively, the slope may be computed using just the information provided in the model summary table.</h4>
 <p>Answer:</p>
+<p>Using the information given:</p>
+<p><span class="math display">\[\overline { y } =\quad { b }_{ O }\quad +\quad { b }_{ 1 }\quad *\quad \overline { x }\]</span></p>
+<p><span class="math display">\[\frac { \overline { y } -\quad { b }_{ O } }{ \overline { x }  } \quad =\quad { b }_{ 1 }\]</span></p>
+<pre class="r"><code>y_bar &lt;- 3.9983
+x_bar &lt;- -0.0883
+b0 &lt;- 4.01
+((y_bar - b0)/x_bar)</code></pre>
+<pre><code>## [1] 0.1325028</code></pre>
+<p>Using the table provided:</p>
+<pre class="r"><code>t_value &lt;- 4.13
+se &lt;- 0.0322
+t_value * se</code></pre>
+<pre><code>## [1] 0.132986</code></pre>
 </div>
 <div id="b-do-these-data-provide-convincing-evidence-that-the-slope-of-the-relationship-between-teaching-evaluation-and-beauty-is-positive-explain-your-reasoning." class="section level4">
 <h4>(b) Do these data provide convincing evidence that the slope of the relationship between teaching evaluation and beauty is positive? Explain your reasoning.</h4>
 <p>Answer:</p>
+<p>Yes, the probability of the slope shows that the p-value is approximately zero, which means that we would expect to see 0% of seeing another point estimate as extreme as the one we saw, given that the null hypothesis (slope = 0 ) is true</p>
 </div>
 <div id="c-list-the-conditions-required-for-linear-regression-and-check-if-each-one-is-satisfied-for-this-model-based-on-the-following-diagnostic-plots." class="section level4">
 <h4>(c) List the conditions required for linear regression and check if each one is satisfied for this model based on the following diagnostic plots.</h4>
 <p>Answer:</p>
+<p>When fitting a least squares line, we generally require:</p>
+<ol style="list-style-type: decimal">
+<li><p>Linearity: Given the p-values indicated, and that the graph of the actual data points has not been provided, we can assume the data appear to be linear.</p></li>
+<li><p>Nearly normal residuals: The data appear to have a left skew based on the histogram and normal probability plot, which is a cause for concern when fitting the data to a linear model.</p></li>
+<li><p>Constant variability: The residual plots appear to show that the data has the same amount of variability regardless of the x value.</p></li>
+<li><p>Independent observations: It appears there is a time-series plot provided as one of the residual graphs. There does not appear to be a trend in this data.</p></li>
+</ol>
+<p>The data provided appear to meet all the conditions except the requirement for nearly normal residuals; therefore, we should investigate this issue or procede with caution.</p>
 </div>
 </div>
 
