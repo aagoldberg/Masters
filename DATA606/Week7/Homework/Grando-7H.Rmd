@@ -63,7 +63,7 @@ r <- 0.67
 (b1 <- 0.67 * sy / sx)
 ```
 
-Next, the least squares regression line passes through $\overline { y } =\quad { b }_{ O }\quad +\quad { b }_{ 1 }\quad *\quad \overline { x }$.  Therefore, ${ b }_{ O }$ is equal to ${ b }_{ O }=\quad \overline { y } \quad -\quad { b }_{ 1 }\quad *\quad \overline { x } $
+Next, the least squares regression line passes through $\overline { y } =\quad { b }_{ O }\quad +\quad { b }_{ 1 }\quad *\quad \overline { x }$.  Therefore, ${ b }_{ O }=\quad \overline { y } \quad -\quad { b }_{ 1 }\quad *\quad \overline { x }$
 
 ```{r}
 y_bar <- 171.14
@@ -192,7 +192,15 @@ t_value * se
 
 Answer:
 
-Yes, the probability of the slope shows that the p-value is approximately zero, which means that we would expect to see 0% of seeing another point estimate as extreme as the one we saw, given that the null hypothesis (slope = 0 ) is true
+Yes, the probability of the slope shows that the p-value is approximately zero, which means that we would expect to see 0% of seeing another point estimate as extreme as the one we saw, given that the null hypothesis (slope = 0 ) is true.  Also, we can calculate the 95% confidence interval for the slope which does not contain negative numbers (or zero) in the interval, confirming there is convincing evidence that the slope is positive:
+
+```{r}
+t_95 <- qt(p = 0.975, df = (463 - 1))
+slope <- t_value * se
+slope  - t_95 * se
+slope + t_95 * se
+```
+
 
 
 ####(c) List the conditions required for linear regression and check if each one is satisfied for this model based on the following diagnostic plots.

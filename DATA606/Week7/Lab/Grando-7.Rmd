@@ -111,7 +111,7 @@ m1_predict <- m1_int + 5578 * m1_slope
 m1_data <- mlb11[which(mlb11$at_bats==5579),"runs"]
 ```
 
-Since the intercept is `r round(m1_int, digits = 2)` and the slopw is `r round(m1_slope, digits = 2)`, the linear regression line would predict `r round(m1_predict, digits = 2)`.  The closest data point to 5,578 at bats is 5579 and returns `r m1_data`.  Therefore the prediction is an overstimate by `r round(m1_predict - m1_data, digits = 2)`.
+Since the intercept is `r round(m1_int, digits = 2)` and the slopw is `r round(m1_slope, digits = 2)`, the linear regression line would predict `r round(m1_predict, digits = 2)` runs from 5.578 at bats.  The closest data point to 5,578 at bats is 5579 and returns `r m1_data`.  Therefore the prediction is an overstimate by `r round(m1_predict - m1_data, digits = 2)`.
 
 ####Exercise 6 - Is there any apparent pattern in the residuals plot? What does this indicate about the linearity of the relationship between runs and at-bats?
 
@@ -134,7 +134,7 @@ qqnorm(m1$residuals)
 qqline(m1$residuals)
 ```
 
-yes, the histogram appears to have a normal shape and the normal probability plot does not appear to have any typical signs of non-normal distributions (e.g. right skew, left skew, etc.)
+yes, the histogram appears to have a normal shape.  However, it appears that the normal probability plot shows that the data may have short tails which means that the data could be narrower than the shape of a normal distribution.
 
 ####Exercise 8 - Based on the plot in (1), does the constant variability condition appear to be met?
 
