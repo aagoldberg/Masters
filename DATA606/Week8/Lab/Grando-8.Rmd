@@ -26,37 +26,79 @@ require(ggplot2)
 
 Answer:
 
+This is an observational study.  No, since this is an observational study it is only generally sufficient to show associations between variables and should not be used to draw causal conclusions.  The appropriate way to rephrase the question would be to ask: Is there a correlation between the instructor's beauty and evaluation scores?
 
 
 ####Exercise 2 - Describe the distribution of score. Is the distribution skewed? What does that tell you about how students rate courses? Is this what you expected to see? Why, or why not?
 
 Answer:
 
+```{r}
+ggplot(evals, aes(x=score))+geom_histogram(binwidth = 0.125, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="black",args=list(mean=mean(area_df$data),sd(area_df$data)))+labs(x="Score")
+qqnorm(evals$score)
+qqline(evals$score)
+```
 
+The distribution has a left skew.  Additionally, we can see that the residuals have a steped nature which show that there are relatively few possible unique values that were recorded.  This shows that students will typically give a high score to an average class since the median is much closer to the maximum value than the minimum.  It leads me to assume that if a student felt neutral towards a teacher's performance, they generally give them a good score, possibly giving the professor the benefit of the doubt about their skills.  I did expect to see something similar to this.  In my experience, I find that people generally will lean towards being aggreeable in these type of surveys since it doesn't require an argument and at least, in their minds, they would not have to strongly defend a higher score rather than a lower.
 
 ####Exercise 3 - Excluding score, select two other variables and describe their relationship using an appropriate visualization (scatterplot, side-by-side boxplots, or mosaic plot).
 
 Answer:
 
+for this exercise, I will compare the percent of students who completed the evaluations against the average beauty of the professo.
 
+```{r}
+ggplot(evals, aes(x=cls_perc_eval, y=bty_avg)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+e3.lm <- lm(bty_avg ~ cls_perc_eval, data = evals)
+summary(e3.lm)
+```
+
+From the linear regression line, there appears to be a slightly positive slope between the percent of students who completed the evaluation and the average beauty rating of the professor.  However, it does not appear that there is a good r-squared correlation with a linear model and there are not any apparent patterns for a better fit in other models (e.g. quadratic, power, etc.).  It is noted that there is a significantly low p-value for the slope of the fit which suggests that the class percentage may be a statistically significant predictor of average beauty even though the correlation is low.
 
 ####Exercise 4 - Replot the scatterplot, but this time use the function jitter() on the y- or the x-coordinate. (Use ?jitter to learn more.) What was misleading about the initial scatterplot?
 
 Answer:
 
+```{r}
+plot(evals$score ~ evals$bty_avg)
+jitter_bty_avg <- jitter(evals$bty_avg, factor = 1.5)
+plot(evals$score ~ jitter_bty_avg)
+```
 
+Due to the low number of unique variable values possible, there appear to be many overlapping data points.  The jitter plot slightly shifts the vector values so that this can be more apparent.
 
 ####Exercise 5 - Let’s see if the apparent trend in the plot is something more than natural variation. Fit a linear model called m_bty to predict average professor score by average beauty rating and add the line to your plot using abline(m_bty). Write out the equation for the linear model and interpret the slope. Is average beauty score a statistically significant predictor? Does it appear to be a practically significant predictor?
 
 Answer:
 
+```{r}
+m_bty <- lm(score ~ bty_avg, data = evals)
+summary(m_bty)
+plot(evals$score ~ jitter_bty_avg)
+abline(m_bty)
+```
 
+$$evaluation\quad score\quad =\quad 3.88\quad +\quad 0.067\quad *\quad average\quad beauty$$
+
+For every one point of increase in average beauty, a professor is expected to recieve an additiona 0.067 points in their evaluation.  Since the p-value is less than 0.05, it appears that average beauty is a statistically significant predictor of the evaluation score.  It does not appear to be a practically significant predictor because the r-squared value is 0.03 which means that only 3% of the variability is explained by the linear model.  Additionally, the slope of the equation is very small and may not have a significant impact on the results.
 
 ####Exercise 6 - Use residual plots to evaluate whether the conditions of least squares regression are reasonable. Provide plots and comments for each one (see the Simple Regression Lab for a reminder of how to make these).
 
 Answer:
 
+```{r}
+hist(m_bty$residuals)
+qqnorm(m_bty$residuals)
+qqline(m_bty$residuals)
 
+residuals <- resid(m_bty)
+residuals <- data.frame(cbind(evals$bty_avg, residuals))
+names(residuals) <- c("avg_bty", "residuals")
+ggplot(residuals, aes(y=residuals, x=avg_bty))+geom_point()+geom_hline(yintercept = 0)
+```
+
+
+Give an analysis of each plot... check the book
 
 ####Exercise 7 - P-values and parameter estimates should only be trusted if the conditions for the regression are reasonable. Verify that the conditions for this model are reasonable using diagnostic plots.
 
