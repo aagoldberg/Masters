@@ -34,7 +34,7 @@ This is an observational study.  No, since this is an observational study it is 
 Answer:
 
 ```{r}
-ggplot(evals, aes(x=score))+geom_histogram(binwidth = 0.125, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="black",args=list(mean=mean(area_df$data),sd(area_df$data)))+labs(x="Score")
+ggplot(evals, aes(x=score))+geom_histogram(binwidth = 0.125, position = "identity", aes(y=..density..))+stat_function(fun=dnorm,color="black",args=list(mean=mean(evals$score),sd(evals$score)))+labs(x="Score")
 qqnorm(evals$score)
 qqline(evals$score)
 ```
@@ -90,19 +90,78 @@ Answer:
 hist(m_bty$residuals)
 qqnorm(m_bty$residuals)
 qqline(m_bty$residuals)
-
 residuals <- resid(m_bty)
-residuals <- data.frame(cbind(evals$bty_avg, residuals))
+fit_val <- unname(m_bty$coefficients)[1] + evals$bty_avg * unname(m_bty$coefficients)[2] 
+residuals <- data.frame(cbind(fit_val, residuals))
 names(residuals) <- c("avg_bty", "residuals")
+ggplot(residuals, aes(y=abs(residuals), x=fit_val))+geom_point()+geom_hline(yintercept = 0)
 ggplot(residuals, aes(y=residuals, x=avg_bty))+geom_point()+geom_hline(yintercept = 0)
 ```
 
 
-Give an analysis of each plot... check the book
+
+The assumptions to check are the following:
+
+1. the residuals of the model are nearly normal,
+
+The histogram and normal probability plot show a left skew which means that this linear model may not be a good fit for the data.
+
+2. the variability of the residuals is nearly constant
+
+The plot of the absolute value of the residuals against the fitted value show that the variability is nearly constant.
+
+3. the residuals are independent
+
+We do not have the order of the collection data; however, since this was a published study we can assume that the residuals are independent.
+
+4. each variable is linearly related to the outcome.
+
+there does not appear to be a trend in the residuals in the graph that shows the actual values (not absolute) that would suggest any other type of model would be a better fit.
 
 ####Exercise 7 - P-values and parameter estimates should only be trusted if the conditions for the regression are reasonable. Verify that the conditions for this model are reasonable using diagnostic plots.
 
 Answer:
+
+```{r}
+plot(evals$bty_avg ~ evals$bty_f1lower)
+cor(evals$bty_avg, evals$bty_f1lower)
+plot(evals[,13:19])
+m_bty_gen <- lm(score ~ bty_avg + gender, data = evals)
+summary(m_bty_gen)
+```
+
+The assumptions to check are the following:
+
+1. the residuals of the model are nearly normal,
+
+```{r}
+hist(m_bty_gen$residuals)
+qqnorm(m_bty_gen$residuals)
+qqline(m_bty_gen$residuals)
+residuals <- resid(m_bty_gen)
+evals$genderadj <- ifelse(evals$gender=="male",1,0)
+fit_val <- unname(m_bty_gen$coefficients)[1] + evals$bty_avg * unname(m_bty_gen$coefficients)[2] + evals$genderadj * unname(m_bty_gen$coefficients)[3]
+resid <- data.frame(cbind(evals$bty_avg, evals$gender, residuals))
+names(resid) <- c("avg_bty", "gender", "residuals")
+ggplot(resid, aes(y=abs(residuals), x=fit_val))+geom_point()+geom_hline(yintercept = 0)
+ggplot(resid, aes(y=residuals, x=avg_bty))+geom_point()+geom_hline(yintercept = 0)
+ggplot(data = resid, aes(y=residuals, x=evals$gender))+geom_boxplot() + geom_point()
+```
+
+The residuals have a left skew; therefore they are not nearly normal and a linear model may not be an appropriate fit for the data.
+
+2. the variability of the residuals is nearly constant
+
+```{r}
+ggplot(m_bty_gen, aes(y=abs(residuals), x=avg_bty))+geom_point()+geom_hline(yintercept = 0)
+```
+
+
+3. the residuals are independent
+
+
+
+4. each variable is linearly related to the outcome.
 
 
 
