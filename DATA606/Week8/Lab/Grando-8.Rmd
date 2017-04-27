@@ -176,7 +176,7 @@ Answer:
 
 The equation of the  line for males is the following:
 
-$$evaluation\quad score\quad =\quad 3.747\quad +\quad 0.074\quad *\quad average\quad beauty\quad +\quad 0.172\quad *\quad gender\\ \left( evaluation\quad score|\quad male \right) \quad =\quad 3.747\quad +\quad 0.074\quad *\quad average\quad beauty\quad +\quad 0.172\quad *\quad 1\\ \left( evaluation\quad score|\quad male \right) \quad =\quad 3.919\quad +\quad 0.074\quad *\quad average\quad beauty$$
+$$\widehat {evaluation\quad score\quad} =\quad 3.747\quad +\quad 0.074\quad *\quad average\quad beauty\quad +\quad 0.172\quad *\quad gender\\ \left( evaluation\quad score|\quad male \right) \quad =\quad 3.747\quad +\quad 0.074\quad *\quad average\quad beauty\quad +\quad 0.172\quad *\quad 1\\ \left( evaluation\quad score|\quad male \right) \quad =\quad 3.919\quad +\quad 0.074\quad *\quad average\quad beauty$$
 
 For two professors with the same beauty rating, the male professor tends to have the higher course evaluation score.
 
@@ -261,7 +261,7 @@ summary(m_full_5)
 
 Using backward selection with p-value as the criteria, I eliminated cls_level, cls_students, rank, and pic_outfit.  The resulting model has all predictor variables that are significant within a value of 0.05.  The equation is the following:
 
-$$evaluation\quad score\quad =\quad 3.77\quad +\quad ethnicity\quad *\quad 0.17\quad +\quad gender\quad *\quad 0.21\quad \\+\quad language\quad *\quad -0.21\quad +\quad age\quad *\quad -0.006\quad +\quad cls\_ perc\_ eval\quad *\quad 0.005\quad \\+\quad cls\_ credits\quad *\quad 0.51\quad +\quad bty\_ avg\quad *\quad 0.05\quad +\quad pic\_ color\quad *\quad -0.19$$
+$$\widehat {evaluation\quad score\quad} =\quad 3.77\quad +\quad ethnicity\quad *\quad 0.17\quad +\quad gender\quad *\quad 0.21\quad \\+\quad language\quad *\quad -0.21\quad +\quad age\quad *\quad -0.006\quad +\quad cls\_ perc\_ eval\quad *\quad 0.005\quad \\+\quad cls\_ credits\quad *\quad 0.51\quad +\quad bty\_ avg\quad *\quad 0.05\quad +\quad pic\_ color\quad *\quad -0.19$$
 
 ####Exercise 16 - Verify that the conditions for this model are reasonable using diagnostic plots.
 

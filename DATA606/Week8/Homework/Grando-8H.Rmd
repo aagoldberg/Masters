@@ -27,19 +27,21 @@ require(ggplot2)
 
 Answer:
 
-
+$$\widehat { birth\quad weight } \quad =\quad 123.05\quad +\quad parity\quad *\quad -1.93$$
 
 ####(b) Interpret the slope in this context, and calculate the predicted birth weight of first borns and others.
 
 Answer:
 
-
+a non-first born child is expected to be 1.93 ounces less than the first born child.  The expected birthweight of first born children is 123.05 and the expected birthweight of non-firstborn children is `r round(123.05 - 1.93, digits = 2)`.
 
 ####(c) Is there a statistically significant relationship between the average birth weight and parity?
 
 Answer:
 
+$${ H }_{ O }:\quad { B }_{ 1 }\quad =\quad 0\\ { H }_{ A }:\quad { B }_{ 1 }\quad \neq \quad 0$$
 
+Since a significance level has not been provided, we will use $\alpha = 0.05$.  The p-value is 0.1052 is greater than the significance level; therefore, we fail to reject the null hypothesis.  There is not sufficient evidence to reject the hypothesis that there is no association between parity and birthweights.
 
 ####8.4 Absenteeism. Researchers interested in the relationship between absenteeism from school and certain demographic characteristics of children collected data from 146 randomly sampled students in rural New SouthWales, Australia, in a particular school year. Below are three observations from this data set.
 
@@ -49,24 +51,48 @@ Answer:
 
 Answer:
 
-
+$$\widehat { days\quad absent } \quad =\quad 18.93\quad +\quad eth\quad *\quad -9.11\quad +\quad sex\quad *\quad 3.10\quad +\quad lrn\quad *\quad 2.15$$
 
 ####(b) Interpret each one of the slopes in this context.
 
 Answer:
 
+ethnic background: The model predicts a non-aboriginal chld to be absent 9.11 days less than an aboriginal child, all else held constant
 
+sex: The model predicts a male child to be absent 3.1 more days than a female child, all else held constant
+
+learner status: The model predicts a slow learner to be absent 2.15 more days than an average learner, all else held constant.
 
 ####(c) Calculate the residual for the first observation in the data set: a student who is aboriginal, male, a slow learner, and missed 2 days of school.
 
 Answer:
 
+```{r}
+y_predict <- 18.93 + 0 * -9.11 + 1 * 3.10 + 1 * 2.15
+y_observed <- 2
+y_observed - y_predict
+```
 
 
 ####(d) The variance of the residuals is 240.57, and the variance of the number of absent days for all students in the data set is 264.17. Calculate the R2 and the adjusted R2. Note that there are 146 observations in the data set.
 
 Answer:
 
+r-squared value:
+
+```{r}
+var_resid <- 240.57
+var_outcome <- 264.17
+1 - var_resid / var_outcome
+```
+
+r-squared adj
+
+```{r}
+n_val <- 146
+k_val <- 3
+1 - (var_resid / var_outcome) * ((n_val - 1) / (n_val - k_val - 1))
+```
 
 
 ####8.8 Absenteeism, Part II. Exercise 8.4 considers a model that predicts the number of days absent using three predictors: ethnic background (eth), gender (sex), and learner status (lrn). The table below shows the adjusted R-squared for the model as well as adjusted R-squared values for all models we evaluate in the first step of the backwards elimination process.
@@ -75,11 +101,11 @@ Answer:
 
 Answer:
 
-
+The learner status should be removed since it results in a better adjusted R-squared factor.
 
 ####8.16 Challenger disaster, Part I. On January 28, 1986, a routine launch was anticipated for the Challenger space shuttle. Seventy-three seconds into the flight, disaster happened: the shuttle broke apart, killing all seven crew members on board. An investigation into the cause of the disaster focused on a critical seal called an O-ring, and it is believed that damage to these O-rings during a shuttle launch may be related to the ambient temperature during the launch. The table below summarizes observational data on O-rings for 23 shuttle missions, where the mission order is based on the temperature at the time of the launch. Temp gives the temperature in Fahrenheit, Damaged represents the number of damaged O-rings, and Undamaged represents the number of O-rings that were not damaged.
 
-####(a) Each column of the table above represents a di↵erent shuttle mission. Examine these data and describe what you observe with respect to the relationship between temperatures and damaged O-rings.
+####(a) Each column of the table above represents a different shuttle mission. Examine these data and describe what you observe with respect to the relationship between temperatures and damaged O-rings.
 
 Answer:
 
