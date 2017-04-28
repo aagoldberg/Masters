@@ -109,43 +109,121 @@ The learner status should be removed since it results in a better adjusted R-squ
 
 Answer:
 
+First, I will take the data that is available from openintro.org
 
+```{r}
+ch_data <- read.table("orings.txt",header = TRUE)
+names(ch_data) <- c("temperature","damaged")
+ch_data$mission <- c(rep(1:nrow(ch_data)))
+ch_data$undamaged<- 7 - ch_data$damaged
+```
+
+Plots for temperature vs orings:
+
+```{r}
+ggplot(ch_data, aes(y=damaged, x=temperature)) + geom_point()
+```
+
+It appears that lower temperatures may correlate to a higher probability of o-ring failure.
 
 ####(b) Failures have been coded as 1 for a damaged O-ring and 0 for an undamaged O-ring, and a logistic regression model was fit to these data. A summary of this model is given below. Describe the key components of this summary table in words.
 
 Answer:
 
+The predictor variable has a p-value less than 0.05; therefore, it appears it is a significant predictor of the data.  The log odds ratio of the predictor is:
+
+```{r}
+(ci_logoddratio_lower <- -0.2162 - 1.96 * .0532)
+(ci_logoddratio_higher <- -0.2162 + 1.96 * .0532)
+```
+
+The odds raito is:
+
+```{r}
+(ci_oddratio_lower <- exp(ci_logoddratio_lower))
+(ci_oddraito_higher <- exp(ci_logoddratio_higher))
+```
+
+For every unit change in temperature, the log odds of failure decreases by 0.2162.  At a temperature of zero, the log odds of failure is 11.6630.
 
 
 ####(c) Write out the logistic model using the point estimates of the model parameters.
 
 Answer:
 
-
+$$log\left( \frac { \widehat { p }  }{ 1-\widehat { p }  }  \right) \quad =\quad 11.6630\quad +\quad Temperature\quad *\quad -0.2162$$
 
 ####(d) Based on the model, do you think concerns regarding O-rings are justified? Explain.
 
 Answer:
 
+```{r}
+(p53 <- exp(11.6630 + 53 * -0.2162) / (1 + exp(11.6630 + 53 * -0.2162)))
+(p81 <- exp(11.6630 + 81 * -0.2162) / (1 + exp(11.6630 + 81 * -0.2162)))
+```
 
+Yes, the p-values show that temperature is a significant predictor of o-ring failure.  Additionally, we can see that the predicted failure at the minimum temperature of the data set is `r round(p53, digits = 2)` and the predicted failure at maximum temperature of the data set is `r round(p81, digits = 2)` which shows a practically significant difference.
 
 ####8.18 Challenger disaster, Part II. Exercise 8.16 introduced us to O-rings that were identified as a plausible explanation for the breakup of the Challenger space shuttle 73 seconds into takeoff in 1986. The investigation found that the ambient temperature at the time of the shuttle launch was closely related to the damage of O-rings, which are a critical component of the shuttle. See this earlier exercise if you would like to browse the original data.
 
 ####(a) The data provided in the previous exercise are shown in the plot. The logistic model fit to these data may be written as:
 
+####where ˆp is the model-estimated probability that an O-ring will become damaged. Use the model to calculate the probability that an O-ring will become damaged at each of the following ambient temperatures: 51, 53, and 55 degrees Fahrenheit. The model-estimated probabilities for several additional ambient temperatures are provided below, where subscripts indicate the temperature:
+
 Answer:
 
+The probability that there will be an o-ring failure is summarized for the following temperatures:
 
-
-####where ˆp is the model-estimated probability that an O-ring will become damaged. Use the model to calculate the probability that an O-ring will become damaged at each of the following ambient temperatures: 51, 53, and 55 degrees Fahrenheit. The model-estimated probabilities for several additional ambient temperatures are provided below, where subscripts indicate the temperature:
+```{r}
+#51F:
+(p51 <- exp(11.6630 + 51 * -0.2162) / (1 + exp(11.6630 + 51 * -0.2162)))
+#53F
+(p53 <- exp(11.6630 + 53 * -0.2162) / (1 + exp(11.6630 + 53 * -0.2162)))
+#55F
+(p55 <- exp(11.6630 + 55 * -0.2162) / (1 + exp(11.6630 + 55 * -0.2162)))
+#57F
+(p57 <- exp(11.6630 + 57 * -0.2162) / (1 + exp(11.6630 + 57 * -0.2162)))
+#59F
+(p59 <- exp(11.6630 + 59 * -0.2162) / (1 + exp(11.6630 + 59 * -0.2162)))
+#61F
+(p61 <- exp(11.6630 + 61 * -0.2162) / (1 + exp(11.6630 + 61 * -0.2162)))
+#63F
+(p63 <- exp(11.6630 + 63 * -0.2162) / (1 + exp(11.6630 + 63 * -0.2162)))
+#65F
+(p65 <- exp(11.6630 + 65 * -0.2162) / (1 + exp(11.6630 + 65 * -0.2162)))
+#67F
+(p67 <- exp(11.6630 + 67 * -0.2162) / (1 + exp(11.6630 + 67 * -0.2162)))
+#69F
+(p69 <- exp(11.6630 + 69 * -0.2162) / (1 + exp(11.6630 + 69 * -0.2162)))
+#71F
+(p71 <- exp(11.6630 + 71 * -0.2162) / (1 + exp(11.6630 + 71 * -0.2162)))
+```
 
 ####(b) Add the model-estimated probabilities from part (a) on the plot, then connect these dots using a smooth curve to represent the model-estimated probabilities.
 
 Answer:
 
+```{r}
+ch_fit <- function(temp) {
+  exp(11.6630 + temp * -0.2162) / (1 + exp(11.6630 + temp * -0.2162))
+}
+
+ch_df <- data.frame(c(51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71))
+names(ch_df) <- c("temp")
+ch_df$predicteddamage <- ch_fit(ch_df$temp)
+names(ch_df) <- c("temp","predicteddamage")
+ggplot(ch_df, aes(y=predicteddamage, x=temp)) + geom_point() + stat_smooth(method = "glm", method.args = list(family="binomial"), se = FALSE)
+```
 
 
 ####(c) Describe any concerns you may have regarding applying logistic regression in this application, and note any assumptions that are required to accept the model’s validity.
 
 Answer:
 
+My main concern is that each outcome is not independent of other outcomes (assumption 2 below) since there ar so few launches that it is likely there are upgrades and/or modifications most of the launch equipment; therefore, it is not guaranteed that ther weren's some other fators, dependent on time series, that affected the results.  Additionally, we should check that the predictor is linearly related to the logit(pi) values.
+
+The assumptions that must be met are the following:
+
+1. Each predictor xi is linearly related to logit(pi) if all other predictors are held constant.
+
+2. Each outcome Yi is independent of the other outcomes.
