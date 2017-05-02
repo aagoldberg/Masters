@@ -215,7 +215,7 @@ Make case for only doing v3 projects and note that this could be done separately
 
 ####Anova Test between Rating System Families.
 
-First, we will test to see if there is a statistically significant difference of at least one of the means between Rating System Families (BDC, IDC, OM).  Using an ANOVA () test, we can evaluate whether the null hypthoesis (${ H }_{ O }$), which assumes there is no difference, can be rejected in favor of the althernative hypothesis (${ H }_{ A }$).  These hypothesis can be summarized as follows
+First, we will test to see if there is a statistically significant difference of at least one of the means between Rating System Families (BDC, IDC, OM).  Using an analysis of variace (ANOVA) test, we can evaluate whether the null hypthoesis (${ H }_{ O }$), which assumes there is no difference, can be rejected in favor of the althernative hypothesis (${ H }_{ A }$).  These hypothesis can be summarized as follows
 
 $${ H }_{ O }:\quad The\quad mean\quad submittal\quad time\quad is\quad the\quad same\quad across\quad all\quad Rating\quad System\quad Families\\ { H }_{ A }:\quad The\quad mean\quad submittal\quad time\quad for\quad at\quad least\quad one\quad Rating\quad System\quad Family\quad is\quad different$$
 
@@ -251,10 +251,10 @@ qqline(completed_projects_IDC_V3$SubmittalTime)
 
 ```{r}
 #Reduce set to just v3?
-completed_projectsOM_V3 <- subset(completed_projects_OM, Platform=="v3")
-ggplot(completed_projectsOM_V3, aes(x=SubmittalTime))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects") + theme(plot.title = element_text(hjust = 0.5)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(completed_projectsOM_V3$SubmittalTime),sd(completed_projectsOM_V3$SubmittalTime)))
-qqnorm(completed_projectsOM_V3$SubmittalTime)
-qqline(completed_projectsOM_V3$SubmittalTime)
+completed_projects_OM_V3 <- subset(completed_projects_OM, Platform=="v3")
+ggplot(completed_projects_OM_V3, aes(x=SubmittalTime))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects") + theme(plot.title = element_text(hjust = 0.5)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(completed_projects_OM_V3$SubmittalTime),sd(completed_projects_OM_V3$SubmittalTime)))
+qqnorm(completed_projects_OM_V3$SubmittalTime)
+qqline(completed_projects_OM_V3$SubmittalTime)
 ```
 
 
@@ -273,20 +273,128 @@ ggplot(completed_projects_V3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_b
 The boxplots indicate that the variability across groups is approximately equal with no significant outliers.
 
 
-do anova test to see if groups are different.
+We will now perform an anova test.  For this analysis, we will use a significance level of $\alpha = 0.05$.  This corresponds to an assumption that 95% of the time, we will not reject the null hypothesis (i.e. no difference) when it is true and 5% of the time we will, which is considered a Type I error.
 
 ```{r}
 #anova test
-summary(aov(SubmittalTime ~ RatingSystemFamily, data = completed_projects_V3))
+RSF_aov <- aov(SubmittalTime ~ RatingSystemFamily, data = completed_projects_V3)
+summary(RSF_aov)
 
+lb <- 0
+ub <- 3750
+f_value <- 3712
+f1 <- qf(p = (1-.05), df1 = 2, df2=19262)
+pick_line1 <- round(f_value,digits = 2)
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = df, args = list(df1=4, df2=1167)) + stat_function(fun = df, args = list(df1=4, df2=1167), xlim = c(f1, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.005, label=sprintf("F = %s\n", pick_line1)), color="black", angle=90) + labs(x="F Value") + ggtitle("ANOVA test F Distribution") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-Provide summary and test each group against each other to see which is significant from each other.  Remember to make F chart even if it is very significant.
+Using a confidence level of 95%, we can see that there is sufficient evidence to reject the null hypothesis since the anova test has returned a p-value of 2e-16, which is much less than 0.05.  Therefore we reject the hypothesis that the average time between registration and certification (submittal time) is equal.
+
+Now that we know there is a difference of one of the means, we can perform individual two-sample t-tests to determine which means are statistically significant from each other.  Since we are performing multiple comparisons across groups, it is necessary to implement a Bonferroni correction so that the Type I error rate is not increased.  This is calculated by taking the significance level ($\alpha = 0.05$) and dividing it by the number of groups (3).
+
+```{r}
+bonf_alpha <- 0.05 / 3
+```
+
+We will now test each project against each other using two-sample t-tests.  As previously noted, the standard deviations, instad of standard errors will be used to determine the standard error of differences in these analyses since we are using population data.  This value is calculated from the pooled standard deviation from the ANOVA test.
+
+```{r}
+#BDC vs OM
+BDC_V3_mean <- mean(completed_projects_BDC_V3$SubmittalTime)
+BDC_v3_sd <- sd(completed_projects_BDC_V3$SubmittalTime)
+BDC_V3_n <- length(completed_projects_BDC_V3$SubmittalTime)
+
+OM_V3_mean <- mean(completed_projects_OM_V3$SubmittalTime)
+OM_v3_sd <- sd(completed_projects_OM_V3$SubmittalTime)
+OM_V3_n <- length(completed_projects_OM_V3$SubmittalTime)
+
+tdf <- min(BDC_V3_n, OM_V3_n)
+sd <- sqrt(166617)
+#Use standard deviation instead of standard error for each set
+se <- sqrt(sd^2 + sd^2)
+
+lb <- -4
+ub <- 4
+t_value <- (BDC_V3_mean - OM_V3_mean) / se
+t1 <- qt(p=bonf_alpha, df = tdf)
+t2 <- qt(p= 1 - bonf_alpha, df = tdf)
+pick_line1 <- round(t_value, digits = 2)
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = list(df=tdf)) + stat_function(fun = dt, args = list(df=tdf), xlim = c(lb, t1),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + stat_function(fun = dt, args = list(df=tdf), xlim = c(t2, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + geom_text(aes(x=pick_line1, y=0.2, label=sprintf("t = %s\n", pick_line1)), color="black", angle=90) + labs(x="t Value") + ggtitle("BD+C vs EBOM Projects") + theme(plot.title = element_text(hjust = 0.5))
+
+#BDC vs IDC
+IDC_V3_mean <- mean(completed_projects_IDC_V3$SubmittalTime)
+IDC_v3_sd <- sd(completed_projects_IDC_V3$SubmittalTime)
+IDC_V3_n <- length(completed_projects_IDC_V3$SubmittalTime)
+
+tdf <- min(BDC_V3_n, IDC_V3_n)
+sd <- sqrt(166617)
+#Use standard deviation instead of standard error for each set
+se <- sqrt(sd^2 + sd^2)
+
+lb <- -4
+ub <- 4
+t_value <- (BDC_V3_mean - IDC_V3_mean) / se
+t1 <- qt(p=bonf_alpha, df = tdf)
+t2 <- qt(p= 1 - bonf_alpha, df = tdf)
+pick_line1 <- round(t_value, digits = 2)
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = list(df=tdf)) + stat_function(fun = dt, args = list(df=tdf), xlim = c(lb, t1),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + stat_function(fun = dt, args = list(df=tdf), xlim = c(t2, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + geom_text(aes(x=pick_line1, y=0.2, label=sprintf("t = %s\n", pick_line1)), color="black", angle=90) + labs(x="t Value") + ggtitle("BD+C vs IDC Projects") + theme(plot.title = element_text(hjust = 0.5))
+
+#OM vs IDC
+tdf <- min(OM_V3_n, IDC_V3_n)
+sd <- sqrt(166617)
+#Use standard deviation instead of standard error for each set
+se <- sqrt(sd^2 + sd^2)
+
+lb <- -4
+ub <- 4
+t_value <- (OM_V3_mean - IDC_V3_mean) / se
+t1 <- qt(p=bonf_alpha, df = tdf)
+t2 <- qt(p= 1 - bonf_alpha, df = tdf)
+pick_line1 <- round(t_value, digits = 2)
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = list(df=tdf)) + stat_function(fun = dt, args = list(df=tdf), xlim = c(lb, t1),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + stat_function(fun = dt, args = list(df=tdf), xlim = c(t2, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + geom_text(aes(x=pick_line1, y=0.2, label=sprintf("t = %s\n", pick_line1)), color="black", angle=90) + labs(x="t Value") + ggtitle("EBOM vs IDC Projects") + theme(plot.title = element_text(hjust = 0.5))
+```
 
 
-Try multi linear regression analysis to see if we can make a model that predicts the number of days.
+Provide summary and test each group against each other to see which is significant from each other.
+
+
+Try multi linear regression analysis to see if we can make a model that predicts the number of days.  make a category that is just "number of days opened" to add in.
+
+```{r}
+#Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.  Only v3 since that is what we want to guess.
+filtered_projects <- subset(project_data_adjusted,  !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & project_data_adjusted$Platform=="v3")
+
+#Remove all NAs that are present
+filtered_projects_lm <- subset(filtered_projects, filtered_projects$SubmittalTime>0 & !(is.na(filtered_projects$Isconfidential)) & !(is.na(filtered_projects$Country)) & !(is.na(filtered_projects$RatingSystemFamily)) & !(is.na(filtered_projects$Platform)) & !(is.na(filtered_projects$OwnerTypesAdj)) & !(is.na(filtered_projects$GrossSqFoot))) 
+
+ST_lm <- lm(SubmittalTime ~ Isconfidential + Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
+summary(ST_lm)
+
+#Test
+step_ST_lm <- step(object = ST_lm, direction = "backward")
+summary(step_ST_lm)
+```
+
 
 Make logistical regression model for probability of certifying?
+
+```{r}
+#Create a column that just has the number of days the project was open regardless of certification or not.  Use this for probability of certification....
+
+filtered_projects$TimeOpen <- ifelse(!(is.na(filtered_projects$SubmittalTime)), filtered_projects$SubmittalTime, ifelse(!(is.na(filtered_projects$SubmittalTimePending)), filtered_projects$SubmittalTimePending,NA))
+
+filtered_projects$IsCertifiedBol <- ifelse(filtered_projects$IsCertified=="Yes",1,ifelse(filtered_projects$IsCertified=="No",0, NA))
+
+filtered_projects_glm <- subset(filtered_projects,  filtered_projects$TimeOpen>0 & !(is.na(filtered_projects$Isconfidential)) & !(is.na(filtered_projects$Country)) & !(is.na(filtered_projects$RatingSystemFamily)) & !(is.na(filtered_projects$Platform)) & !(is.na(filtered_projects$OwnerTypesAdj)) & !(is.na(filtered_projects$GrossSqFoot)) & !(is.na(filtered_projects$IsCertifiedBol))) 
+
+ST_glm <- glm(IsCertifiedBol ~ Isconfidential + Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_glm)
+summary(ST_glm)
+
+#Test
+step_ST_glm <- step(object = ST_glm, direction = "backward")
+summary(step_ST_glm)
+```
+
 
 ### Part 5 - Conclusion: 
 
