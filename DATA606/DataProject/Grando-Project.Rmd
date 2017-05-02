@@ -1,0 +1,300 @@
+---
+title: "DATA 606 Data Project"
+author: "John Grando"
+date: "May 1, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=90),tidy=TRUE)
+```
+
+## Grando - Data Project Proposal
+```{r echo=FALSE}
+#Set the working directory and read in the files
+if (Sys.info()["sysname"]=="Windows"){
+  setwd("~/Masters/DATA606/DataProject")
+} else {
+  setwd("~/Documents/Masters/DATA606/DataProject")
+}
+fileurl = "PublicLEEDProjectDirectory.csv"
+project_data <- read.csv(file = fileurl, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+svfileurl = "SummaryVersionsMap.csv"
+sv_data <- read.csv(file = svfileurl, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+#Format dates
+project_data$CertDate <- as.Date(project_data$CertDate,"%m/%d/%Y")
+project_data$RegistrationDate <- as.Date(project_data$RegistrationDate,"%m/%d/%Y")
+#Add two calculated columns.  SubtmittalTime is the number of days between certification and registration dates (completed projects).  SubmittalTimePending is the number of days between the date the information was pulled and the registration date (open projects). 
+project_data$SubmittalTime <- as.numeric(project_data$CertDate - project_data$RegistrationDate)
+latest_date <- max(project_data$RegistrationDate, na.rm = TRUE)
+project_data$SubmittalTimePending <- ifelse(is.na(project_data$CertDate)==TRUE,latest_date-project_data$RegistrationDate,NA)
+#Run sapply() to do a table join between the project directory data and the SummaryVersionsMap file.  The latter file is a mapping scheme that provides further sub-category information to each project type.
+project_data$RatingSystemFamily <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                          function(x){
+                                            x <- sv_data[which(sv_data$RatingSystem == x),2]
+                                            x <- ifelse(identical(x, character(0)), character(0), as.character(x))
+                                          }
+                                          )
+project_data$System <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                             function(x){
+                               x <- sv_data[which(sv_data$RatingSystem == x),3]
+                               x <- ifelse(identical(x, character(0)), character(0), as.character(x))
+                             }
+)
+project_data$Version <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                              function(x){
+                                x <- sv_data[which(sv_data$RatingSystem == x),4]
+                                x <- ifelse(identical(x, character(0)), character(0), as.character(x))
+                              }
+)
+project_data$Platform <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                              function(x){
+                                x <- sv_data[which(sv_data$RatingSystem == x),5]
+                                x <- ifelse(identical(x, character(0)), character(0), as.character(x))
+                              }
+)
+project_data$RSLaunch <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                function(x){
+                                  x <- sv_data[which(sv_data$RatingSystem == x),6]
+                                }
+)
+project_data$RSLaunch <- as.Date(as.character(project_data$RSLaunch),"%m/%d/%Y")
+project_data$RSRegClose <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                function(x){
+                                  x <- sv_data[which(sv_data$RatingSystem == x),7]
+                                }
+)
+project_data$RSRegClose <- as.Date(as.character(project_data$RSRegClose),"%m/%d/%Y")
+project_data$RSSunset <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                  function(x){
+                                    x <- sv_data[which(sv_data$RatingSystem == x),8]
+                                  }
+)
+project_data$RSSunset <- as.Date(as.character(project_data$RSSunset),"%m/%d/%Y")
+project_data$RSIteration <- sapply(project_data$LEEDSystemVersionDisplayName, 
+                                function(x){
+                                  x <- sv_data[which(sv_data$RatingSystem == x),9]
+                                }
+)
+project_data$RSIteration <- as.integer(as.character(project_data$RSIteration))
+
+#Add a few more calculated columns now that the sub-category data has been added.
+project_data$RegAfterLaunch <- as.integer(project_data$RegistrationDate - project_data$RSLaunch)
+project_data$CertAfterLaunch <- as.integer(project_data$CertDate - project_data$RSLaunch)
+project_data$RegYear <- trunc(project_data$RegAfterLaunch / 365) + 1
+project_data$CertYear <- trunc(project_data$CertAfterLaunch / 365) + 1
+
+#Create more generalized categories of the Owner types.
+project_data$OwnerTypesAdj <- sapply(project_data$OwnerTypes, 
+                                     function(x){
+                                       x <- ifelse(grepl("government",tolower(x)),"government",
+                                            ifelse(grepl("education",tolower(x)),"education",
+                                            ifelse(grepl("confidential",tolower(x)),"confidential",
+                                            ifelse(grepl("corporate",tolower(x)),"corporate",
+                                            ifelse(grepl("^profit",tolower(x)),"profit",
+                                            ifelse(grepl("^non-profit",tolower(x)),"non-profit",
+                                            ifelse(grepl("individual",tolower(x)),"individual",
+                                            ifelse(grepl("investor",tolower(x)),"investor",
+                                            ifelse(x=="",NA,
+                                            ifelse(is.null(x),NULL,
+                                            "other"))))))))))
+                                     }
+)
+
+#Days the v3 platform has been open since launch
+maxv3days <- as.numeric(latest_date- as.Date("4/27/2009","%m/%d/%Y"))
+
+project_data_adjusted <- project_data
+#If a v2 project is pending longer than the maximum amount of days v3 has been open, then change the length to that time
+project_data_adjusted$SubmittalTimePending <- ifelse(project_data_adjusted$Platform=="v2" & project_data_adjusted$SubmittalTimePending > maxv3days,maxv3days,project_data_adjusted$SubmittalTimePending)
+#If it took a v2 project to certify longer than the maximum amount of v3 days, then we will consider it an open project with the maximum v3 days of pending time.
+project_data_adjusted$SubmittalTimePending <- ifelse(project_data_adjusted$Platform=="v2" & project_data_adjusted$SubmittalTime > maxv3days,maxv3days,project_data_adjusted$SubmittalTimePending)
+#For the same issue noted above, make sure the SubmittalTime column (days the project was registered before being certified) returns an NA for theses projects.
+project_data_adjusted$SubmittalTime <- ifelse(project_data_adjusted$Platform=="v2" & project_data$SubmittalTime>maxv3days,NA,project_data_adjusted$SubmittalTime)
+
+#Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.
+completed_projects <- subset(project_data_adjusted,  project_data_adjusted$SubmittalTime>0 & !(is.na(project_data_adjusted$CertDate)) & !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
+
+#Same as above but with projects that have not certified.
+open_projects <- subset(project_data_adjusted, project_data_adjusted$SubmittalTimePending>0 & is.na(project_data_adjusted$CertDate) & !(identical(project_data_adjusted$RatingSystemFamily,character(0))) & !(is.na(project_data_adjusted$Platform)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
+```
+
+### Part 1 - Introduction:
+
+LEED is a framework for identifying, implementing, and measuring green building and neighborhood design, construction, operations, and maintenance. The United States Green Building Council provides publicly available data that identifies all LEED Certified buildings.  This list is known as the LEED Project Directory (http://www.usgbc.org/projects/) and features non-confidential projects under each LEED rating system. Once the project has been certified, its team is invited to submit content to update their profile, which contains basic project details, an overview on how the project achieved sustainability using LEED, and a photo slideshow. Project teams also have the option of linking to a video of their LEED building and a relevant website.
+
+Generally, LEED projects register near the beginning of a building’s design phase (the drawing/planning stage). After preparing documentation, and after the construction phase (the building stage) ends, the project team will have their project certified by the Green Business Certification Inc. (GBCI).  GBCI is the only certification and credentialing body within the green business and sustainability industry to exclusively administer project certifications and professional credentials of LEED, EDGE, PEER, WELL, SITES, GRESB, Parksmart and Zero Waste.  The data available on this LEED Project Directory (http://www.usgbc.org/project-download-all) is a summary of every LEED registered project.  Each project can be broken down into further subcategories, such as Rating System Families, based on the type of Certification.  While this data is not directly accessible in a single file, the relations can be created from multiple locations on the website.
+
+Within the company, it is important to be able to predict the number of days it takes for a project to certify (from the time it was regiestered) in order to coordinate employee time commitments to performing certification work.  Additionally, it is essential that any variables which signficantly affect this time length be identified so that if there is a shift in submittals for one group, the company is aware of the future impacts.  By having the ability to predict the length of time it takes for projects to certify, the GBCI can forecast their needs and manage the review staff as needed.
+
+### Part 2 - Data:
+
+Upon registering a LEED project, the information in this data set is populated as a part of the requirments of the LEED process.  Each case represents a registered LEED project.  
+
+The project data is collected by the United States Green Building Council and is available online here: http://www.usgbc.org/project-download-all.  The version mapping table, used to break projects down into sub-categories, is not publicly available in a single format. however, all the infomration needed to create this data set is available on http://www.usgbc.org.
+
+
+There are `r nrow(project_data)` observations in the overall data set.  The data consist of projects which are registered under different Platforms (v2 and v3 are analyzed for this study).  These platforms are created in a sequential manner which means that v2 is an older version than v3.  In order to normalize for this issue, v2 projects that were pending longer than the maximum amount of days v3 has been open are considered to have never become certified and remained open for the same amount of time as the maximum number of days v3 has been open.  After filtering to projects with sufficient information, and pertinent categories, there are `r nrow(completed_projects) + nrow(open_projects)` observations.  
+This is an observational study because it is based on past, and current, data which we have not influenced in any manner and are only evaluating the results.
+
+The population of interest is all future project buildings which will register for LEED Certification.  Given that this data actually represents the entire current population, it is assumed that this analysis can be generalized to future projects.  Some issues may cause a discrepancy between this analysis and the time it takes future projects to certify could include the following; changes to the LEED Rating System requirements, expansion into new building markets that are unfamiliar with referenced procedures and protocols, market acclimation to the standard (which may speed up certification time), and new Rating System Families or altenrative compliance paths to Certification.  
+
+The response variable chosen is number of days between a project's registration and certification date (SubmittalTime).  This is a discrete numerical value.  After a preliminary analysis, shown in the next section, the explanatory variables chosen for this study are the rating system families (categorical, nominal) and gross floor area (numerical, continuous).
+
+Since this is an observational study, we cannot determine causal connections between the variables of interest.  We will only be able to determine whether the variables of interest are associated or not. 
+
+### Part 3 - Exploratory data analysis:
+
+I have prepared a data set which includes calculations that determine the length of time it took for each project to certify.  Since v3 projects can only have been open for `r maxv3days` days, v2 projects (previous version) which were certified after `r maxv3days` days were considered to be un-certified.  These calcuations do not consider how long after the Rating System was launched when the project was registered.  This assumption for the data set would be okay as long as we can consider that the amount of time it takes to certify a project does not change as the time between registration date and rating system launch date increases.  There are graphs to check this at the end of this section.
+
+```{r}
+require(ggplot2)
+
+####Graphs based on present assumptions
+table(completed_projects$RatingSystemFamily)
+table(completed_projects$Platform)
+
+#General Rating System Family histogram
+ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+labs(x="Days Between Registration and Certification") + ggtitle("Project Age vs. Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+#General Platform ~ Rating System Family boxplot
+ggplot(completed_projects, aes(y=SubmittalTime, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily) + labs(y="Days Between Registration and Certification") + ggtitle("Project Age Broken Down By Platform and Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+
+#Summary Tables
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
+
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="IDC")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
+
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="OM")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
+
+####Rating System Family Tests
+completed_projects_BDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
+ggplot(completed_projects_BDC, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects") + theme(plot.title = element_text(hjust = 0.5))
+
+completed_projects_IDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="IDC")
+ggplot(completed_projects_IDC, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("ID+C Projects") + theme(plot.title = element_text(hjust = 0.5))
+
+completed_projects_OM <- subset(completed_projects, completed_projects$RatingSystemFamily=="OM")
+ggplot(completed_projects_OM, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("OM Projects") + theme(plot.title = element_text(hjust = 0.5))
+
+####Gross floor area vs. submittal time tests
+
+#I have scaled the y axis to exclude some outliers in favor of seeing the main data set more clearly
+
+ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime, color=RatingSystemFamily))+geom_point() + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area") + theme(plot.title = element_text(hjust = 0.5))
+
+#When a facet wrap is applied, it is a little more clear there may be some association with at least one rating system.
+
+ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime))+geom_point() + facet_wrap(~RatingSystemFamily)  + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area By Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+
+#This is a test to see if project timelines decrease as the time between the registration date and the launch date increases
+#Create a data frame of completed v2 projects that are at least as old as the v3 launch.  This is so that we know we aren't creating a bias with recently registered projects that certified quickly.
+completed_projects_v2 <- subset(completed_projects, completed_projects$Platform=="v2" & completed_projects$RegYear>0)
+table(completed_projects_v2$RegYear) 
+completed_projects_v2 <- subset(completed_projects_v2, completed_projects_v2$RegYear < 5 & completed_projects_v2$RegYear>0)
+ggplot(completed_projects_v2, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v2 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
+
+completed_projects_v3 <- subset(completed_projects, completed_projects$Platform=="v3")
+table(completed_projects_v3$RegYear)
+completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$RegYear < 5 & completed_projects_v3$RegYear>0)
+ggplot(completed_projects_v3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v3 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+### Part 4 - Inference:
+
+Frome the previous section, we can see that it appears the most signinficant difference between groups is the rating system families.  Additionally, we will test to see if gross floor area is a significant predictor of the time it takes for a project to certify (submittal time).
+
+
+Make case for only doing v3 projects and note that this could be done separately for v2 projects, if we cared to do it.
+
+####Anova Test between Rating System Families.
+
+First, we will test to see if there is a statistically significant difference of at least one of the means between Rating System Families (BDC, IDC, OM).  Using an ANOVA () test, we can evaluate whether the null hypthoesis (${ H }_{ O }$), which assumes there is no difference, can be rejected in favor of the althernative hypothesis (${ H }_{ A }$).  These hypothesis can be summarized as follows
+
+$${ H }_{ O }:\quad The\quad mean\quad submittal\quad time\quad is\quad the\quad same\quad across\quad all\quad Rating\quad System\quad Families\\ { H }_{ A }:\quad The\quad mean\quad submittal\quad time\quad for\quad at\quad least\quad one\quad Rating\quad System\quad Family\quad is\quad different$$
+
+In order to do this, we must first verify the following assumptions:
+
+1. The observations are independent within and across groups
+
+Since the data actually represent all current projects, it can be assumed that there is no bias in the sampling because no sampling is being performed.  Therefore, the obseravations are considered independent.  However, since the entire current population is being used, the standard deviation, rather than the standard error, will be used to determine all normalized data due to the fact that the population paratmeters are being used instead of sample parameters.
+
+2. The data within each group are nearly normal
+
+####BD+C Projects
+
+```{r}
+#Reduce set to just v3?
+completed_projects_BDC_V3 <- subset(completed_projects_BDC, Platform=="v3")
+ggplot(completed_projects_BDC_V3, aes(x=SubmittalTime))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects") + theme(plot.title = element_text(hjust = 0.5)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(completed_projects_BDC_V3$SubmittalTime),sd(completed_projects_BDC_V3$SubmittalTime)))
+qqnorm(completed_projects_BDC_V3$SubmittalTime)
+qqline(completed_projects_BDC_V3$SubmittalTime)
+```
+
+####IDC Projects
+
+```{r}
+#Reduce set to just v3?
+completed_projects_IDC_V3 <- subset(completed_projects_IDC, Platform=="v3")
+ggplot(completed_projects_IDC_V3, aes(x=SubmittalTime))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects") + theme(plot.title = element_text(hjust = 0.5)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(completed_projects_IDC_V3$SubmittalTime),sd(completed_projects_IDC_V3$SubmittalTime)))
+qqnorm(completed_projects_IDC_V3$SubmittalTime)
+qqline(completed_projects_IDC_V3$SubmittalTime)
+```
+
+####OM Projects
+
+```{r}
+#Reduce set to just v3?
+completed_projectsOM_V3 <- subset(completed_projects_OM, Platform=="v3")
+ggplot(completed_projectsOM_V3, aes(x=SubmittalTime))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects") + theme(plot.title = element_text(hjust = 0.5)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(completed_projectsOM_V3$SubmittalTime),sd(completed_projectsOM_V3$SubmittalTime)))
+qqnorm(completed_projectsOM_V3$SubmittalTime)
+qqline(completed_projectsOM_V3$SubmittalTime)
+```
+
+
+Provide explanation.....  Reduce set to just v3?
+
+
+3. The variability across the groups is about equal.
+
+```{r}
+#Reduce set to just v3?
+completed_projects_V3 <- subset(completed_projects, Platform=="v3")
+ggplot(completed_projects_V3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot() + labs(y="Days Between Registration and Certification") + ggtitle("Project Age Broken Down By Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+The boxplots indicate that the variability across groups is approximately equal with no significant outliers.
+
+
+do anova test to see if groups are different.
+
+```{r}
+#anova test
+summary(aov(SubmittalTime ~ RatingSystemFamily, data = completed_projects_V3))
+
+```
+
+Provide summary and test each group against each other to see which is significant from each other.  Remember to make F chart even if it is very significant.
+
+
+Try multi linear regression analysis to see if we can make a model that predicts the number of days.
+
+Make logistical regression model for probability of certifying?
+
+### Part 5 - Conclusion: 
+
+
+### References:
+
+
+### Appendix (optional):
+
+Remove this section if you don't have an appendix
+
