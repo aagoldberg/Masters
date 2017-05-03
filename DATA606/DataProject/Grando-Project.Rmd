@@ -310,8 +310,7 @@ OM_V3_n <- length(completed_projects_OM_V3$SubmittalTime)
 
 tdf <- min(BDC_V3_n, OM_V3_n)
 sd <- sqrt(166617)
-#Use standard deviation instead of standard error for each set
-se <- sqrt(sd^2 + sd^2)
+se <- sqrt(sd^2 / BDC_V3_n + sd^2 / OM_V3_n)
 
 lb <- -4
 ub <- 4
@@ -328,8 +327,7 @@ IDC_V3_n <- length(completed_projects_IDC_V3$SubmittalTime)
 
 tdf <- min(BDC_V3_n, IDC_V3_n)
 sd <- sqrt(166617)
-#Use standard deviation instead of standard error for each set
-se <- sqrt(sd^2 + sd^2)
+se <- sqrt(sd^2 / BDC_V3_n + sd^2 / IDC_V3_n)
 
 lb <- -4
 ub <- 4
@@ -342,8 +340,7 @@ ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = l
 #OM vs IDC
 tdf <- min(OM_V3_n, IDC_V3_n)
 sd <- sqrt(166617)
-#Use standard deviation instead of standard error for each set
-se <- sqrt(sd^2 + sd^2)
+se <- sqrt(sd^2 / OM_V3_n + sd^2 / IDC_V3_n)
 
 lb <- -4
 ub <- 4
@@ -358,6 +355,86 @@ ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = l
 Provide summary and test each group against each other to see which is significant from each other.
 
 
+Now, we can see if gross floor area is a good predictor of the time it takes fora project to certify.
+
+...do linear regression...
+
+```{r}
+#BDC
+gf_lm_BDC_V3 <- lm(SubmittalTime ~ GrossSqFoot, data = completed_projects_BDC_V3)
+summary(gf_lm_BDC_V3)
+ggplot(completed_projects_BDC_V3, aes(y=SubmittalTime, x=GrossSqFoot)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+ggplot()
+
+
+#IDC
+gf_lm_IDC_V3 <- lm(SubmittalTime ~ GrossSqFoot, data = completed_projects_IDC_V3)
+summary(gf_lm_IDC_V3)
+ggplot(completed_projects_IDC_V3, aes(y=SubmittalTime, x=GrossSqFoot)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+
+#OM
+gf_lm_OM_V3 <- lm(SubmittalTime ~ GrossSqFoot, data = completed_projects_OM_V3)
+summary(gf_lm_OM_V3)
+ggplot(completed_projects_OM_V3, aes(y=SubmittalTime, x=GrossSqFoot)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+```
+
+In order to validate the models, the following asusmptions must be checked:
+
+1. the residuals of the model are nearly normal
+
+```{r}
+#BDC
+ggplot(data = gf_lm_BDC_V3, aes(x=resid(gf_lm_BDC_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_BDC_V3$residuals),sd(gf_lm_BDC_V3$residuals)))
+qqnorm(gf_lm_BDC_V3$residuals)
+qqline(gf_lm_BDC_V3$residuals)
+
+#IDC
+ggplot(data = gf_lm_IDC_V3, aes(x=resid(gf_lm_IDC_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_IDC_V3$residuals),sd(gf_lm_IDC_V3$residuals)))
+qqnorm(gf_lm_IDC_V3$residuals)
+qqline(gf_lm_IDC_V3$residuals)
+
+#OM
+ggplot(data = gf_lm_OM_V3, aes(x=resid(gf_lm_OM_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_OM_V3$residuals),sd(gf_lm_OM_V3$residuals)))
+qqnorm(gf_lm_OM_V3$residuals)
+qqline(gf_lm_OM_V3$residuals)
+```
+
+2. the variability of the residuals is nearly constant
+
+```{r}
+#BDC
+ggplot(gf_lm_BDC_V3, aes(y=abs(resid(gf_lm_BDC_V3)), x=gf_lm_BDC_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0)
+#IDC
+ggplot(gf_lm_IDC_V3, aes(y=abs(resid(gf_lm_IDC_V3)), x=gf_lm_IDC_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0)
+#OM
+ggplot(gf_lm_OM_V3, aes(y=abs(resid(gf_lm_OM_V3)), x=gf_lm_OM_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0)
+```
+
+3. the residuals are independent
+
+```{r}
+#BDC
+ggplot(gf_lm_BDC_V3, aes(y=resid(gf_lm_BDC_V3), x=completed_projects_BDC_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0)
+#IDC
+ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=completed_projects_IDC_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0)
+#OM
+ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=completed_projects_OM_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0)
+```
+
+4. each variable is linearly related to the outcome.
+
+```{r}
+#BDC
+ggplot(gf_lm_BDC_V3, aes(y=resid(gf_lm_BDC_V3), x=completed_projects_BDC_V3$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0)
+#IDC
+ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=completed_projects_IDC_V3$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0)
+#OM
+ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=completed_projects_OM_V3$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0)
+```
+
+
+All significant predictors but not a good r-square fit or pracitcally sginificant?  Make case for multi-linear regression.
+
 Try multi linear regression analysis to see if we can make a model that predicts the number of days.  make a category that is just "number of days opened" to add in.
 
 ```{r}
@@ -370,9 +447,98 @@ filtered_projects_lm <- subset(filtered_projects, filtered_projects$SubmittalTim
 ST_lm <- lm(SubmittalTime ~ Isconfidential + Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
 summary(ST_lm)
 
+#Backward Radj - First step remove Isconfidential
+ST_lm_b <- lm(SubmittalTime ~ Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
+summary(ST_lm_b)
+
+#Forward
+ST_lm_f <- lm(SubmittalTime ~ Isconfidential, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ Country, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ OwnerTypesAdj, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ GrossSqFoot, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+
+#Forward pick RatingSystemFamily
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + Isconfidential, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + Country, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + GrossSqFoot, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+#Forward pick RatingSystemFamily and OwnerTypesAdj
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Isconfidential, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+#Forward pick RatingSystemFamily and OwnerTypesAdj and Country
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + Isconfidential, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+#Forward pick RatingSystemFamily and OwnerTypesAdj and Country and GrossSqFoot
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot, data = filtered_projects_lm)
+summary(ST_lm_f)
+
+
 #Test
 step_ST_lm <- step(object = ST_lm, direction = "backward")
 summary(step_ST_lm)
+```
+
+In order to validate the model, the following assumptions must be checked:
+
+1. the residuals of the model are nearly normal
+
+```{r}
+ggplot(data = ST_lm_b, aes(x=resid(ST_lm_b))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(ST_lm_b$residuals),sd(ST_lm_b$residuals)))
+qqnorm(ST_lm_b$residuals)
+qqline(ST_lm_b$residuals)
+```
+
+2. the variability of the residuals is nearly constant
+
+```{r}
+ggplot(ST_lm_b, aes(y=abs(resid(ST_lm_b)), x=ST_lm_b$fitted.values))+geom_point()+geom_hline(yintercept = 0)
+```
+
+
+3. the residuals are independent
+
+```{r}
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RegistrationDate))+geom_point()+geom_hline(yintercept = 0)
+```
+
+
+4. each variable is linearly related to the outcome.
+
+```{r}
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$Country))+geom_boxplot() + geom_point()
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RatingSystemFamily))+geom_boxplot() + geom_point()
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$OwnerTypesAdj))+geom_boxplot() + geom_point()
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0)
 ```
 
 
@@ -387,7 +553,7 @@ filtered_projects$IsCertifiedBol <- ifelse(filtered_projects$IsCertified=="Yes",
 
 filtered_projects_glm <- subset(filtered_projects,  filtered_projects$TimeOpen>0 & !(is.na(filtered_projects$Isconfidential)) & !(is.na(filtered_projects$Country)) & !(is.na(filtered_projects$RatingSystemFamily)) & !(is.na(filtered_projects$Platform)) & !(is.na(filtered_projects$OwnerTypesAdj)) & !(is.na(filtered_projects$GrossSqFoot)) & !(is.na(filtered_projects$IsCertifiedBol))) 
 
-ST_glm <- glm(IsCertifiedBol ~ Isconfidential + Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_glm)
+ST_glm <- glm(IsCertifiedBol ~ Isconfidential + Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot + TimeOpen, data = filtered_projects_glm)
 summary(ST_glm)
 
 #Test
