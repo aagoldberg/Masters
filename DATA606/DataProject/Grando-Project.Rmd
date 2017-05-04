@@ -351,13 +351,11 @@ ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = l
 ```
 
 
-Provide summary and test each group against each other to see which is significant from each other.
+As can be seen from the pariwise t-tests, it has been determined that we are 95% confident that the mean submittal time between groups is different between all groups (BD+C, ID+C, and OM).
 
+Now, there are not many numerical values that can be used as predictors of how long it will take a project to certify.  Note, attributes such as the number of points achieved and certification level are only known after a project has certified; therefore, have limited value.  One possible numerical indicator of submittal time that can be used in the gross floor area of the project.  We will now use this predictor to determine a least squares linear regerssion line to predict the response variable of submittal time.  Since we have already determined that each Rating System Family has significantly different submittal times, we will perform separate linear regression analsyses for BD+C, ID+C, and OM.
 
-Now, we can see if gross floor area is a good predictor of the time it takes fora project to certify.
-
-...do linear regression...
-
+####Generate Linear Regression Models and Graphs
 ```{r}
 #BDC
 gf_lm_BDC_V3 <- lm(SubmittalTime ~ GrossSqFoot, data = completed_projects_BDC_V3)
@@ -376,7 +374,7 @@ summary(gf_lm_OM_V3)
 ggplot(completed_projects_OM_V3, aes(y=SubmittalTime, x=GrossSqFoot)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
 ```
 
-In order to validate the models, the following asusmptions must be checked:
+As we can see from the R-square values, these models do not appear to be the best predictors of submitall time but do produce statistically significant prediction slopes.  While these results do not appear to be of much use at the moment, we will continue the analysis and validate the models by checking the following asusmptions:
 
 1. the residuals of the model are nearly normal
 
@@ -433,7 +431,7 @@ ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=completed_projects_OM_V3$GrossSq
 
 All significant predictors but not a good r-square fit or pracitcally sginificant?  Make case for multi-linear regression.
 
-Try multi linear regression analysis to see if we can make a model that predicts the number of days.  make a category that is just "number of days opened" to add in.
+As originally noticed, the gross floor is not a great predictor variable of the time it takes for a project to certify; however, what if a multi-linear regression analysis was performed to predict the submittal times.  In order to do this, we must filter the data to ensure there are sufficient values in each predictor variable we want to use and then perform an analysis.
 
 ```{r}
 #Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.  Only v3 since that is what we want to guess.
@@ -449,52 +447,52 @@ summary(ST_lm)
 ST_lm_b <- lm(SubmittalTime ~ Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
 summary(ST_lm_b)
 
-#Forward
-ST_lm_f <- lm(SubmittalTime ~ Isconfidential, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ Country, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ OwnerTypesAdj, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ GrossSqFoot, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-
-#Forward pick RatingSystemFamily
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + Isconfidential, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + Country, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + GrossSqFoot, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-#Forward pick RatingSystemFamily and OwnerTypesAdj
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Isconfidential, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-#Forward pick RatingSystemFamily and OwnerTypesAdj and Country
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + Isconfidential, data = filtered_projects_lm)
-summary(ST_lm_f)
-
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot, data = filtered_projects_lm)
-summary(ST_lm_f)
+# #Forward
+# ST_lm_f <- lm(SubmittalTime ~ Isconfidential, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ Country, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ OwnerTypesAdj, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ GrossSqFoot, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# 
+# #Forward pick RatingSystemFamily
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + Isconfidential, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + Country, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + GrossSqFoot, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# #Forward pick RatingSystemFamily and OwnerTypesAdj
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Isconfidential, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# #Forward pick RatingSystemFamily and OwnerTypesAdj and Country
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + Isconfidential, data = filtered_projects_lm)
+# summary(ST_lm_f)
+# 
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot, data = filtered_projects_lm)
+# summary(ST_lm_f)
 
 #Forward pick RatingSystemFamily and OwnerTypesAdj and Country and GrossSqFoot
 ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot, data = filtered_projects_lm)
@@ -505,6 +503,8 @@ summary(ST_lm_f)
 step_ST_lm <- step(object = ST_lm, direction = "backward")
 summary(step_ST_lm)
 ```
+
+Write summary.....
 
 In order to validate the model, the following assumptions must be checked:
 
