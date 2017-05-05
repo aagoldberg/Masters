@@ -256,9 +256,6 @@ qqline(completed_projects_OM_V3$SubmittalTime)
 ```
 
 
-Provide explanation.....
-
-
 3. The variability across the groups is about equal.
 
 ```{r}
@@ -429,9 +426,6 @@ ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=completed_projects_IDC_V3$Gros
 ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=completed_projects_OM_V3$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0) + labs(x="Gross Floor Area", y="Residuals") + ggtitle("OM Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-
-#All significant predictors but not a good r-square fit or pracitcally sginificant?  Make case for multi-linear regression.
-
 The histogram shows that the data do not exactly follow a normal distribution.  From the normal probability plot it appears the data is narrower than a typical normal distribution (short tails) and has a right ske for the BD+C and ID+C data sets.  The OM data set appear to have a right skew and it is unclear if there are short tails.  Each group has some extreme gross floor area values which are points of high leverage and may be significantly affecting the model.  The residuals appear to be independent from the registration date vs residuals and gross floor area vs residuals graphs.  Note that there is apparent decrease of the maximum possible value in the registration date vs residuals graph.  This is due to the fact that older projects have a larger window to certify since they have been open longer, thus they can have a larger maximum possible residual.  There are some issues with these models, mainly the residual plots being skewed and smaller than expected spas, and a low r-squared value.  Even if all the assumptions were completely validated, the model would only predict `r round(summary(gf_lm_BDC_V3)[[9]] * 100, digits = 4)`% of the variability for the BD+C data set, `r round(summary(gf_lm_IDC_V3)[[9]] * 100, digits = 4)`% of the variability for the ID+C data set, and `r round(summary(gf_lm_OM_V3)[[9]] * 100, digits = 4)`% of the variability for the OM data set, which is much too small to be considered useful.
 
 As previously noted, the gross floor is not a great predictor variable of the time it takes for a project to certify; however, we can perform a multi-linear regression analysis, which uses more than one predictor variable, to estimate the submittal times.  In order to do this, we must filter the data to ensure there are sufficient values in each predictor variable we want to use and then perform an analysis.  For this study, we will start with the following variables since they are known at the time of registration: confidential status (Isconfidential), Country, Rating System Family, owner types (OwnerTypesAdj - Note - the number of categories has been significantly reduced form meaningfullness), and gross floor area (GrossSqFoot).
@@ -516,7 +510,7 @@ From this analysis, we can see Country, Rating System Family, owner types, and g
 1. the residuals of the model are nearly normal
 
 ```{r}
-ggplot(data = ST_lm_b, aes(x=resid(ST_lm_b))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(ST_lm_b$residuals),sd(ST_lm_b$residuals)))
+ggplot(data = ST_lm_b, aes(x=resid(ST_lm_b))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(ST_lm_b$residuals),sd(ST_lm_b$residuals))) + labs(x="Residuals") + ggtitle("Multi-linear Regression Model Residuals") + theme(plot.title = element_text(hjust = 0.5))
 qqnorm(ST_lm_b$residuals)
 qqline(ST_lm_b$residuals)
 ```
@@ -524,45 +518,30 @@ qqline(ST_lm_b$residuals)
 2. the variability of the residuals is nearly constant
 
 ```{r}
-ggplot(ST_lm_b, aes(y=abs(resid(ST_lm_b)), x=ST_lm_b$fitted.values))+geom_point()+geom_hline(yintercept = 0)
+ggplot(ST_lm_b, aes(y=abs(resid(ST_lm_b)), x=ST_lm_b$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="Fitted Values", y="Absolute value of Residuals") + ggtitle("Multi-linear Regression Fitted Values against residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 
 3. the residuals are independent
 
 ```{r}
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RegistrationDate))+geom_point()+geom_hline(yintercept = 0)
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RegistrationDate))+geom_point()+geom_hline(yintercept = 0) + labs(x="Registration Date", y="Residuals") + ggtitle("Multi-linear Regression Model Registration Date Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 
 4. each variable is linearly related to the outcome.
 
 ```{r}
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$Country))+geom_boxplot() + geom_point()
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RatingSystemFamily))+geom_boxplot() + geom_point()
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$OwnerTypesAdj))+geom_boxplot() + geom_point()
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0)
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$Country))+geom_boxplot() + geom_point() + labs(x="Country Code", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Country") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RatingSystemFamily))+geom_boxplot() + geom_point() + labs(x="Rating System Family", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$OwnerTypesAdj))+geom_boxplot() + geom_point() + labs(x="Owner Types", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Owner Type") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0) + labs(x="Gross Floor Area", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Gross Floor Area") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 As with the previous linear model, the residual histogram plot shows that the data distribution is more narrow than a normal distribution and has a right skew.  Additionally, since we have kept the gross square foot predictor, there are still some leverage points for this value.  However, the remaining data show that each predictor apepars to be linearly related to the outcome and appear to be independent based on the registration date graph.
 
 
-Make logistical regression model for probability of certifying?
-
-```{r}
-#Create a column that just has the number of days the project was open regardless of certification or not.  Use this for probability of certification....
-
-filtered_projects$TimeOpen <- ifelse(!(is.na(filtered_projects$SubmittalTime)), filtered_projects$SubmittalTime, ifelse(!(is.na(filtered_projects$SubmittalTimePending)), filtered_projects$SubmittalTimePending,NA))
-
-filtered_projects$IsCertifiedBol <- ifelse(filtered_projects$IsCertified=="Yes",1,ifelse(filtered_projects$IsCertified=="No",0, NA))
-
-filtered_projects_glm <- subset(filtered_projects,  filtered_projects$TimeOpen>0 & !(is.na(filtered_projects$Isconfidential)) & !(is.na(filtered_projects$Country)) & !(is.na(filtered_projects$RatingSystemFamily)) & !(is.na(filtered_projects$Platform)) & !(is.na(filtered_projects$OwnerTypesAdj)) & !(is.na(filtered_projects$GrossSqFoot)) & !(is.na(filtered_projects$IsCertifiedBol))) 
-
-ST_glm <- glm(IsCertifiedBol ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot + TimeOpen, data = filtered_projects_glm)
-summary(ST_glm)
-```
-
-
+#Is the gross floor area plot sloping down?
 
 ### Part 5 - Conclusion: 
 
@@ -573,5 +552,24 @@ Note the variance issue in the ANOVA test assumptions.  The issues in the single
 
 ### Appendix (optional):
 
-Remove this section if you don't have an appendix
+This appendix contains additional analysis work that will be completed after this course.
+
+```{r}
+#Make a function that is a predictor of the linear regression model and apply it to all open projects.  Then you will have a summary of all the expected dates they will certify.
+
+#Do the same for the glm and you will have a predicted percentage of certification to multiply it by as well.
+
+##Create a column that just has the number of days the project was open regardless of certification or not.  Use this for probability of certification....
+
+filtered_projects$TimeOpen <- ifelse(!(is.na(filtered_projects$SubmittalTime)), filtered_projects$SubmittalTime, ifelse(!(is.na(filtered_projects$SubmittalTimePending)), filtered_projects$SubmittalTimePending,NA))
+
+filtered_projects$IsCertifiedBol <- ifelse(filtered_projects$IsCertified=="Yes",1,ifelse(filtered_projects$IsCertified=="No",0, NA))
+
+filtered_projects_glm <- subset(filtered_projects,  filtered_projects$TimeOpen>0 & !(is.na(filtered_projects$Isconfidential)) & !(is.na(filtered_projects$Country)) & !(is.na(filtered_projects$RatingSystemFamily)) & !(is.na(filtered_projects$Platform)) & !(is.na(filtered_projects$OwnerTypesAdj)) & !(is.na(filtered_projects$GrossSqFoot)) & !(is.na(filtered_projects$IsCertifiedBol))) 
+
+ST_glm <- glm(IsCertifiedBol ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot + TimeOpen, data = filtered_projects_glm)
+summary(ST_glm)
+
+#Coordinte with Ops on the LOE for each project and you will have a model for future man-hours needed.
+```
 
