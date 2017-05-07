@@ -45,7 +45,7 @@ The distribution has a left skew.  Additionally, we can see that the residuals h
 
 Answer:
 
-for this exercise, I will compare the percent of students who completed the evaluations against the average beauty of the professo.
+for this exercise, I will compare the percent of students who completed the evaluations against the average beauty of the professor.
 
 ```{r}
 ggplot(evals, aes(x=cls_perc_eval, y=bty_avg)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
@@ -65,7 +65,7 @@ jitter_bty_avg <- jitter(evals$bty_avg, factor = 1.5)
 plot(evals$score ~ jitter_bty_avg)
 ```
 
-Due to the low number of unique variable values possible, there appear to be many overlapping data points.  The jitter plot slightly shifts the vector values so that this can be more apparent.
+Due to the low number of unique variable values possible, there appear to be many overlapping data points.  The jitter plot slightly shifts the vector values so that this can be more apparent.  The initial scatterplot is misleading because it does not accurately depict the number of points of data.
 
 ####Exercise 5 - Let’s see if the apparent trend in the plot is something more than natural variation. Fit a linear model called m_bty to predict average professor score by average beauty rating and add the line to your plot using abline(m_bty). Write out the equation for the linear model and interpret the slope. Is average beauty score a statistically significant predictor? Does it appear to be a practically significant predictor?
 
@@ -80,7 +80,7 @@ abline(m_bty)
 
 $$evaluation\quad score\quad =\quad 3.88\quad +\quad 0.067\quad *\quad average\quad beauty$$
 
-For every one point of increase in average beauty, a professor is expected to recieve an additiona 0.067 points in their evaluation.  Since the p-value is less than 0.05, it appears that average beauty is a statistically significant predictor of the evaluation score.  It does not appear to be a practically significant predictor because the r-squared value is 0.03 which means that only 3% of the variability is explained by the linear model.  Additionally, the slope of the equation is very small and may not have a significant impact on the results.
+For every one point of increase in average beauty, a professor is expected to recieve an additional 0.067 points in their evaluation.  Since the p-value is less than 0.05, it appears that average beauty is a statistically significant predictor of the evaluation score.  It does not appear to be a practically significant predictor because the r-squared value is 0.03 which means that only 3% of the variability is explained by the linear model.  Additionally, the slope of the equation is very small and may not have a significant impact on the results.
 
 ####Exercise 6 - Use residual plots to evaluate whether the conditions of least squares regression are reasonable. Provide plots and comments for each one (see the Simple Regression Lab for a reminder of how to make these).
 
@@ -90,7 +90,7 @@ Answer:
 hist(m_bty$residuals)
 qqnorm(m_bty$residuals)
 qqline(m_bty$residuals)
-ggplot(m_bty, aes(y=resid(m_bty), x=m_bty$fitted.values))+geom_point()+geom_hline(yintercept = 0)
+ggplot(m_bty, aes(y=abs(resid(m_bty)), x=m_bty$fitted.values))+geom_point()+geom_hline(yintercept = 0)
 ggplot(m_bty, aes(y=resid(m_bty), x=bty_avg))+geom_point()+geom_hline(yintercept = 0)
 ```
 
@@ -141,7 +141,7 @@ The residuals have a left skew; therefore they are not nearly normal and a linea
 2. the variability of the residuals is nearly constant
 
 ```{r}
-ggplot(m_bty_gen, aes(y=resid(m_bty_gen), x=m_bty_gen$fitted.values))+geom_point()+geom_hline(yintercept = 0)
+ggplot(m_bty_gen, aes(y=abs(resid(m_bty_gen)), x=m_bty_gen$fitted.values))+geom_point()+geom_hline(yintercept = 0)
 ```
 
 The comparison of the the fitted values against the absolute value of the residuals shows a constant variability and there does not appear to be any underlying patterns.
@@ -318,7 +318,7 @@ Given that all the categorical variables chosen have two levels, they definitely
 
 Answer:
 
-It does not appear that this issue would affect the conditions of linear regression.  It is not required that each case have a different professor.  It is possible that some professors that teach many types of classes, or teach on type of class many times, would cause some issues with the model; however, as long as there arent' a significant number of these types of issues, the model should not be greatly impacted.
+It does not appear that this issue would affect the conditions of linear regression.  It is not required that each case have a different professor.  It is possible that some professors that teach many types of classes, or teach one type of class many times, would cause some issues with the model; however, as long as there arent' a significant number of these types of issues, the model should not be greatly impacted.
 
 ####Exercise 18 - Based on your final model, describe the characteristics of a professor and course at University of Texas at Austin that would be associated with a high evaluation score.
 
@@ -331,7 +331,7 @@ The characteristics of a professor and course that would be associated with a hi
 3. The language of school where professor received education was english.
 4. The professor is young.
 5. The professor had a high percent of students in class who completed evaluation.
-6. The class was taught was assigned one credit.
+6. The class taught was assigned one credit.
 7. The professor recieved a high average beauty score.
 8. The 	color of professor’s picture is black and white.
 

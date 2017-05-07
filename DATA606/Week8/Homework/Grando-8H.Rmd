@@ -220,7 +220,7 @@ ggplot(ch_df, aes(y=predicteddamage, x=temp)) + geom_point() + stat_smooth(metho
 
 Answer:
 
-My main concern is that each outcome is not independent of other outcomes (assumption 2 below) since there ar so few launches that it is likely there are upgrades and/or modifications most of the launch equipment; therefore, it is not guaranteed that ther weren's some other fators, dependent on time series, that affected the results.  Additionally, we should check that the predictor is linearly related to the logit(pi) values.
+My main concern is that each outcome is not independent of other outcomes (assumption 2 below) since there ar so few launches that it is likely there are upgrades and/or modifications most of the launch equipment; therefore, it is not guaranteed that ther was not some other fators, dependent on time series, that affected the results.  Additionally, we should check that the predictor is linearly related to the logit(pi) values.
 
 The assumptions that must be met are the following:
 

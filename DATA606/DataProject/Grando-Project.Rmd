@@ -202,7 +202,7 @@ ggplot(completed_projects_v2, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_b
 
 completed_projects_v3 <- subset(completed_projects, completed_projects$Platform=="v3")
 table(completed_projects_v3$RegYear)
-completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$RegYear < 5 & completed_projects_v3$RegYear>0)
+completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$RegYear < 7 & completed_projects_v3$RegYear>0)
 ggplot(completed_projects_v3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v3 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
@@ -505,7 +505,7 @@ step_ST_lm <- step(object = ST_lm, direction = "backward")
 summary(step_ST_lm)
 ```
 
-From this analysis, we can see Country, Rating System Family, owner types, and gross floor area are good predictors for the model.  Additionally, we see that the model predicts `r round(summary(ST_lm)[[9]] * 100, digits = 4)`% of the variability for the overall data set, which is much better than the previous model.  However,  in order to validate the model, the following assumptions must be checked:
+From this analysis, we can see Country, Rating System Family, owner types, and gross floor area are good predictors for the model.  Additionally, we see that the model explains `r round(summary(ST_lm)[[9]] * 100, digits = 4)`% of the variability for respone variable (submittal time), which is much better than the previous model.  However,  in order to validate the model, the following assumptions must be checked:
 
 1. the residuals of the model are nearly normal
 
