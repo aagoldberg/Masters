@@ -114,10 +114,10 @@ project_data_adjusted$SubmittalTimePending <- ifelse(project_data_adjusted$Platf
 project_data_adjusted$SubmittalTime <- ifelse(project_data_adjusted$Platform=="v2" & project_data$SubmittalTime>maxv3days,NA,project_data_adjusted$SubmittalTime)
 
 #Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.
-completed_projects <- subset(project_data_adjusted,  project_data_adjusted$SubmittalTime>0 & !(is.na(project_data_adjusted$CertDate)) & !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
+completed_projects <- subset(project_data_adjusted,  project_data_adjusted$SubmittalTime>0 & !(is.na(project_data_adjusted$CertDate)) & !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4") & project_data_adjusted$GrossSqFoot>0)
 
 #Same as above but with projects that have not certified.
-open_projects <- subset(project_data_adjusted, project_data_adjusted$SubmittalTimePending>0 & is.na(project_data_adjusted$CertDate) & !(identical(project_data_adjusted$RatingSystemFamily,character(0))) & !(is.na(project_data_adjusted$Platform)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4"))
+open_projects <- subset(project_data_adjusted, project_data_adjusted$SubmittalTimePending>0 & is.na(project_data_adjusted$CertDate) & !(identical(project_data_adjusted$RatingSystemFamily,character(0))) & !(is.na(project_data_adjusted$Platform)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & !(project_data_adjusted$Platform=="v4") & project_data_adjusted$GrossSqFoot>0)
 ```
 
 ### Part 1 - Introduction:
@@ -293,54 +293,33 @@ We will now test each project against each other using two-sample t-tests.  As p
 
 ```{r}
 #BDC vs OM
-BDC_V3_mean <- mean(completed_projects_BDC_V3$SubmittalTime)
-BDC_v3_sd <- sd(completed_projects_BDC_V3$SubmittalTime)
-BDC_V3_n <- length(completed_projects_BDC_V3$SubmittalTime)
-
-OM_V3_mean <- mean(completed_projects_OM_V3$SubmittalTime)
-OM_v3_sd <- sd(completed_projects_OM_V3$SubmittalTime)
-OM_V3_n <- length(completed_projects_OM_V3$SubmittalTime)
-
-tdf <- min(BDC_V3_n, OM_V3_n)
-#pooled sd
-sd <- sqrt(summary(RSF_aov)[[1]][[3]][[2]])
-se <- sqrt(sd^2 / BDC_V3_n + sd^2 / OM_V3_n)
+(BDC_vs_OM_t <- t.test(completed_projects_BDC_V3$SubmittalTime, completed_projects_OM_V3$SubmittalTime, conf.level = (1 - bonf_alpha)))
 
 lb <- -4
 ub <- 4
-t_value <- (BDC_V3_mean - OM_V3_mean) / se
+t_value <- BDC_vs_OM_t[[1]]
 t1 <- qt(p=bonf_alpha, df = tdf)
 t2 <- qt(p= 1 - bonf_alpha, df = tdf)
 pick_line1 <- round(t_value, digits = 2)
 ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = list(df=tdf)) + stat_function(fun = dt, args = list(df=tdf), xlim = c(lb, t1),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + stat_function(fun = dt, args = list(df=tdf), xlim = c(t2, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + geom_text(aes(x=pick_line1, y=0.2, label=sprintf("t = %s\n", pick_line1)), color="black", angle=90) + labs(x="t Value") + ggtitle("BD+C vs EBOM Projects") + theme(plot.title = element_text(hjust = 0.5))
 
 #BDC vs IDC
-IDC_V3_mean <- mean(completed_projects_IDC_V3$SubmittalTime)
-IDC_v3_sd <- sd(completed_projects_IDC_V3$SubmittalTime)
-IDC_V3_n <- length(completed_projects_IDC_V3$SubmittalTime)
-
-tdf <- min(BDC_V3_n, IDC_V3_n)
-#pooled sd
-sd <- sqrt(summary(RSF_aov)[[1]][[3]][[2]])
-se <- sqrt(sd^2 / BDC_V3_n + sd^2 / IDC_V3_n)
+(BDC_vs_IDC_t <- t.test(completed_projects_BDC_V3$SubmittalTime, completed_projects_IDC_V3$SubmittalTime, conf.level = (1 - bonf_alpha)))
 
 lb <- -4
 ub <- 4
-t_value <- (BDC_V3_mean - IDC_V3_mean) / se
+t_value <- BDC_vs_IDC_t[[1]]
 t1 <- qt(p=bonf_alpha, df = tdf)
 t2 <- qt(p= 1 - bonf_alpha, df = tdf)
 pick_line1 <- round(t_value, digits = 2)
 ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = list(df=tdf)) + stat_function(fun = dt, args = list(df=tdf), xlim = c(lb, t1),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + stat_function(fun = dt, args = list(df=tdf), xlim = c(t2, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75) + geom_text(aes(x=pick_line1, y=0.2, label=sprintf("t = %s\n", pick_line1)), color="black", angle=90) + labs(x="t Value") + ggtitle("BD+C vs IDC Projects") + theme(plot.title = element_text(hjust = 0.5))
 
 #OM vs IDC
-tdf <- min(OM_V3_n, IDC_V3_n)
-#pooled sd
-sd <- sqrt(summary(RSF_aov)[[1]][[3]][[2]])
-se <- sqrt(sd^2 / OM_V3_n + sd^2 / IDC_V3_n)
+(OM_vs_IDC_t <- t.test(completed_projects_OM_V3$SubmittalTime, completed_projects_IDC_V3$SubmittalTime, conf.level = (1 - bonf_alpha)))
 
 lb <- -4
 ub <- 4
-t_value <- (OM_V3_mean - IDC_V3_mean) / se
+t_value <- OM_vs_IDC_t[[1]]
 t1 <- qt(p=bonf_alpha, df = tdf)
 t2 <- qt(p= 1 - bonf_alpha, df = tdf)
 pick_line1 <- round(t_value, digits = 2)
@@ -350,26 +329,25 @@ ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = l
 
 As can be seen from the pariwise t-tests, it has been determined that we are 95% confident that the mean submittal time between groups is different between all groups (BD+C, ID+C, and OM).
 
-Now, there are not many numerical values that can be used as predictors of how long it will take a project to certify.  Note, attributes such as the number of points achieved and certification level are only known after a project has certified; therefore, have limited value.  One possible numerical indicator of submittal time that can be used in the gross floor area of the project.  We will now use this predictor to determine a least squares linear regerssion line to predict the response variable of submittal time.  Since we have already determined that each Rating System Family has significantly different submittal times, we will perform separate linear regression analsyses for BD+C, ID+C, and OM.
+Now, there are not many numerical values that can be used as predictors of how long it will take a project to certify.  Note, attributes such as the number of points achieved and certification level are only known after a project has certified; therefore, have limited value.  One possible numerical indicator of submittal time that can be used in the gross floor area of the project.  We will now use this predictor to determine a least squares linear regerssion line to predict the response variable of submittal time.  Due to the large differences in the maximum and minimum values, a log translation will be applied to the data.  Also, since we have already determined that each Rating System Family has significantly different submittal times, we will perform separate linear regression analsyses for BD+C, ID+C, and OM.
 
 ####Generate Linear Regression Models and Graphs
 ```{r}
 #BDC
-gf_lm_BDC_V3 <- lm(SubmittalTime ~ GrossSqFoot, data = completed_projects_BDC_V3)
+gf_lm_BDC_V3 <- lm(SubmittalTime ~ log(GrossSqFoot), data = completed_projects_BDC_V3)
 summary(gf_lm_BDC_V3)
 
-ggplot(completed_projects_BDC_V3, aes(y=SubmittalTime, x=GrossSqFoot)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="Gross Floor Area", y="Days Between Registration and Certification") + ggtitle("BD+C Gross Floor Area Against Submittal Time") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(completed_projects_BDC_V3, aes(y=SubmittalTime, x=log(GrossSqFoot))) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="Log of Gross Floor Area", y="Days Between Registration and Certification") + ggtitle("Log of BD+C Gross Floor Area Against Submittal Time") + theme(plot.title = element_text(hjust = 0.5))
 
 #IDC
-gf_lm_IDC_V3 <- lm(SubmittalTime ~ GrossSqFoot, data = completed_projects_IDC_V3)
+gf_lm_IDC_V3 <- lm(SubmittalTime ~ log(GrossSqFoot), data = completed_projects_IDC_V3)
 summary(gf_lm_IDC_V3)
-ggplot(completed_projects_IDC_V3, aes(y=SubmittalTime, x=GrossSqFoot)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="Gross Floor Area", y="Days Between Registration and Certification") + ggtitle("ID+C Gross Floor Area Against Submittal Time") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(completed_projects_IDC_V3, aes(y=SubmittalTime, x=log(GrossSqFoot))) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="Log of Gross Floor Area", y="Days Between Registration and Certification") + ggtitle("Log of ID+C Gross Floor Area Against Submittal Time") + theme(plot.title = element_text(hjust = 0.5))
 
 #OM
-gf_lm_OM_V3 <- lm(SubmittalTime ~ GrossSqFoot, data = completed_projects_OM_V3)
+gf_lm_OM_V3 <- lm(SubmittalTime ~ log(GrossSqFoot), data = completed_projects_OM_V3)
 summary(gf_lm_OM_V3)
-ggplot(completed_projects_OM_V3, aes(y=SubmittalTime, x=GrossSqFoot)) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="Gross Floor Area", y="Days Between Registration and Certification") + ggtitle("OM Gross Floor Area Against Submittal Time") + theme(plot.title = element_text(hjust = 0.5))
-
+ggplot(completed_projects_OM_V3, aes(y=SubmittalTime, x=log(GrossSqFoot))) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="Log of Gross Floor Area", y="Days Between Registration and Certification") + ggtitle("Log of OM Gross Floor Area Against Submittal Time") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 As we can see from the R-square values, these models do not appear to be the best predictors of submitall time but do produce statistically significant prediction slopes.  While these results do not appear to be of much use at the moment, we will continue the analysis and validate the models by checking the following asusmptions:
@@ -378,17 +356,17 @@ As we can see from the R-square values, these models do not appear to be the bes
 
 ```{r}
 #BDC
-ggplot(data = gf_lm_BDC_V3, aes(x=resid(gf_lm_BDC_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_BDC_V3$residuals),sd(gf_lm_BDC_V3$residuals))) + labs(x="Residuals") + ggtitle("BD+C Gross Floor Area Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = gf_lm_BDC_V3, aes(x=resid(gf_lm_BDC_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_BDC_V3$residuals),sd(gf_lm_BDC_V3$residuals))) + labs(x="Residuals") + ggtitle("Log of BD+C Gross Floor Area Residuals") + theme(plot.title = element_text(hjust = 0.5))
 qqnorm(gf_lm_BDC_V3$residuals)
 qqline(gf_lm_BDC_V3$residuals)
 
 #IDC
-ggplot(data = gf_lm_IDC_V3, aes(x=resid(gf_lm_IDC_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_IDC_V3$residuals),sd(gf_lm_IDC_V3$residuals))) + labs(x="Residuals") + ggtitle("ID+C Gross Floor Area Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = gf_lm_IDC_V3, aes(x=resid(gf_lm_IDC_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_IDC_V3$residuals),sd(gf_lm_IDC_V3$residuals))) + labs(x="Residuals") + ggtitle("Log of ID+C Gross Floor Area Residuals") + theme(plot.title = element_text(hjust = 0.5))
 qqnorm(gf_lm_IDC_V3$residuals)
 qqline(gf_lm_IDC_V3$residuals)
 
 #OM
-ggplot(data = gf_lm_OM_V3, aes(x=resid(gf_lm_OM_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_OM_V3$residuals),sd(gf_lm_OM_V3$residuals))) + labs(x="Residuals") + ggtitle("OM Gross Floor Area Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = gf_lm_OM_V3, aes(x=resid(gf_lm_OM_V3))) + geom_histogram(binwidth = 100, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(gf_lm_OM_V3$residuals),sd(gf_lm_OM_V3$residuals))) + labs(x="Residuals") + ggtitle("Log of OM Gross Floor Area Residuals") + theme(plot.title = element_text(hjust = 0.5))
 qqnorm(gf_lm_OM_V3$residuals)
 qqline(gf_lm_OM_V3$residuals)
 ```
@@ -397,33 +375,33 @@ qqline(gf_lm_OM_V3$residuals)
 
 ```{r}
 #BDC
-ggplot(gf_lm_BDC_V3, aes(y=abs(resid(gf_lm_BDC_V3)), x=gf_lm_BDC_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="Fitted Values", y="Absolute Values of residuals") + ggtitle("BD+C Gross Floor Area Fitted Values Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_BDC_V3, aes(y=abs(resid(gf_lm_BDC_V3)), x=gf_lm_BDC_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="Fitted Values", y="Absolute Values of residuals") + ggtitle("Log of BD+C Gross Floor Area Fitted Values Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #IDC
-ggplot(gf_lm_IDC_V3, aes(y=abs(resid(gf_lm_IDC_V3)), x=gf_lm_IDC_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="Fitted Values", y="Absolute Values of residuals") + ggtitle("ID+C Gross Floor Area Fitted Values Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_IDC_V3, aes(y=abs(resid(gf_lm_IDC_V3)), x=gf_lm_IDC_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="Fitted Values", y="Absolute Values of residuals") + ggtitle("Log of ID+C Gross Floor Area Fitted Values Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #OM
-ggplot(gf_lm_OM_V3, aes(y=abs(resid(gf_lm_OM_V3)), x=gf_lm_OM_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="Fitted Values", y="Absolute Values of residuals") + ggtitle("OM Gross Floor Area Fitted Values Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_OM_V3, aes(y=abs(resid(gf_lm_OM_V3)), x=gf_lm_OM_V3$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="Fitted Values", y="Absolute Values of residuals") + ggtitle("Log of OM Gross Floor Area Fitted Values Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 3. the residuals are independent
 
 ```{r}
 #BDC
-ggplot(gf_lm_BDC_V3, aes(y=resid(gf_lm_BDC_V3), x=completed_projects_BDC_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0) + labs(x="Registration Date", y="Residuals") + ggtitle("BD+C Registration Date Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_BDC_V3, aes(y=resid(gf_lm_BDC_V3), x=completed_projects_BDC_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0) + labs(x="Registration Date", y="Residuals") + ggtitle("Log of BD+C Registration Date Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #IDC
-ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=completed_projects_IDC_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0) + labs(x="Registration Date", y="Residuals") + ggtitle("ID+C Registration Date Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=completed_projects_IDC_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0) + labs(x="Registration Date", y="Residuals") + ggtitle("Log of ID+C Registration Date Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #OM
-ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=completed_projects_OM_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0) + labs(x="Registration Date", y="Residuals") + ggtitle("OM Registration Date Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=completed_projects_OM_V3$RegistrationDate))+geom_point()+geom_hline(yintercept = 0) + labs(x="Registration Date", y="Residuals") + ggtitle("Log of OM Registration Date Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 4. each variable is linearly related to the outcome.
 
 ```{r}
 #BDC
-ggplot(gf_lm_BDC_V3, aes(y=resid(gf_lm_BDC_V3), x=completed_projects_BDC_V3$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0) + labs(x="Gross Floor Area", y="Residuals") + ggtitle("BD+C Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_BDC_V3, aes(y=resid(gf_lm_BDC_V3), x=log(completed_projects_BDC_V3$GrossSqFoot)))+geom_point()+geom_hline(yintercept = 0) + labs(x="Log of Gross Floor Area", y="Residuals") + ggtitle("Log of BD+C Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #IDC
-ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=completed_projects_IDC_V3$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0) + labs(x="Gross Floor Area", y="Residuals") + ggtitle("ID+C Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=log(completed_projects_IDC_V3$GrossSqFoot)))+geom_point()+geom_hline(yintercept = 0) + labs(x="Log of Gross Floor Area", y="Residuals") + ggtitle("Log of ID+C Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #OM
-ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=completed_projects_OM_V3$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0) + labs(x="Gross Floor Area", y="Residuals") + ggtitle("OM Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=log(completed_projects_OM_V3$GrossSqFoot)))+geom_point()+geom_hline(yintercept = 0) + labs(x="Log of Gross Floor Area", y="Residuals") + ggtitle("Log of OM Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 The histogram shows that the data do not exactly follow a normal distribution.  From the normal probability plot it appears the data is narrower than a typical normal distribution (short tails) and has a right ske for the BD+C and ID+C data sets.  The OM data set appear to have a right skew and it is unclear if there are short tails.  Each group has some extreme gross floor area values which are points of high leverage and may be significantly affecting the model.  The residuals appear to be independent from the registration date vs residuals and gross floor area vs residuals graphs.  Note that there is apparent decrease of the maximum possible value in the registration date vs residuals graph.  This is due to the fact that older projects have a larger window to certify since they have been open longer, thus they can have a larger maximum possible residual.  There are some issues with these models, mainly the residual plots being skewed and smaller than expected spas, and a low r-squared value.  Even if all the assumptions were completely validated, the model would only predict `r round(summary(gf_lm_BDC_V3)[[9]] * 100, digits = 4)`% of the variability for the BD+C data set, `r round(summary(gf_lm_IDC_V3)[[9]] * 100, digits = 4)`% of the variability for the ID+C data set, and `r round(summary(gf_lm_OM_V3)[[9]] * 100, digits = 4)`% of the variability for the OM data set, which is much too small to be considered useful.
@@ -432,20 +410,28 @@ As previously noted, the gross floor is not a great predictor variable of the ti
 
 ```{r}
 #Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.  Only v3 since that is what we want to guess.
-filtered_projects <- subset(project_data_adjusted,  !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & project_data_adjusted$Platform=="v3")
+filtered_projects <- subset(project_data_adjusted,  !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & project_data_adjusted$Platform=="v3" & project_data_adjusted$GrossSqFoot>0)
 
 #Remove all NAs that are present
-filtered_projects_lm <- subset(filtered_projects, filtered_projects$SubmittalTime>0 & !(is.na(filtered_projects$Isconfidential)) & !(is.na(filtered_projects$Country)) & !(is.na(filtered_projects$RatingSystemFamily)) & !(is.na(filtered_projects$Platform)) & !(is.na(filtered_projects$OwnerTypesAdj)) & !(is.na(filtered_projects$GrossSqFoot))) 
+filtered_projects_lm <- subset(filtered_projects, filtered_projects$SubmittalTime>0 & !(is.na(filtered_projects$Isconfidential)) & !(is.na(filtered_projects$Country)) &  !(is.na(filtered_projects$RatingSystemFamily)) & !(is.na(filtered_projects$Platform)) & !(is.na(filtered_projects$OwnerTypesAdj)) & !(is.na(filtered_projects$GrossSqFoot)))
+
+#Relevel countries so that US is the reference (base) value in the linear regression.
+filtered_projects_lm$Country <- as.factor(filtered_projects_lm$Country)
+filtered_projects_lm$Country <- relevel(filtered_projects_lm$Country, ref = "US")
+
+#Work on this one... filter out the smaller countries?  Send them to an "other" category?
+(Country_count <- table(filtered_projects_lm$Country))
+
 ```
 
 Now, by using backward elimination and forward selection, we can determine the best combination of predictor variables.
 
 ```{r}
-ST_lm <- lm(SubmittalTime ~ Isconfidential + Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
+ST_lm <- lm(SubmittalTime ~ Isconfidential + Country + RatingSystemFamily + OwnerTypesAdj + log(GrossSqFoot), data = filtered_projects_lm)
 summary(ST_lm)
 
 #Backward Radj - First step remove Isconfidential
-ST_lm_b <- lm(SubmittalTime ~ Country + RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
+ST_lm_b <- lm(SubmittalTime ~ Country + RatingSystemFamily + OwnerTypesAdj + log(GrossSqFoot), data = filtered_projects_lm)
 summary(ST_lm_b)
 
 # #Forward
@@ -461,7 +447,7 @@ summary(ST_lm_b)
 # ST_lm_f <- lm(SubmittalTime ~ OwnerTypesAdj, data = filtered_projects_lm)
 # summary(ST_lm_f)
 # 
-# ST_lm_f <- lm(SubmittalTime ~ GrossSqFoot, data = filtered_projects_lm)
+# ST_lm_f <- lm(SubmittalTime ~ log(GrossSqFoot), data = filtered_projects_lm)
 # summary(ST_lm_f)
 # 
 # 
@@ -475,7 +461,7 @@ summary(ST_lm_b)
 # ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj, data = filtered_projects_lm)
 # summary(ST_lm_f)
 # 
-# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + GrossSqFoot, data = filtered_projects_lm)
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + log(GrossSqFoot), data = filtered_projects_lm)
 # summary(ST_lm_f)
 # 
 # #Forward pick RatingSystemFamily and OwnerTypesAdj
@@ -485,19 +471,19 @@ summary(ST_lm_b)
 # ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country, data = filtered_projects_lm)
 # summary(ST_lm_f)
 # 
-# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + GrossSqFoot, data = filtered_projects_lm)
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + log(GrossSqFoot), data = filtered_projects_lm)
 # summary(ST_lm_f)
 # 
-# #Forward pick RatingSystemFamily and OwnerTypesAdj and Country
-# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + Isconfidential, data = filtered_projects_lm)
+# #Forward pick RatingSystemFamily and OwnerTypesAdj and log(GrossSqFoot)
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + log(GrossSqFoot) + Isconfidential, data = filtered_projects_lm)
 # summary(ST_lm_f)
 # 
-# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot, data = filtered_projects_lm)
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + log(GrossSqFoot) + Country, data = filtered_projects_lm)
 # summary(ST_lm_f)
 
 #Forward pick RatingSystemFamily and OwnerTypesAdj and Country and GrossSqFoot
-# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + Country + GrossSqFoot, data = filtered_projects_lm)
-# summary(ST_lm_f)
+ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + log(GrossSqFoot) + Country, data = filtered_projects_lm)
+summary(ST_lm_f)
 
 
 #Test
@@ -531,11 +517,14 @@ ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RegistrationDate))+
 
 4. each variable is linearly related to the outcome.
 
+```{r, fig.width=10,fig.height=30}
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$Country))+geom_boxplot() + labs(x="Country Code", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Country") + theme(plot.title = element_text(hjust = 0.5)) + coord_flip()
+```
+
 ```{r}
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$Country))+geom_boxplot() + geom_point() + labs(x="Country Code", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Country") + theme(plot.title = element_text(hjust = 0.5))
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RatingSystemFamily))+geom_boxplot() + geom_point() + labs(x="Rating System Family", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$OwnerTypesAdj))+geom_boxplot() + geom_point() + labs(x="Owner Types", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Owner Type") + theme(plot.title = element_text(hjust = 0.5))
-ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$GrossSqFoot))+geom_point()+geom_hline(yintercept = 0) + labs(x="Gross Floor Area", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Gross Floor Area") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RatingSystemFamily)) + geom_boxplot()  + labs(x="Rating System Family", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$OwnerTypesAdj))+ geom_boxplot()  + labs(x="Owner Types", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Owner Type") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=log(filtered_projects_lm$GrossSqFoot)))+ geom_point() + geom_hline(yintercept = 0) + labs(x="Log of Gross Floor Area", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Gross Floor Area") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 As with the previous linear model, the residual histogram plot shows that the data distribution is more narrow than a normal distribution and has a right skew.  Additionally, since we have kept the gross square foot predictor, there are still some leverage points for this value.  However, the remaining data show that each predictor apepars to be linearly related to the outcome and appear to be independent based on the registration date graph.
