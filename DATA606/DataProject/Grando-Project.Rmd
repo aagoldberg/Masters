@@ -206,11 +206,66 @@ completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$Reg
 ggplot(completed_projects_v3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v3 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
+```{r}
+completed_projects <- subset(completed_projects, Platform=="v3")
+```
+
+Since most projects using the v2 Platform have either been certified or will soon be sunsetted and no longer have the ability to certify, it does not benefit us to make any predictions based on this data.  Additionally, there is more than enough v3 Platform project data to do an analyses; therefore, the v2 data will be removed for all inference calculations.  Additionally, here are the exploratory graphs for v3 only.
+
+```{r}
+####Graphs based on present assumptions
+table(completed_projects$RatingSystemFamily)
+
+#General Rating System Family histogram
+ggplot(completed_projects, aes(x=SubmittalTime, fill=RatingSystemFamily))+geom_histogram(binwidth = 100, alpha=0.5, position = "identity", aes(y=..density..))+labs(x="Days Between Registration and Certification") + ggtitle("Project Age vs. Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+#General Platform ~ Rating System Family boxplot
+ggplot(completed_projects, aes(y=SubmittalTime, x=Platform))+geom_boxplot()+facet_wrap(~RatingSystemFamily) + labs(y="Days Between Registration and Certification") + ggtitle("Project Age Broken Down By Platform and Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+
+#Summary Tables
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
+
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="IDC")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
+
+tabledata <- subset(completed_projects, completed_projects$RatingSystemFamily=="OM")
+summary(tabledata$SubmittalTime)
+sd(tabledata$SubmittalTime)
+
+####Rating System Family Tests
+completed_projects_BDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="BDC")
+ggplot(completed_projects_BDC, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("BD+C Projects") + theme(plot.title = element_text(hjust = 0.5))
+
+completed_projects_IDC <- subset(completed_projects, completed_projects$RatingSystemFamily=="IDC")
+ggplot(completed_projects_IDC, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("ID+C Projects") + theme(plot.title = element_text(hjust = 0.5))
+
+completed_projects_OM <- subset(completed_projects, completed_projects$RatingSystemFamily=="OM")
+ggplot(completed_projects_OM, aes(x=SubmittalTime, fill=Platform))+geom_histogram(binwidth = 50, alpha=0.5, position = "identity", aes(y=..density..)) + labs(x="Days Between Registration and Certification") + ggtitle("OM Projects") + theme(plot.title = element_text(hjust = 0.5))
+
+####Gross floor area vs. submittal time tests
+
+#I have scaled the y axis to exclude some outliers in favor of seeing the main data set more clearly
+
+ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime, color=RatingSystemFamily))+geom_point() + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area") + theme(plot.title = element_text(hjust = 0.5))
+
+#When a facet wrap is applied, it is a little more clear there may be some association with at least one rating system.
+
+ggplot(completed_projects, aes(y=GrossSqFoot, x=SubmittalTime))+geom_point() + facet_wrap(~RatingSystemFamily)  + scale_y_continuous(limits = c(0,5000000)) + labs(x="Days Between Registration and Certification", y="Gross Floor Area") + ggtitle("Project Age vs Total Area By Rating System Family") + theme(plot.title = element_text(hjust = 0.5))
+
+#This is a test to see if project timelines decrease as the time between the registration date and the launch date increases
+#Create a data frame of completed v2 projects that are at least as old as the v3 launch.  This is so that we know we aren't creating a bias with recently registered projects that certified quickly.
+completed_projects_v3 <- subset(completed_projects, completed_projects$Platform=="v3")
+table(completed_projects_v3$RegYear)
+completed_projects_v3 <- subset(completed_projects_v3, completed_projects_v3$RegYear < 7 & completed_projects_v3$RegYear>0)
+ggplot(completed_projects_v3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_boxplot()+facet_wrap(~RegYear) + labs(x="Rating Sytem Family", y="Days Between Registration and Certification") + ggtitle("v3 Projects By Number of Years Registered after Platform Launch") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+
 ### Part 4 - Inference:
 
 Frome the previous section, we can see that it appears the most signinficant difference between groups is the rating system families.  Additionally, we will test to see if gross floor area is a significant predictor of the time it takes for a project to certify (submittal time).
-
-Since most projects using the v2 Platform have either been certified or will soon be sunsetted and no longer have the ability to certify, it does not benefit us to make any predictions based on this data.  Additionally, there is more than enough v3 Platform project data to do an analyses; therefore, the v2 data will be removed for all inference calculations.
 
 ####Analysis of Variance (ANOVA) Test Between Rating System Families.
 
@@ -223,8 +278,6 @@ In order to do this, we must first verify the following assumptions:
 1. The observations are independent within and across groups
 
 Since the data actually represent all current projects, it can be assumed that there is no bias in the sampling because no sampling is being performed.  Also, projects can only be in one Rating System Family.  Therefore, the obseravations are considered independent.  
-
-# Is this necessary for ANOVA? However, since the entire current population is being used, the standard deviation, rather than the standard error, will be used to determine all normalized data due to the fact that the population paratmeters are being used instead of sample parameters.
 
 2. The data within each group are nearly normal
 
@@ -264,7 +317,7 @@ ggplot(completed_projects_V3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_b
 ```
 
 
-The boxplots indicate that the variability across groups does not have any significant outliers.  The standard deviation is `r round(sd(completed_projects_BDC_V3$SubmittalTime), digits = 2)` for BD+C projects, `r round(sd(completed_projects_IDC_V3$SubmittalTime), digits = 2)` for ID+C projects, and `r round(sd(completed_projects_OM_V3$SubmittalTime), digits = 2)` for OM projects.  It appears the variance in the BD+C group is somewhat greater than the variance in the ID+C and OM groups.  Therefore, we shoud procede with caution and note this issue in the findings.
+The boxplots indicate that the variability across groups does not have any significant outliers.  The standard deviation is `r round(sd(completed_projects_BDC_V3$SubmittalTime), digits = 2)` for BD+C projects, `r round(sd(completed_projects_IDC_V3$SubmittalTime), digits = 2)` for ID+C projects, and `r round(sd(completed_projects_OM_V3$SubmittalTime), digits = 2)` for OM projects.  It appears the variance in the BD+C group is somewhat greater than the variance in the ID+C and OM groups.  Therefore, we shoud procede with caution and note this issue in the findings.  Additionally, each group (BD+C, ID+C, and OM) has issues pertaining to their distributions.  The BD+C data set appears  narrower than a typical normal distribution (short tails) and has a slight right skew.  The BD+C and ID+C data sets are heavily right skewed and indicate that this might not be the best method to determine if the groups are significantly different; however, we will procede since this is the best available test we can perform at the moment.
 
 
 We will now perform an ANOVA test.  For this analysis, we will use a significance level of $\alpha = 0.05$.  This corresponds to an assumption that 95% of the time, we will not reject the null hypothesis (i.e. no difference) when it is true and 5% of the time we will, which is considered a Type I error.
@@ -327,7 +380,7 @@ ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = dt, args = l
 ```
 
 
-As can be seen from the pariwise t-tests, it has been determined that we are 95% confident that the mean submittal time between groups is different between all groups (BD+C, ID+C, and OM).
+As can be seen from the pariwise t-tests, it has been determined that we are 95% confident that the mean submittal time between Rating System Famiilies is different between all groups (BD+C, ID+C, and OM).
 
 Now, there are not many numerical values that can be used as predictors of how long it will take a project to certify.  Note, attributes such as the number of points achieved and certification level are only known after a project has certified; therefore, have limited value.  One possible numerical indicator of submittal time that can be used in the gross floor area of the project.  We will now use this predictor to determine a least squares linear regerssion line to predict the response variable of submittal time.  Due to the large differences in the maximum and minimum values, a log translation will be applied to the data.  Also, since we have already determined that each Rating System Family has significantly different submittal times, we will perform separate linear regression analsyses for BD+C, ID+C, and OM.
 
@@ -404,11 +457,9 @@ ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=log(completed_projects_IDC_V3$
 ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=log(completed_projects_OM_V3$GrossSqFoot)))+geom_point()+geom_hline(yintercept = 0) + labs(x="Log of Gross Floor Area", y="Residuals") + ggtitle("Log of OM Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-The histogram shows that the data do not exactly follow a normal distribution.  From the normal probability plot it appears the data is narrower than a typical normal distribution (short tails) and has a right ske for the BD+C and ID+C data sets.  The OM data set appear to have a right skew and it is unclear if there are short tails.  Each group has some extreme gross floor area values which are points of high leverage and may be significantly affecting the model.  The residuals appear to be independent from the registration date vs residuals and gross floor area vs residuals graphs.  Note that there is apparent decrease of the maximum possible value in the registration date vs residuals graph.  This is due to the fact that older projects have a larger window to certify since they have been open longer, thus they can have a larger maximum possible residual.  There are some issues with these models, mainly the residual plots being skewed and smaller than expected spas, and a low r-squared value.  Even if all the assumptions were completely validated, the model would only predict `r round(summary(gf_lm_BDC_V3)[[9]] * 100, digits = 4)`% of the variability for the BD+C data set, `r round(summary(gf_lm_IDC_V3)[[9]] * 100, digits = 4)`% of the variability for the ID+C data set, and `r round(summary(gf_lm_OM_V3)[[9]] * 100, digits = 4)`% of the variability for the OM data set, which is much too small to be considered useful.
+The histogram shows that the data do not exactly follow a normal distribution.  From the normal probability plot it appears the data is narrower than a typical normal distribution (short tails) and has a right skew for the BD+C and ID+C data sets.  The OM data set appear to have a right skew and it is unclear if there are short tails.  Each group has some extreme gross floor area values which are points of high leverage and may be significantly affecting the model.  The residuals appear to be independent from the registration date vs residuals and gross floor area vs residuals graphs.  Note that there is apparent decrease of the maximum possible value in the registration date vs residuals graph.  This is due to the fact that older projects have a larger window to certify since they have been open longer, thus they can have a larger maximum possible residual.  There are some issues with these models, mainly the residual plots being skewed and smaller than expected spas, and a low r-squared value.  Even if all the assumptions were completely validated, the model would only predict `r round(summary(gf_lm_BDC_V3)[[9]] * 100, digits = 4)`% of the variability for the BD+C data set, `r round(summary(gf_lm_IDC_V3)[[9]] * 100, digits = 4)`% of the variability for the ID+C data set, and `r round(summary(gf_lm_OM_V3)[[9]] * 100, digits = 4)`% of the variability for the OM data set, which is much too small to be considered useful.
 
-As previously noted, the gross floor is not a great predictor variable of the time it takes for a project to certify; however, we can perform a multi-linear regression analysis, which uses more than one predictor variable, to estimate the submittal times.  In order to do this, we must filter the data to ensure there are sufficient values in each predictor variable we want to use and then perform an analysis.  For this study, we will start with the following variables since they are known at the time of registration: confidential status (Isconfidential), Country, Rating System Family, owner types (OwnerTypesAdj - Note - the number of categories has been significantly reduced form meaningfullness), and gross floor area (GrossSqFoot).
-
-#Note that you have reduced the number of countries, and rerun the lm evaluations....
+As previously noted, the gross floor is not a great predictor variable of the time it takes for a project to certify; however, we can perform a multi-linear regression analysis, which uses more than one predictor variable, to estimate the submittal times.  In order to do this, we must filter the data to ensure there are sufficient values in each predictor variable we want to use and then perform an analysis.  For this study, we will start with the following variables since they are known at the time of registration: confidential status (Isconfidential), Country (Note - any countries that only had a small number of submittals have been grouped into an "other" category), Rating System Family, owner types (OwnerTypesAdj - Note - the number of categories has been significantly reduced for meaningfullness), and gross floor area (GrossSqFoot).
 
 ```{r}
 #Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.  Only v3 since that is what we want to guess.
@@ -423,7 +474,7 @@ filtered_projects_lm$Country <- relevel(filtered_projects_lm$Country, ref = "US"
 
 #Filter out the countries with only a few projects
 country_count <- data.frame(names(table(filtered_projects_lm$Country)), unname(table(filtered_projects_lm$Country)))
-country_count_small <- subset(country_count, Freq>29)
+country_count_small <- subset(country_count, Freq>99)
 names(country_count_small) <- c("Country","Var1","Freq")
 
 filtered_projects_lm$CountryAdj <- sapply(filtered_projects_lm$Country, 
@@ -543,12 +594,15 @@ ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=log(filtered_projects_lm$GrossSqFoot)))+
 
 As with the previous linear model, the residual histogram plot shows that the data distribution is more narrow than a normal distribution and has a right skew.  Additionally, since we have kept the gross square foot predictor, there are still some leverage points for this value.  However, the remaining data show that each predictor apepars to be linearly related to the outcome and appear to be independent based on the registration date graph.
 
-
-#Is the gross floor area plot sloping down?
-
 ### Part 5 - Conclusion: 
 
 Note the variance issue in the ANOVA test assumptions.  The issues in the single predictor linear regression and multi-linear
+
+#for annova test....
+Additionally, each group (BD+C, ID+C, and OM) has issues pertaining to their distributions.  The BD+C data set appears  narrower than a typical normal distribution (short tails) and has a slight right skew.  The BD+C and ID+C data sets are heavily right skewed and indicate that this might not be the best method to determine if the groups are significantly different; however, we will procede since this is the best available test we can perform at the moment.
+
+#Notes - possibly appendix
+Note the alternative study with they younger/older projects removed.
 
 ### References:
 
