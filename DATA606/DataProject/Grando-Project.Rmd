@@ -11,7 +11,7 @@ knitr::opts_chunk$set(tidy.opts=list(width.cutoff=90),tidy=TRUE)
 ```
 
 ## Grando - Data Project Proposal
-```{r echo=FALSE}
+```{r}
 #Set the working directory and read in the files
 if (Sys.info()["sysname"]=="Windows"){
   setwd("~/Masters/DATA606/DataProject")
