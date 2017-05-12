@@ -2,7 +2,7 @@ name: Publish Document
 title:
 account: rpubs
 server: rpubs.com
-appId: https://api.rpubs.com/api/v1/document/256916/669efe2575ec46cdbdffd4c61ceace40
-bundleId: https://api.rpubs.com/api/v1/document/256916/669efe2575ec46cdbdffd4c61ceace40
-url: http://rpubs.com/john-grando/256916
-when: 1490320458.32924
+appId: https://api.rpubs.com/api/v1/document/273808/30ce1602447343c3b3b009e2aeb8d742
+bundleId: https://api.rpubs.com/api/v1/document/273808/30ce1602447343c3b3b009e2aeb8d742
+url: http://rpubs.com/john-grando/273808
+when: 1494548155.40741

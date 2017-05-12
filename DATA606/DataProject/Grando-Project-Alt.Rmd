@@ -321,7 +321,7 @@ ggplot(completed_projects_V3, aes(y=SubmittalTime, x=RatingSystemFamily))+geom_b
 ```
 
 
-The boxplots indicate that the variability across groups does not have any significant outliers.  The standard deviation is `r round(sd(completed_projects_BDC_V3$SubmittalTime), digits = 2)` for BD+C projects, `r round(sd(completed_projects_IDC_V3$SubmittalTime), digits = 2)` for ID+C projects, and `r round(sd(completed_projects_OM_V3$SubmittalTime), digits = 2)` for OM projects.  It appears the variance in the BD+C group is somewhat greater than the variance in the ID+C and OM groups.  Therefore, we shoud procede with caution and note this issue in the findings.  Additionally, each group (BD+C, ID+C, and OM) has issues pertaining to their distributions.  The BD+C data set appears  narrower than a typical normal distribution (short tails) and has a slight right skew.  The BD+C and ID+C data sets are heavily right skewed and indicate that this might not be the best method to determine if the groups are significantly different; however, we will procede since this is the best available test we can perform at the moment.
+The boxplots indicate that the variability across groups does not have any significant outliers.  The standard deviation is `r round(sd(completed_projects_BDC_V3$SubmittalTime), digits = 2)` for BD+C projects, `r round(sd(completed_projects_IDC_V3$SubmittalTime), digits = 2)` for ID+C projects, and `r round(sd(completed_projects_OM_V3$SubmittalTime), digits = 2)` for OM projects.  It appears the variance in the BD+C group is somewhat greater than the variance in the ID+C and OM groups.  Therefore, we shoud procede with caution and note this issue in the findings.  Additionally, each group (BD+C, ID+C, and OM) has issues pertaining to their distributions.  The BD+C data set appears  narrower than a typical normal distribution (short tails).  The ID+C and OM data sets are heavily right skewed and indicate that this might not be the best method to determine if the groups are significantly different; however, we will procede since this is the best available test we can perform at the moment.
 
 
 We will now perform an ANOVA test.  For this analysis, we will use a significance level of $\alpha = 0.05$.  This corresponds to an assumption that 95% of the time, we will not reject the null hypothesis (i.e. no difference) when it is true and 5% of the time we will, which is considered a Type I error.
@@ -335,7 +335,7 @@ ub <- 3750
 f_value <- summary(RSF_aov)[[1]][["F value"]][1]
 f1 <- qf(p = (1-.05), df1 = summary(RSF_aov)[[1]][[1]][1], df2=summary(RSF_aov)[[1]][[1]][2])
 pick_line1 <- round(f_value,digits = 2)
-ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = df, args = list(df1=4, df2=1167)) + stat_function(fun = df, args = list(df1=4, df2=1167), xlim = c(f1, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.005, label=sprintf("F = %s\n", pick_line1)), color="black", angle=90) + labs(x="F Value") + ggtitle("ANOVA test F Distribution") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data.frame(x = c(lb, ub)), aes(x = x)) + stat_function(fun = df, args = list(df1=summary(RSF_aov)[[1]][[1]][1], df2=summary(RSF_aov)[[1]][[1]][2])) + stat_function(fun = df, args = list(df1=summary(RSF_aov)[[1]][[1]][1], df2=summary(RSF_aov)[[1]][[1]][2]), xlim = c(f1, ub),geom = "area", alpha=0.5) + geom_vline(xintercept=pick_line1, color = "black", alpha = 0.75)+geom_text(aes(x=pick_line1, y=0.5, label=sprintf("F = %s\n", pick_line1)), color="black", angle=90) + labs(x="F Value") + ggtitle("ANOVA test F Distribution") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Using a confidence level of 95%, we can see that there is sufficient evidence to reject the null hypothesis since the anova test has returned a p-value of 2e-16, which is much less than 0.05.  Therefore we reject the hypothesis that the average time between registration and certification (submittal time) is equal.
@@ -469,8 +469,13 @@ As previously noted, the gross floor is not a great predictor variable of the ti
 #Make sure all columns have good data and that v4, ND, and Homes projects are excluded due to small size.  Only v3 since that is what we want to guess.
 filtered_projects <- subset(project_data_adjusted,  !(identical(project_data_adjusted$RatingSystemFamily, character(0))) & !(is.na(project_data_adjusted$RatingSystemFamily)) & !(project_data_adjusted$RatingSystemFamily=="ND") & !(project_data_adjusted$RatingSystemFamily=="Homes") & project_data_adjusted$Platform=="v3" & project_data_adjusted$GrossSqFoot>0)
 
+#Leverage point adjustment
+filtered_projects <- subset(filtered_projects, RegistrationDate>older_cutoff & RegistrationDate<younger_cutoff & Platform=="v3")
+
 #Remove all NAs that are present
 filtered_projects_lm <- subset(filtered_projects, filtered_projects$SubmittalTime>0 & !(is.na(filtered_projects$Isconfidential)) & !(is.na(filtered_projects$Country)) &  !(is.na(filtered_projects$RatingSystemFamily)) & !(is.na(filtered_projects$Platform)) & !(is.na(filtered_projects$OwnerTypesAdj)) & !(is.na(filtered_projects$GrossSqFoot)))
+
+
 
 #Relevel countries so that US is the reference (base) value in the linear regression.
 filtered_projects_lm$Country <- as.factor(filtered_projects_lm$Country)
@@ -596,7 +601,7 @@ ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$OwnerTypesAdj))+ ge
 ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=log(filtered_projects_lm$GrossSqFoot)))+ geom_point() + geom_hline(yintercept = 0) + labs(x="Log of Gross Floor Area", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Gross Floor Area") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-As with the previous linear model, the residual histogram plot shows that the data distribution is more narrow than a normal distribution and has a right skew.  Additionally, since we have kept the gross square foot predictor, there are still some leverage points for this value.  However, the remaining data show that each predictor apepars to be linearly related to the outcome and appear to be independent based on the registration date graph.
+Unlike the the previous linear model, the residual histogram plot shows that the data distribution is a approximately normal.  The remaining data show that each predictor apepars to be linearly related to the outcome and appear to be independent based on the registration date graph.
 
 ### Part 5 - Conclusion: 
 
