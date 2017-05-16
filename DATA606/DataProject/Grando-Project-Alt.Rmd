@@ -346,7 +346,7 @@ Now that we know there is a difference of one of the means, we can perform indiv
 bonf_alpha <- 0.05 / 3
 ```
 
-We will now test each project against each other using two-sample t-tests.  As previously noted, the standard deviations, instad of standard errors will be used to determine the standard error of differences in these analyses since we are using population data.  This value is calculated from the pooled standard deviation from the ANOVA test.
+We will now test each project against each other using two-sample t-tests.
 
 ```{r}
 #BDC vs OM
@@ -407,7 +407,7 @@ summary(gf_lm_OM_V3)
 ggplot(completed_projects_OM_V3, aes(y=SubmittalTime, x=log(GrossSqFoot))) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="Log of Gross Floor Area", y="Days Between Registration and Certification") + ggtitle("Log of OM Gross Floor Area Against Submittal Time") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-As we can see from the R-square values, these models do not appear to be the best predictors of submitall time but do produce statistically significant prediction slopes.  While these results do not appear to be of much use at the moment, we will continue the analysis and validate the models by checking the following asusmptions:
+As we can see from the R-square values, these models do not appear to be great predictors of submitall time but do produce statistically significant prediction slopes.  While these results do not appear to be of much use at the moment, we will continue the analysis and validate the models by checking the following asusmptions:
 
 1. the residuals of the model are nearly normal
 
@@ -461,7 +461,7 @@ ggplot(gf_lm_IDC_V3, aes(y=resid(gf_lm_IDC_V3), x=log(completed_projects_IDC_V3$
 ggplot(gf_lm_OM_V3, aes(y=resid(gf_lm_OM_V3), x=log(completed_projects_OM_V3$GrossSqFoot)))+geom_point()+geom_hline(yintercept = 0) + labs(x="Log of Gross Floor Area", y="Residuals") + ggtitle("Log of OM Gross Floor Area Against Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-The histogram shows that the data do not exactly follow a normal distribution.  From the normal probability plot it appears the data is narrower than a typical normal distribution (short tails) and has a right skew for the BD+C and ID+C data sets.  The OM data set appear to have a right skew and it is unclear if there are short tails.  Each group has some extreme gross floor area values which are points of high leverage and may be significantly affecting the model.  The residuals appear to be independent from the registration date vs residuals and gross floor area vs residuals graphs.  Note that there is apparent decrease of the maximum possible value in the registration date vs residuals graph.  This is due to the fact that older projects have a larger window to certify since they have been open longer, thus they can have a larger maximum possible residual.  There are some issues with these models, mainly the residual plots being skewed and smaller than expected spas, and a low r-squared value.  Even if all the assumptions were completely validated, the model would only predict `r round(summary(gf_lm_BDC_V3)[[9]] * 100, digits = 4)`% of the variability for the BD+C data set, `r round(summary(gf_lm_IDC_V3)[[9]] * 100, digits = 4)`% of the variability for the ID+C data set, and `r round(summary(gf_lm_OM_V3)[[9]] * 100, digits = 4)`% of the variability for the OM data set, which is much too small to be considered useful.
+The histogram shows that the data do not exactly follow a normal distribution.  From the normal probability plot it appears the data is narrower than a typical normal distribution (short tails) and has a right skew for the BD+C and ID+C data sets.  The OM data set appear to have a right skew and it is unclear if there are short tails.  The residuals appear to be independent from the registration date vs residuals and gross floor area vs residuals graphs.  Note that there is apparent decrease of the maximum possible value in the registration date vs residuals graph.  This is due to the fact that older projects have a larger window to certify since they have been open longer, thus they can have a larger maximum possible residual.  In addition to the issues with skewness, each model reports a low r-squared value.  Even if all the assumptions were completely validated, the model would only predict `r round(summary(gf_lm_BDC_V3)[[9]] * 100, digits = 4)`% of the variability for the BD+C data set, `r round(summary(gf_lm_IDC_V3)[[9]] * 100, digits = 4)`% of the variability for the ID+C data set, and `r round(summary(gf_lm_OM_V3)[[9]] * 100, digits = 4)`% of the variability for the OM data set, which is much too small to be considered useful.
 
 As previously noted, the gross floor is not a great predictor variable of the time it takes for a project to certify; however, we can perform a multi-linear regression analysis, which uses more than one predictor variable, to estimate the submittal times.  In order to do this, we must filter the data to ensure there are sufficient values in each predictor variable we want to use and then perform an analysis.  For this study, we will start with the following variables since they are known at the time of registration: confidential status (Isconfidential), Country (Note - any countries that only had a small number of submittals have been grouped into an "other" category), Rating System Family, owner types (OwnerTypesAdj - Note - the number of categories has been significantly reduced for meaningfullness), and gross floor area (GrossSqFoot).
 
@@ -556,13 +556,13 @@ summary(ST_lm_b)
 # summary(ST_lm_f)
 
 #Forward pick RatingSystemFamily and OwnerTypesAdj and CountryAdj and GrossSqFoot
-ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + log(GrossSqFoot) + CountryAdj, data = filtered_projects_lm)
-summary(ST_lm_f)
+# ST_lm_f <- lm(SubmittalTime ~ RatingSystemFamily + OwnerTypesAdj + log(GrossSqFoot) + CountryAdj, data = filtered_projects_lm)
+# summary(ST_lm_f)
 
 
 #Test
-step_ST_lm <- step(object = ST_lm, direction = "backward")
-summary(step_ST_lm)
+# step_ST_lm <- step(object = ST_lm, direction = "backward")
+# summary(step_ST_lm)
 ```
 
 From this analysis, we can see Country, Rating System Family, owner types, and gross floor area are good predictors for the model.  Additionally, we see that the model explains `r round(summary(ST_lm)[[9]] * 100, digits = 4)`% of the variability for respone variable (submittal time), which is much better than the previous model.  However,  in order to validate the model, the following assumptions must be checked:
@@ -605,11 +605,11 @@ Unlike the the previous linear model, the residual histogram plot shows that the
 
 ### Part 5 - Conclusion: 
 
-In this analysis, we have tested the assumption that the three Rating System Families (BD+C, ID+C, OM) have a different mean time (Submittal Time) it takes to certify a project from the registration date.  Using an ANOVA test, we determined that at least one mean is statistically different from the set.  note, the assumptions for the ANOVA test were not entirely met since the distributions for each group do not closely follow a normal distribution; therefore, we should interpret the results with caution.  The ANOVA test determined that there is a significant difference of submittal time for at least one Rating System Family.  A t-test was then performed for each possible combination which determined that all three Rating System Faimly submittal times are statistically significant from each other.  All tests were performed using a significance level of $\alpha = 0.05$.  Note, the t-tests were adjusted using the Bonferroni correction so that the Type I error rate is not increased ($\alpha = 0.05 / 3$).
+In this analysis, we have tested the assumption that the three Rating System Families (BD+C, ID+C, OM) have a different mean time it takes to certify a project from the registration date (Submittal Time).  Using an ANOVA test, we determined that at least one mean is statistically different from the set.  note, the assumptions for the ANOVA test were not entirely met since the distributions for each group do not closely follow a normal distribution; therefore, we should interpret the results with caution.  The ANOVA test determined that there is a significant difference of submittal time for at least one Rating System Family.  A t-test was then performed for each possible combination which determined that all three Rating System Faimly submittal times are statistically significant from each other.  All tests were performed using a significance level of $\alpha = 0.05$.  Note, the t-tests were adjusted using the Bonferroni correction so that the Type I error rate is not increased ($\alpha = 0.05 / 3$).
 
-Additionally, gross floor area was evaluated to see if it would be a good predictor variable to determine submittal time.  Due to the large values, and shape of the data, a log() transformation of the values was taken for the linear regression analysis.  The results of this analysis determined that gross floor area, on its own, is not a good predictor fo submittal time (BD+C - `r round(summary(gf_lm_BDC_V3)[[9]],digits=2)`, ID+C - `r round(summary(gf_lm_IDC_V3)[[9]],digits=2)`, OM - `r round(summary(gf_lm_OM_V3)[[9]],digits=2)`).
+Additionally, gross floor area was evaluated to see if it would be a good predictor variable to determine submittal time.  Due to the large values, and shape of the data, a log() transformation of the values was taken for the linear regression analysis.  The results of this analysis determined that gross floor area, on its own, is not a good predictor fo submittal time based on r-squared value (BD+C - `r round(summary(gf_lm_BDC_V3)[[9]],digits=2)`, ID+C - `r round(summary(gf_lm_IDC_V3)[[9]],digits=2)`, OM - `r round(summary(gf_lm_OM_V3)[[9]],digits=2)`).
 
-To expand upon this study, we then performed a multiple regression analysis using a set of predictor variables.  With this study, we determined that by using Country (Note - any countries that only had a small number of submittals have been grouped into an "other" category), Rating System Family, owner types (OwnerTypesAdj - Note - the number of categories has been significantly reduced for meaningfullness), and gross floor area (GrossSqFoot - Note this variable has been log() transformed) we have significantly improved the model which now explains `r round(summary(ST_lm)[[9]] * 100, digits = 4)`% of the variability for the submittal time.  However, as noted in the Inference section and at the beginning of this summary, the data appear to deviate from some of the validation assumptions; therefore, should be interpreted with caution.
+To expand upon this study, we then performed a multiple regression analysis using a set of predictor variables.  With this study, we determined that by using Country (Note - any countries that only had a small number of submittals have been grouped into an "other" category), Rating System Family, owner types (OwnerTypesAdj - Note - the number of categories has been significantly reduced for meaningfullness), and gross floor area (GrossSqFoot - Note this variable has been log() transformed) we have significantly improved the model which now explains `r round(summary(ST_lm)[[9]] * 100, digits = 2)`% of the variability for the submittal time.  However, as noted in the Inference section and at the beginning of this summary, the data appear to deviate from some of the validation assumptions; therefore, should be interpreted with caution.
 
 
 
@@ -620,12 +620,9 @@ To expand upon this study, we then performed a multiple regression analysis usin
 
 ####Future work
 The remainder of this appendix contains additional analysis work that will be completed in the future and need not be reviewed.
+
 ```{r}
-#Make a function that is a predictor of the linear regression model and apply it to all open projects.  Then you will have a summary of all the expected dates they will certify.
-
-#Do the same for the glm and you will have a predicted percentage of certification to multiply it by as well.
-
-##Create a column that just has the number of days the project was open regardless of certification or not.  Use this for probability of certification....
+#Create a glm that predicts the probability of Certification.
 
 filtered_projects$TimeOpen <- ifelse(!(is.na(filtered_projects$SubmittalTime)), filtered_projects$SubmittalTime, ifelse(!(is.na(filtered_projects$SubmittalTimePending)), filtered_projects$SubmittalTimePending,NA))
 
@@ -650,7 +647,5 @@ filtered_projects_glm$CountryAdj <- relevel(filtered_projects_glm$CountryAdj, re
 
 ST_glm <- glm(IsCertifiedBol ~ RatingSystemFamily + OwnerTypesAdj + CountryAdj + log(GrossSqFoot) + TimeOpen, data = filtered_projects_glm)
 summary(ST_glm)
-
-#Coordinte with Ops on the LOE for each project and you will have a model for future man-hours needed.
 ```
 
