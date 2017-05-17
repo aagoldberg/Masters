@@ -146,7 +146,7 @@ Since this is an observational study, we cannot determine causal connections bet
 
 ### Part 3 - Exploratory data analysis:
 
-I have prepared a data set which includes calculations that determine the length of time it took for each project to certify.  Since v3 projects can only have been open for `r maxv3days` days, v2 projects (previous version) which were certified after `r maxv3days` days were considered to be un-certified.  These calcuations do not consider how long after the Rating System was launched when the project was registered.  This assumption for the data set would be okay as long as we can consider that the amount of time it takes to certify a project does not change as the time between registration date and rating system launch date increases.  There are graphs to check this at the end of this section.
+I have prepared a data set which includes calculations that determine the length of time it took for each project to certify.  Since v3 projects can only have been open for `r maxv3days` days, v2 projects (previous version) which were certified after `r maxv3days` days were considered to be un-certified.
 
 ```{r}
 require(ggplot2)
@@ -591,7 +591,7 @@ ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$RegistrationDate))+
 
 4. each variable is linearly related to the outcome.
 
-```{r, fig.width=10,fig.height=20}
+```{r, fig.width=10,fig.height=10}
 ggplot(ST_lm_b, aes(y=resid(ST_lm_b), x=filtered_projects_lm$CountryAdj))+geom_boxplot() + labs(x="Country Code", y="Residuals") + ggtitle("Multi-linear Regression Model Residuals By Country") + theme(plot.title = element_text(hjust = 0.5)) + coord_flip()
 ```
 
@@ -611,7 +611,7 @@ Additionally, gross floor area was evaluated to see if it would be a good predic
 
 To expand upon this study, we then performed a multiple regression analysis using a set of predictor variables.  With this study, we determined that by using Country (Note - any countries that only had a small number of submittals have been grouped into an "other" category), Rating System Family, owner types (OwnerTypesAdj - Note - the number of categories has been significantly reduced for meaningfullness), and gross floor area (GrossSqFoot - Note this variable has been log() transformed) we have significantly improved the model which now explains `r round(summary(ST_lm)[[9]] * 100, digits = 2)`% of the variability for the submittal time.  However, as noted in the Inference section and at the beginning of this summary, the data appear to deviate from some of the validation assumptions; therefore, should be interpreted with caution.
 
-
+For future possible adjustments to the data, we could set more aggressive cutoff submittal times that would start to limit the v3 platform data.  This adjustment would help us determine what we consider a success and failure in terms of submittal times.  However, we must evalute this cutoff carefully as we do not want to simply reduce the cutoff date to just "make the data fit" a normal distribution.  Currently, it appears that multiple cutoff time periods would be necessary, since we have shown there is a difference in mean submittal times between Rating System Families, and the use of hierarchical modeling techniques may be necessary.
 
 ### References:
 
