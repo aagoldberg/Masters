@@ -96,8 +96,8 @@ project_data$OwnerTypesAdj <- sapply(project_data$OwnerTypes,
                                             ifelse(grepl("^non-profit",tolower(x)),"non-profit",
                                             ifelse(grepl("individual",tolower(x)),"individual",
                                             ifelse(grepl("investor",tolower(x)),"investor",
-                                            ifelse(x=="",NA,
-                                            ifelse(is.null(x),NULL,
+                                            ifelse(x=="","other",
+                                            ifelse(is.null(x),"other",
                                             "other"))))))))))
                                      }
 )
@@ -126,7 +126,7 @@ LEED is a framework for identifying, implementing, and measuring green building 
 
 Generally, LEED projects register near the beginning of a building’s design phase (the drawing/planning stage). After preparing documentation, and after the construction phase (the building stage) ends, the project team will have their project certified by the Green Business Certification Inc. (GBCI).  GBCI is the only certification and credentialing body within the green business and sustainability industry to exclusively administer project certifications and professional credentials of LEED, EDGE, PEER, WELL, SITES, GRESB, Parksmart and Zero Waste.  The data available on this LEED Project Directory (http://www.usgbc.org/project-download-all) is a summary of every LEED registered project.  Each project can be broken down into further subcategories, such as Rating System Families, based on the type of Certification.  While this data is not directly accessible in a single file, the relations can be created from multiple locations on the website.
 
-Within the company, it is important to be able to predict the number of days it takes for a project to certify (from the time it was regiestered) in order to coordinate employee time commitments to performing certification work.  Additionally, it is essential that any variables which signficantly affect this time period (submittal time) be identified so that if there is a shift in submittals for one group, the company is aware of the future impacts.  By having the ability to predict the length of time it takes for projects to certify, the GBCI can forecast their needs and manage the review staff as needed.
+Within the company, it is important to be able to predict the number of days it takes for a project to certify (from the time it was regiestered) in order to coordinate employee time commitments to perform certification work.  Additionally, it is essential that any variables which signficantly affect this time period (submittal time) be identified so that if there is a shift in submittals for one group, the company is aware of the future impacts.  By having the ability to predict the length of time it takes for projects to certify, the GBCI can forecast their needs and manage the review staff as needed.
 
 ### Part 2 - Data:
 
@@ -138,7 +138,7 @@ The project data is collected by the United States Green Building Council and is
 There are `r nrow(project_data)` observations in the overall data set.  The data consist of projects which are registered under different Platforms (v2 and v3 are analyzed for this study).  These platforms are created in a sequential manner which means that v2 is an older version than v3.  In order to normalize for this issue, v2 projects that were pending longer than the maximum amount of days v3 has been open are considered to have never become certified and remained open for the same amount of time as the maximum number of days v3 has been open.  After filtering to projects with sufficient information, and pertinent categories, there are `r nrow(completed_projects) + nrow(open_projects)` observations.  
 This is an observational study because it is based on past, and current, data which we have not influenced in any manner and are only evaluating the results.
 
-The population of interest is all future project buildings which will register for LEED Certification.  Given that this data actually represents the entire current population, it is assumed that this analysis can be generalized to future projects.  Some issues may cause a discrepancy between this analysis and the time it takes future projects to certify could include the following; changes to the LEED Rating System requirements, expansion into new building markets that are unfamiliar with referenced procedures and protocols, market acclimation to the standard (which may speed up certification time), and new Rating System Families or altenrative compliance paths to Certification.  
+The population of interest is all future project buildings which will register for LEED Certification.  Given that this data actually represents the entire current population, it is assumed that this analysis can be generalized to future projects.  Some issues that may cause a discrepancy between this analysis and the time it takes future projects to certify could include the following; changes to the LEED Rating System requirements, expansion into new building markets that are unfamiliar with referenced procedures and protocols, market acclimation to the standard (which may speed up certification time), and new Rating System Families or altenrative compliance paths to Certification.  
 
 The response variable chosen is number of days between a project's registration and certification date (SubmittalTime).  This is a discrete numerical value.  After a preliminary analysis, shown in the next section, the explanatory variables chosen for this study are the rating system families (categorical, nominal) and gross floor area (numerical, continuous).
 
