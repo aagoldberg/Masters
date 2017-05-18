@@ -403,7 +403,7 @@ summary(gf_lm_OM_V3)
 ggplot(completed_projects_OM_V3, aes(y=SubmittalTime, x=log(GrossSqFoot))) + geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="Log of Gross Floor Area", y="Days Between Registration and Certification") + ggtitle("Log of OM Gross Floor Area Against Submittal Time") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-As we can see from the R-square values (BD+C - `r round(summary(gf_lm_BDC_V3)[[9]],digits=2)`, ID+C - `r round(summary(gf_lm_IDC_V3)[[9]],digits=2)`, OM - `r round(summary(gf_lm_OM_V3)[[9]],digits=2)`), these models do not appear to be great predictors of submitall time but do produce statistically significant positive prediction slopes.  While these results do not appear to be of much use at the moment, we will continue the analysis and validate the models by checking the following asusmptions:
+As we can see from the R-square values (BD+C - `r round(summary(gf_lm_BDC_V3)[[9]],digits=2)`, ID+C - `r round(summary(gf_lm_IDC_V3)[[9]],digits=2)`, OM - `r round(summary(gf_lm_OM_V3)[[9]],digits=2)`), these models do not appear to be great predictors of submittal time but do produce statistically significant positive prediction slopes.  While these results do not appear to be of much use at the moment, we will continue the analysis and validate the models by checking the following asusmptions:
 
 1. the residuals of the model are nearly normal
 
@@ -604,14 +604,13 @@ To expand upon this study, we then performed a multiple regression analysis usin
 
 For future possible adjustments to the data, we could set more aggressive cutoff submittal times that would start to limit the v3 platform data.  This adjustment would help us determine what we consider a success and failure in terms of submittal times.  However, we must evalute this cutoff carefully as we do not want to simply reduce the cutoff date to just "make the data fit" a normal distribution.  Currently, it appears that multiple cutoff time periods would be necessary, since we have shown there is a difference in mean submittal times between Rating System Families, and the use of hierarchical modeling techniques may be necessary.
 
-### References:
-
-
 ### Appendix (optional):
 
 ####Leverage points
 In the analysis, it was determined that older projects may be singificant leverage points.  Since they have been open for so much longer than the newer projects, they have an increased ability to deviate from the model.  Conversely, very new projects may also have singificant leverage points since we would only end up seeing projects that have certified quickly and may not represent the entire group of submittals for that time period.  In a separate analysis (http://rpubs.com/john-grando/Grando-Project-Alt) I have performed the same steps as this study but with data thath excludes the oldest and youngest completed projects to evaluate the overall impact.
 
+###Self Reflection
+During a meetup, a question was proposed to the class about whether we felt that a short slide presentation would be preferable instead of the long-form report format.  I think it would be a great experience to give a short presentation over my findings but I do think that the long-form report helped me work through a lot of my ideas and assumptions.  Therefore, if possible I would support the idea of creating a slide deck summarizing a data project in addition to a long-form report.
 
 ####Future work
 The remainder of this appendix contains additional analysis work that will be completed in the future and need not be reviewed.
