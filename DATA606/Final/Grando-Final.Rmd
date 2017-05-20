@@ -14,57 +14,78 @@ knitr::opts_chunk$set(tidy.opts=list(width.cutoff=90),tidy=TRUE)
 
 ###Part I
 
-####
+####Question 1 - A student is gathering data on the driving experiences of other college students. A description of the data car color is presented below. Which of the variables are quantitative and discrete?
+
+Answer:
+
+d. daysDrive, gasMonth
+
+
+daysDrive- Since this is indicated to be a count of days then it appears this value can only take on whole non-negative integers for the number of days the student drives.
+
+gasMonth - This value is indicated to be cost, which is only calculated down to $0.01.  Therefore, there are not an infinite number of possible values for a given variable range.  Also, not that if this value were calculated in cents, then it would be all non-negative integer which is similar to the daysDrive variable.
+
+####Question 2 - A histogram of the GPA of 132 students from this course in Fall 2012 class is presented below. Which estimates of the mean and median are most plausible?
+
+Answer:
+
+Since the data appears to have a left skew, we can immediately remove any option that states the mean is greater than the median (b, d).
+
+when we evaluate the histogram we can see that if we add the percentageS right to left, approximately 41% of the data is above 3.5; therefore the median must be 3.5 or below.  This leaves us with one option which is:
+
+a. mean = 3.3, median = 3.5
+
+####Question 3 - A researcher wants to determine if a new treatment is effective for reducing Ebola related fever. What type of study should be conducted in order to establish that the treatment does indeed cause improvement in Ebola patients?
+
+Answer:
+
+a. Randomly assign Ebola patients to one of two groups, either the treatment or placebo group, and then compare the fever of the two groups
+
+Option d (Both a and b) is not acceptable because it is not guaranteed that the sample is randomized and could contain an unknown bias.  Additionally, by not having a placebo group, we cannot be certain that we have appropriately set up the experiment to compare for a difference of only one variable (i.e. the treament) 
+
+####Question 4 - A study is designed to test whether there is a relationship between natural hair color (brunette, blond, red) and eye color (blue, green, brown). If a large χ2 test statistic is obtained, this suggests that:
+
+Answer:
+
+c. there is an association between natural hair color and eye color.
+
+####Question 5 - A researcher studying how monkeys remember is interested in examining the distribution of the score on a standard memory task. The researcher wants to produce a boxplot to examine this distribution. Below are summary statistics from the memory task. What values should the researcher use to determine if a particular score is a potential outlier in the boxplot?
+
+Answer:
+
+To determine possible outliers, the researcher would examine points that fell beyond the whisker limits of the boxplot, which are 1.5 * IQR.
+
+```{r}
+Q1 <- 37 
+Q3 <- 49.8
+IQR <- Q3 - Q1
+(Lower_whisker <- 37 - 1.5 * IQR)
+(Upper_whisker <- 49.8 + 1.5 * IQR)
+```
+
+b. 17.8 and 69.0
+
+####Question 6 - The [blank] are resistant to outliers, whereas the [blank] are not.
+
+Answer:
+
+d. median and interquartile range; mean and standard deviation
+
+####Question 7 - Figure A below represents the distribution of an observed variable. Figure B below represents the distribution of the mean from 500 random samples of size 30 from A. The mean of A is 5.05 and the mean of B is 5.04. The standard deviations of A and B are 3.22 and 0.58, respectively.
+
+####a. Describe the two distributions (2 pts).
 
 Answer:
 
 
 
-####
+####b. Explain why the means of these two distributions are similar but the standard deviations are not (2 pts).
 
 Answer:
 
 
 
-####Question 3
-Answer:
-
-
-
-####Question 4
-
-Answer:
-
-
-
-####Question 5
-
-Answer:
-
-
-
-####Question 6
-
-Answer:
-
-
-
-####Question 7
-
-
-####
-
-Answer:
-
-
-
-####
-
-Answer:
-
-
-
-####
+####c. What is the statistical principal that describes this phenomenon (2 pts)?
 
 Answer:
 
@@ -72,58 +93,173 @@ Answer:
 
 ###Part II
 
-
+Consider the four datasets, each with two columns (x and y), provided below.
 
 ```{r}
+#options(digits=2)
+data1 <- data.frame(x=c(10,8,13,9,11,14,6,4,12,7,5),
+y=c(8.04,6.95,7.58,8.81,8.33,9.96,7.24,4.26,10.84,4.82,5.68))
+data2 <- data.frame(x=c(10,8,13,9,11,14,6,4,12,7,5),
+y=c(9.14,8.14,8.74,8.77,9.26,8.1,6.13,3.1,9.13,7.26,4.74))
+data3 <- data.frame(x=c(10,8,13,9,11,14,6,4,12,7,5),
+y=c(7.46,6.77,12.74,7.11,7.81,8.84,6.08,5.39,8.15,6.42,5.73))
+data4 <- data.frame(x=c(8,8,8,8,8,8,8,19,8,8,8),
+y=c(6.58,5.76,7.71,8.84,8.47,7.04,5.25,12.5,5.56,7.91,6.89))
 
 ```
 
+For each column, calculate (to two decimal places):
+
+####a. The mean (for x and y separately; 1 pt).
+
+Answer:
+
+```{r}
+#### Always show to decimal places?
+options(digits = 2)
+(data1_mean_x <- mean(data1$x))
+(data1_mean_y <- mean(data1$y))
+
+(data2_mean_x <- mean(data2$x))
+(data2_mean_y <- mean(data2$y))
+
+(data3_mean_x <- mean(data3$x))
+(data3_mean_y <- mean(data3$y))
+
+(data4_mean_x <- mean(data4$x))
+(data4_mean_y <- mean(data4$y))
+```
 
 
-####
+####b. The median (for x and y separately; 1 pt).
+
+Answer:
+
+```{r}
+#### Always show to decimal places?
+options(digits = 2)
+(data1_median_x <- median(data1$x))
+(data1_median_y <- median(data1$y))
+
+(data2_median_x <- median(data2$x))
+(data2_median_y <- median(data2$y))
+
+(data3_median_x <- median(data3$x))
+(data3_median_y <- median(data3$y))
+
+(data4_median_x <- median(data4$x))
+(data4_median_y <- median(data4$y))
+```
+
+
+####c. The standard deviation (for x and y separately; 1 pt).
 
 Answer:
 
 
+```{r}
+#### Always show to decimal places?
+options(digits = 2)
+(data1_sd_x <- sd(data1$x))
+(data1_sd_y <- sd(data1$y))
 
-####
+(data2_sd_x <- sd(data2$x))
+(data2_sd_y <- sd(data2$y))
 
-Answer:
+(data3_sd_x <- sd(data3$x))
+(data3_sd_y <- sd(data3$y))
 
-
-
-####
-Answer:
-
-
-
-
-
-####
-
-Answer:
+(data4_sd_x <- sd(data4$x))
+(data4_sd_y <- sd(data4$y))
+```
 
 
+For each x and y pair, calculate (also to two decimal places; 1 pt):
 
-####
-
-Answer:
-
-
-
-####
+####d. The correlation (1 pt).
 
 Answer:
 
+```{r}
+(cor(data1$x, data1$y))
+(cor(data2$x, data2$y))
+(cor(data3$x, data3$y))
+(cor(data4$x, data4$y))
+```
 
 
-####
+####e. Linear regression equation (2 pts).
 
 Answer:
 
+```{r}
+lm_d1 <- lm(y ~ x, data = data1)
+summary(lm_d1)
+lm_d2 <- lm(y ~ x, data = data2)
+summary(lm_d2)
+lm_d3 <- lm(y ~ x, data = data3)
+summary(lm_d3)
+lm_d4 <- lm(y ~ x, data = data4)
+summary(lm_d4)
+```
 
 
-####
+####f. R-Squared (2 pts).
+
+Answer:
+
+```{r}
+cor(data1$y, data1$x)^2
+summary(lm(y ~ x, data = data1))[[8]]
+
+cor(data2$y, data2$x)^2
+summary(lm(y ~ x, data = data2))[[8]]
+
+cor(data3$y, data3$x)^2
+summary(lm(y ~ x, data = data3))[[8]]
+
+cor(data4$y, data4$x)^2
+summary(lm(y ~ x, data = data3))[[8]]
+```
+
+
+####For each pair, is it appropriate to estimate a linear regression model? Why or why not? Be specific as to why for each pair and include appropriate plots! (4 pts)
+
+Answer:
+
+1. First we should visually inspect the data to ensure it has a linear pattern.
+
+```{r}
+require(ggplot2)
+ggplot(data1, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+ggplot(data2, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+ggplot(data3, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+ggplot(data4, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+```
+
+2. the residuals of the model are nearly normal
+
+```{r}
+#data1
+ggplot(data = lm_d1, aes(x=resid(lm_d1))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d1$residuals),sd(lm_d1$residuals))) + labs(x="Residuals")
+#data2
+ggplot(data = lm_d2, aes(x=resid(lm_d2))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d2$residuals),sd(lm_d2$residuals))) + labs(x="Residuals")
+#data3
+ggplot(data = lm_d3, aes(x=resid(lm_d3))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d3$residuals),sd(lm_d3$residuals))) + labs(x="Residuals")
+#data3
+ggplot(data = lm_d4, aes(x=resid(lm_d4))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d4$residuals),sd(lm_d4$residuals))) + labs(x="Residuals")
+```
+
+
+3. the variability of the residuals is nearly constant
+
+
+
+4. the residuals are independent
+
+
+
+####Explain why it is important to include appropriate visualizations when analyzing data. Include any visualization(s) you create. (2 pts)
 
 Answer:
 
