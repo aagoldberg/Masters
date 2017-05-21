@@ -77,19 +77,31 @@ d. median and interquartile range; mean and standard deviation
 
 Answer:
 
-
+The observations (Figure A), are unimodal and have a significnt right skew.  The sampling distribution (Figure B) is unimodal and appear to have roughly  normal distribution.  However, it appears that the overlayed normal distribution may be wider than the data.
 
 ####b. Explain why the means of these two distributions are similar but the standard deviations are not (2 pts).
 
 Answer:
 
+Figure B is a representation of the sample means taken from figure A.  Therefore this figure is a summary of point estimates and if a sample consists of enough independent observations (usually at least 30) and the data are not strongly skewed, then the distribution of the sample mean is well approximated by a normal model.
 
+The standard deviations differ between Figure A and B because Figure B is a distribution of point estimates based on samples of 30.  Therefore, the standard deviation of Figure B is the typical error or uncertainty associated with the point estimate.  It is referred to as the standard error.
 
 ####c. What is the statistical principal that describes this phenomenon (2 pts)?
 
 Answer:
 
+The statistical principal that describes this phenomenom is the Central Limit Theorem (CLT).  It is described as follows:
 
+$$ \underset { n\rightarrow \infty  }{ lim } P\left( \frac { \bar { X } -\mu  }{ \sigma /\sqrt { n }  } \le z \right) =\Phi \left( z \right)$$
+
+where $\Phi$ is the cumulative distribution function (cdf) of the standard normal distribution.
+
+In other words...
+
+The distribution of the sample mean is well approximated by a normal model:
+
+$$\bar { x } \sim N\left( mean=\mu ,SE=\frac { \sigma  }{ \sqrt { n }  }  \right)$$
 
 ###Part II
 
@@ -117,17 +129,17 @@ Answer:
 ```{r}
 #### Always show to decimal places?
 options(digits = 2)
-(data1_mean_x <- mean(data1$x))
-(data1_mean_y <- mean(data1$y))
+format(mean(data1$x), nsmall = 2)
+format(mean(data1$y), nsmall = 2)
 
-(data2_mean_x <- mean(data2$x))
-(data2_mean_y <- mean(data2$y))
+format(mean(data2$x), nsmall = 2)
+format(mean(data2$y), nsmall = 2)
 
-(data3_mean_x <- mean(data3$x))
-(data3_mean_y <- mean(data3$y))
+format(mean(data3$x), nsmall = 2)
+format(mean(data3$y), nsmall = 2)
 
-(data4_mean_x <- mean(data4$x))
-(data4_mean_y <- mean(data4$y))
+format(mean(data4$x), nsmall = 2)
+format(mean(data4$y), nsmall = 2)
 ```
 
 
@@ -160,17 +172,17 @@ Answer:
 ```{r}
 #### Always show to decimal places?
 options(digits = 2)
-(data1_sd_x <- sd(data1$x))
-(data1_sd_y <- sd(data1$y))
+format(sd(data1$x), nsmall = 2)
+format(sd(data1$y), nsmall = 2)
 
-(data2_sd_x <- sd(data2$x))
-(data2_sd_y <- sd(data2$y))
+format(sd(data2$x), nsmall = 2)
+format(sd(data2$y), nsmall = 2)
 
-(data3_sd_x <- sd(data3$x))
-(data3_sd_y <- sd(data3$y))
+format(sd(data3$x), nsmall = 2)
+format(sd(data3$y), nsmall = 2)
 
-(data4_sd_x <- sd(data4$x))
-(data4_sd_y <- sd(data4$y))
+format(sd(data4$x), nsmall = 2)
+format(sd(data4$y), nsmall = 2)
 ```
 
 
@@ -181,10 +193,11 @@ For each x and y pair, calculate (also to two decimal places; 1 pt):
 Answer:
 
 ```{r}
-(cor(data1$x, data1$y))
-(cor(data2$x, data2$y))
-(cor(data3$x, data3$y))
-(cor(data4$x, data4$y))
+options(digits = 2)
+format(cor(data1$x, data1$y), nsmall = 2)
+format(cor(data2$x, data2$y), nsmall = 2)
+format(cor(data3$x, data3$y), nsmall = 2)
+format(cor(data4$x, data4$y), nsmall = 2)
 ```
 
 
@@ -203,23 +216,28 @@ lm_d4 <- lm(y ~ x, data = data4)
 summary(lm_d4)
 ```
 
+$$\widehat { y } \quad ={ \quad \beta  }_{ 0 }\quad +\quad { \beta  }_{ 1 }\quad *\quad x\\ \widehat { y } \quad =\quad 3.00\quad +\quad 0.50\quad *\quad x$$
+
 
 ####f. R-Squared (2 pts).
 
 Answer:
 
 ```{r}
-cor(data1$y, data1$x)^2
-summary(lm(y ~ x, data = data1))[[8]]
+options(digits = 2)
 
-cor(data2$y, data2$x)^2
-summary(lm(y ~ x, data = data2))[[8]]
+#two methods
+format(cor(data1$y, data1$x)^2, nsmall = 2)
+format(summary(lm(y ~ x, data = data1))[[8]], nsmall = 2)
 
-cor(data3$y, data3$x)^2
-summary(lm(y ~ x, data = data3))[[8]]
+format(cor(data2$y, data2$x)^2, nsmall = 2)
+format(summary(lm(y ~ x, data = data2))[[8]], nsmall = 2)
 
-cor(data4$y, data4$x)^2
-summary(lm(y ~ x, data = data3))[[8]]
+format(cor(data3$y, data3$x)^2, nsmall = 2)
+format(summary(lm(y ~ x, data = data3))[[8]], nsmall = 2)
+
+format(cor(data4$y, data4$x)^2, nsmall = 2)
+format(summary(lm(y ~ x, data = data3))[[8]], nsmall = 2)
 ```
 
 
@@ -231,37 +249,52 @@ Answer:
 
 ```{r}
 require(ggplot2)
-ggplot(data1, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
-ggplot(data2, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
-ggplot(data3, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
-ggplot(data4, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE)
+ggplot(data1, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="X Values", y="Y Values") + ggtitle("Scatterplot of Data") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data2, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="X Values", y="Y Values") + ggtitle("Scatterplot of Data") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data3, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="X Values", y="Y Values") + ggtitle("Scatterplot of Data") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data4, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = TRUE) + labs(x="X Values", y="Y Values") + ggtitle("Scatterplot of Data") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 2. the residuals of the model are nearly normal
 
 ```{r}
 #data1
-ggplot(data = lm_d1, aes(x=resid(lm_d1))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d1$residuals),sd(lm_d1$residuals))) + labs(x="Residuals")
+ggplot(data = lm_d1, aes(x=resid(lm_d1))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d1$residuals),sd(lm_d1$residuals))) + labs(x="Residuals")  + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #data2
-ggplot(data = lm_d2, aes(x=resid(lm_d2))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d2$residuals),sd(lm_d2$residuals))) + labs(x="Residuals")
+ggplot(data = lm_d2, aes(x=resid(lm_d2))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d2$residuals),sd(lm_d2$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #data3
-ggplot(data = lm_d3, aes(x=resid(lm_d3))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d3$residuals),sd(lm_d3$residuals))) + labs(x="Residuals")
+ggplot(data = lm_d3, aes(x=resid(lm_d3))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d3$residuals),sd(lm_d3$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #data3
-ggplot(data = lm_d4, aes(x=resid(lm_d4))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d4$residuals),sd(lm_d4$residuals))) + labs(x="Residuals")
+ggplot(data = lm_d4, aes(x=resid(lm_d4))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d4$residuals),sd(lm_d4$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 
 3. the variability of the residuals is nearly constant
 
+```{r}
+ggplot(lm_d1, aes(y=abs(resid(lm_d1)), x=lm_d1$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="X Values", y="Absolute Value of Residuals") + ggtitle("Scatterplot of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(lm_d2, aes(y=abs(resid(lm_d2)), x=lm_d2$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="X Values", y="Absolute Value of Residuals") + ggtitle("Scatterplot of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(lm_d3, aes(y=abs(resid(lm_d3)), x=lm_d3$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="X Values", y="Absolute Value of Residuals") + ggtitle("Scatterplot of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(lm_d4, aes(y=abs(resid(lm_d4)), x=lm_d4$fitted.values))+geom_point()+geom_hline(yintercept = 0) + labs(x="X Values", y="Absolute Value of Residuals") + ggtitle("Scatterplot of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+```
 
 
 4. the residuals are independent
 
+given the context of the quesiton provided, we can assume there are no issues concerning sequential observations that may have an underlying structure which should be considered.
 
+Summary:
+
+data1 - Yes, the conditions noted above are all met, p-values for each test statistic are below $\alpha = 0.05$, which means that we can reject the null hypothesis of the intercept and slope being equal to zero.  Additionally, we see that the model explains `r cor(data1$y, data1$x)^2`% of the variability in the response variable (y).
+
+data2 - No, from the initial inspection we see that the data do not follow a linear pattern.  It appears a quadratic equation would produce a better fit.  The following condition checks provide further support that the data do not follow a linear pattern and a linear regression model should not be used despite the fact that this data has the same summary statistics ($\mu$,sd,${ \beta  }_{ 0 }$,${ \beta  }_{ 1 }$, etc.) as the data1 set.
+
+data3 - Yes, while there appears to be a point of high leverage that is affecting the model, We can see that if the outlying point was removed, the resulting line would appear to be similar.  However, due to this point, the conditions noted above are not being met since the residuals are not nearly normal and the variability of the residuals is not nearly constant.  Therefore, if we really faced this data in practice, further investigation on the outlying point should be performed.
+
+data4 - No, this data has a point of high leverage and unlike the data3 set, the linear model is significantly affected.  Note, with the outlying point removed, the line would be vertical.  The conditions checked above provide further suppor that a linear model is not a good fit for the data.
 
 ####Explain why it is important to include appropriate visualizations when analyzing data. Include any visualization(s) you create. (2 pts)
 
 Answer:
 
-
-
+It is important to include appropriate visuaztions when analyzing data because we must use these representations to determine if certain techniques are appropriate.  It is not enough to simply look at the resulting values when determining if a model is a good fit.  For example, in the previous problem, we see that all four data sets have the same summary statistics ($\mu$,sd,${ \beta  }_{ 0 }$,${ \beta  }_{ 1 }$, etc.); however, they are all very different from one another.  I have created visualizations in the previous problem to show how they should be appropriately used.  

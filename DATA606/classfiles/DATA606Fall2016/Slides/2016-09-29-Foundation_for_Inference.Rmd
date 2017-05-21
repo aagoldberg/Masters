@@ -20,7 +20,7 @@ Some slides are adopted (or copied) from OpenIntro: https://www.openintro.org/
 set.seed(2112)
 library(ggplot2)
 library(openintro)
-library(IS606)
+library(DATA606)
 par(mar=c(2.5,1,2,1))
 
 ```
