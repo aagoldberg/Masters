@@ -23,7 +23,7 @@ d. daysDrive, gasMonth
 
 daysDrive- Since this is indicated to be a count of days then it appears this value can only take on whole non-negative integers for the number of days the student drives.
 
-gasMonth - This value is indicated to be cost, which is only calculated down to $0.01.  Therefore, there are not an infinite number of possible values for a given variable range.  Also, not that if this value were calculated in cents, then it would be all non-negative integer which is similar to the daysDrive variable.
+gasMonth - This value is indicated to be cost, which is only calculated down to the nearest $0.01.  Therefore, there are not an infinite number of possible values for a given variable range.  Also, not that if this value were calculated in cents, then it would be all non-negative integer which is similar to the daysDrive variable.
 
 ####Question 2 - A histogram of the GPA of 132 students from this course in Fall 2012 class is presented below. Which estimates of the mean and median are most plausible?
 
@@ -31,7 +31,7 @@ Answer:
 
 Since the data appears to have a left skew, we can immediately remove any option that states the mean is greater than the median (b, d).
 
-when we evaluate the histogram we can see that if we add the percentageS right to left, approximately 41% of the data is above 3.5; therefore the median must be 3.5 or below.  This leaves us with one option which is:
+When we evaluate the histogram we can see that if we add the percentages right to left, approximately 41% of the data is above 3.5; therefore the median must be 3.5 or below.  This leaves us with one option which is:
 
 a. mean = 3.3, median = 3.5
 
@@ -77,15 +77,15 @@ d. median and interquartile range; mean and standard deviation
 
 Answer:
 
-The observations (Figure A), are unimodal and have a significnt right skew.  The sampling distribution (Figure B) is unimodal and appear to have roughly  normal distribution.  However, it appears that the overlayed normal distribution may be wider than the data.
+The observations (Figure A), are unimodal and have a significnt right skew.  The sampling distribution (Figure B) is unimodal and appears to have roughly  normal distribution centered around the mean.  However, it appears that the overlayed normal distribution may be wider than the data.
 
 ####b. Explain why the means of these two distributions are similar but the standard deviations are not (2 pts).
 
 Answer:
 
-Figure B is a representation of the sample means taken from figure A.  Therefore this figure is a summary of point estimates and if a sample consists of enough independent observations (usually at least 30) and the data are not strongly skewed, then the distribution of the sample mean is well approximated by a normal model.
+Figure B is a representation of the sample means taken from figure A.  Therefore this figure is a summary of point estimates and if a sample consists of enough independent observations (usually at least 30) and the data are not strongly skewed, then the distribution of the sample mean would be approximated by a normal model centered around the mean.  
 
-The standard deviations differ between Figure A and B because Figure B is a distribution of point estimates based on samples of 30.  Therefore, the standard deviation of Figure B is the typical error or uncertainty associated with the point estimate.  It is referred to as the standard error.
+The standard deviations differ between Figure A and B because Figure B is a distribution of point estimates based on samples of 30.  Therefore, the standard deviation of Figure B is the typical error or uncertainty associated with the point estimate based on the number of samples taken.  Figure A is the distribution of the actual variable; therefore the standard deviation associated with this distribution roughly describes how far away the typical observation is from the mean.
 
 ####c. What is the statistical principal that describes this phenomenon (2 pts)?
 
@@ -108,7 +108,7 @@ $$\bar { x } \sim N\left( mean=\mu ,SE=\frac { \sigma  }{ \sqrt { n }  }  \right
 Consider the four datasets, each with two columns (x and y), provided below.
 
 ```{r}
-#options(digits=2)
+options(digits=2)
 data1 <- data.frame(x=c(10,8,13,9,11,14,6,4,12,7,5),
 y=c(8.04,6.95,7.58,8.81,8.33,9.96,7.24,4.26,10.84,4.82,5.68))
 data2 <- data.frame(x=c(10,8,13,9,11,14,6,4,12,7,5),
@@ -127,7 +127,6 @@ For each column, calculate (to two decimal places):
 Answer:
 
 ```{r}
-#### Always show to decimal places?
 options(digits = 2)
 format(mean(data1$x), nsmall = 2)
 format(mean(data1$y), nsmall = 2)
@@ -148,19 +147,18 @@ format(mean(data4$y), nsmall = 2)
 Answer:
 
 ```{r}
-#### Always show to decimal places?
 options(digits = 2)
-(data1_median_x <- median(data1$x))
-(data1_median_y <- median(data1$y))
+format(median(data1$x), nsmall = 2)
+format(median(data1$y), nsmall = 2)
 
-(data2_median_x <- median(data2$x))
-(data2_median_y <- median(data2$y))
+format(median(data2$x), nsmall = 2)
+format(median(data2$y), nsmall = 2)
 
-(data3_median_x <- median(data3$x))
-(data3_median_y <- median(data3$y))
+format(median(data3$x), nsmall = 2)
+format(median(data3$y), nsmall = 2)
 
-(data4_median_x <- median(data4$x))
-(data4_median_y <- median(data4$y))
+format(median(data4$x), nsmall = 2)
+format(median(data4$y), nsmall = 2)
 ```
 
 
@@ -170,7 +168,6 @@ Answer:
 
 
 ```{r}
-#### Always show to decimal places?
 options(digits = 2)
 format(sd(data1$x), nsmall = 2)
 format(sd(data1$y), nsmall = 2)
@@ -216,6 +213,8 @@ lm_d4 <- lm(y ~ x, data = data4)
 summary(lm_d4)
 ```
 
+the linear equation for all data sets is as follows:
+
 $$\widehat { y } \quad ={ \quad \beta  }_{ 0 }\quad +\quad { \beta  }_{ 1 }\quad *\quad x\\ \widehat { y } \quad =\quad 3.00\quad +\quad 0.50\quad *\quad x$$
 
 
@@ -226,7 +225,7 @@ Answer:
 ```{r}
 options(digits = 2)
 
-#two methods
+#two methods are used to show the r-squared value for each data set.
 format(cor(data1$y, data1$x)^2, nsmall = 2)
 format(summary(lm(y ~ x, data = data1))[[8]], nsmall = 2)
 
@@ -259,13 +258,13 @@ ggplot(data4, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = 
 
 ```{r}
 #data1
-ggplot(data = lm_d1, aes(x=resid(lm_d1))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d1$residuals),sd(lm_d1$residuals))) + labs(x="Residuals")  + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = lm_d1, aes(x=resid(lm_d1))) + geom_histogram(binwidth = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d1$residuals),sd(lm_d1$residuals))) + labs(x="Residuals")  + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #data2
-ggplot(data = lm_d2, aes(x=resid(lm_d2))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d2$residuals),sd(lm_d2$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = lm_d2, aes(x=resid(lm_d2))) + geom_histogram(binwidth = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d2$residuals),sd(lm_d2$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #data3
-ggplot(data = lm_d3, aes(x=resid(lm_d3))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d3$residuals),sd(lm_d3$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = lm_d3, aes(x=resid(lm_d3))) + geom_histogram(binwidth = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d3$residuals),sd(lm_d3$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
 #data3
-ggplot(data = lm_d4, aes(x=resid(lm_d4))) + geom_histogram(binwidth = 1, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d4$residuals),sd(lm_d4$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = lm_d4, aes(x=resid(lm_d4))) + geom_histogram(binwidth = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d4$residuals),sd(lm_d4$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 
@@ -281,11 +280,11 @@ ggplot(lm_d4, aes(y=abs(resid(lm_d4)), x=lm_d4$fitted.values))+geom_point()+geom
 
 4. the residuals are independent
 
-given the context of the quesiton provided, we can assume there are no issues concerning sequential observations that may have an underlying structure which should be considered.
+Given the context of the quesiton provided, we can assume there are no issues concerning sequential observations that may have an underlying structure which should be considered.
 
 Summary:
 
-data1 - Yes, the conditions noted above are all met, p-values for each test statistic are below $\alpha = 0.05$, which means that we can reject the null hypothesis of the intercept and slope being equal to zero.  Additionally, we see that the model explains `r cor(data1$y, data1$x)^2`% of the variability in the response variable (y).
+data1 - Yes, the conditions noted above are all met, p-values for each test statistic are below $\alpha = 0.05$, which means that we can reject the null hypothesis of the intercept and slope being equal to zero.  Additionally, we see that the model explains `r cor(data1$y, data1$x)^2 * 100`% of the variability in the response variable (y).  Note, there are not many data points for all the sets provided so it is difficult to determine whether the conditions have been met; however, we will proceed making the best assumptions we can.
 
 data2 - No, from the initial inspection we see that the data do not follow a linear pattern.  It appears a quadratic equation would produce a better fit.  The following condition checks provide further support that the data do not follow a linear pattern and a linear regression model should not be used despite the fact that this data has the same summary statistics ($\mu$,sd,${ \beta  }_{ 0 }$,${ \beta  }_{ 1 }$, etc.) as the data1 set.
 
