@@ -97,9 +97,7 @@ $$ \underset { n\rightarrow \infty  }{ lim } P\left( \frac { \bar { X } -\mu  }{
 
 where $\Phi$ is the cumulative distribution function (cdf) of the standard normal distribution.
 
-In other words...
-
-The distribution of the sample mean is well approximated by a normal model:
+In other words, the distribution of a sample mean taken from a population is well approximated by a normal model:
 
 $$\bar { x } \sim N\left( mean=\mu ,SE=\frac { \sigma  }{ \sqrt { n }  }  \right)$$
 
@@ -259,12 +257,25 @@ ggplot(data4, aes(y=y, x=x))+geom_point()+ geom_smooth(method = lm, fullrange = 
 ```{r}
 #data1
 ggplot(data = lm_d1, aes(x=resid(lm_d1))) + geom_histogram(binwidth = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d1$residuals),sd(lm_d1$residuals))) + labs(x="Residuals")  + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+qqnorm(lm_d1$residuals)
+qqline(lm_d1$residuals)
+library(car)
+qqPlot(lm_d1$residuals, envelope = 0.95, xlab = "Theoretical Quantiles", ylab = "Sample Quantiles")
 #data2
 ggplot(data = lm_d2, aes(x=resid(lm_d2))) + geom_histogram(binwidth = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d2$residuals),sd(lm_d2$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+qqnorm(lm_d2$residuals)
+qqline(lm_d2$residuals)
+qqPlot(lm_d2$residuals, envelope = 0.95, xlab = "Theoretical Quantiles", ylab = "Sample Quantiles")
 #data3
 ggplot(data = lm_d3, aes(x=resid(lm_d3))) + geom_histogram(binwidth = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d3$residuals),sd(lm_d3$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
-#data3
+qqnorm(lm_d3$residuals)
+qqline(lm_d3$residuals)
+qqPlot(lm_d3$residuals, envelope = 0.95, xlab = "Theoretical Quantiles", ylab = "Sample Quantiles")
+#data4
 ggplot(data = lm_d4, aes(x=resid(lm_d4))) + geom_histogram(binwidth = 0.5, position = "identity", aes(y=..density..)) + stat_function(fun=dnorm,color="black",args=list(mean=mean(lm_d4$residuals),sd(lm_d4$residuals))) + labs(x="Residuals") + labs(x="X Values", y="Density of Residuals") + ggtitle("Histogram of Residuals") + theme(plot.title = element_text(hjust = 0.5))
+qqnorm(lm_d4$residuals)
+qqline(lm_d4$residuals)
+qqPlot(lm_d4$residuals, envelope = 0.95, xlab = "Theoretical Quantiles", ylab = "Sample Quantiles")
 ```
 
 
@@ -284,11 +295,11 @@ Given the context of the quesiton provided, we can assume there are no issues co
 
 Summary:
 
-data1 - Yes, the conditions noted above are all met, p-values for each test statistic are below $\alpha = 0.05$, which means that we can reject the null hypothesis of the intercept and slope being equal to zero.  Additionally, we see that the model explains `r cor(data1$y, data1$x)^2 * 100`% of the variability in the response variable (y).  Note, there are not many data points for all the sets provided so it is difficult to determine whether the conditions have been met; however, we will proceed making the best assumptions we can.
+data1 - Yes, the conditions noted above are all met, p-values for each test statistic are below $\alpha = 0.05$, which means that we can reject the null hypothesis of the intercept and slope being equal to zero.  Additionally, we see that the model explains `r cor(data1$y, data1$x)^2 * 100`% of the variability in the response variable (y).  Note, there are not many data points for all the sets provided so it is difficult to determine whether the normal distiribution, as well as other, conditions have been met; therefore, we will use the qqPlot package from the car library to draw a confidence band around the residuals to see if they are significantly different.  In this case, there is one point that appears to fall on the line of the confidence band so, if this situation were brough up in practice, I would most likely report the correlation along with a note that specifically outlines this issue as a possible shortcoming.
 
 data2 - No, from the initial inspection we see that the data do not follow a linear pattern.  It appears a quadratic equation would produce a better fit.  The following condition checks provide further support that the data do not follow a linear pattern and a linear regression model should not be used despite the fact that this data has the same summary statistics ($\mu$,sd,${ \beta  }_{ 0 }$,${ \beta  }_{ 1 }$, etc.) as the data1 set.
 
-data3 - Yes, while there appears to be a point of high leverage that is affecting the model, We can see that if the outlying point was removed, the resulting line would appear to be similar.  However, due to this point, the conditions noted above are not being met since the residuals are not nearly normal and the variability of the residuals is not nearly constant.  Therefore, if we really faced this data in practice, further investigation on the outlying point should be performed.
+data3 - Yes, while there appears to be a point of high leverage that is affecting the model, We can see that if the outlying point was removed, the resulting line would appear to be similar.  However, due to this point, the conditions noted above are not being met since the residuals are not nearly normal and the variability of the residuals is not nearly constant.  Therefore, if we really faced this data in practice, further investigation on the outlying point should be performed.  Additionally the issues with the outlying point would be noted, as explained in the data1 summary.
 
 data4 - No, this data has a point of high leverage and unlike the data3 set, the linear model is significantly affected.  Note, with the outlying point removed, the line would be vertical.  The conditions checked above provide further suppor that a linear model is not a good fit for the data.
 
