@@ -23,7 +23,7 @@ d. daysDrive, gasMonth
 
 daysDrive- Since this is indicated to be a count of days then it appears this value can only take on whole non-negative integers for the number of days the student drives.
 
-gasMonth - This value is indicated to be cost, which is only calculated down to the nearest $0.01.  Therefore, there are not an infinite number of possible values for a given variable range.  Also, not that if this value were calculated in cents, then it would be all non-negative integer which is similar to the daysDrive variable.
+gasMonth - This value is indicated to be cost, which is only calculated down to the nearest $0.01.  Therefore, there are not an infinite number of possible values for a given variable range.  Also, note that if this value were calculated in cents, then it would be all non-negative integers which is similar to the daysDrive variable.
 
 ####Question 2 - A histogram of the GPA of 132 students from this course in Fall 2012 class is presented below. Which estimates of the mean and median are most plausible?
 
@@ -234,7 +234,7 @@ format(cor(data3$y, data3$x)^2, nsmall = 2)
 format(summary(lm(y ~ x, data = data3))[[8]], nsmall = 2)
 
 format(cor(data4$y, data4$x)^2, nsmall = 2)
-format(summary(lm(y ~ x, data = data3))[[8]], nsmall = 2)
+format(summary(lm(y ~ x, data = data4))[[8]], nsmall = 2)
 ```
 
 
@@ -297,7 +297,7 @@ Summary:
 
 data1 - Yes, the p-values for each test statistic are below $\alpha = 0.05$, which means that we can reject the null hypothesis of the intercept and slope being equal to zero.  Additionally, we see that the model explains `r cor(data1$y, data1$x)^2 * 100`% of the variability in the response variable (y).  Pertaining to the condition checks, there are not many data points for all the sets provided so it is difficult to determine whether the normal distiribution, as well as other model validations, have been met; therefore, we will use the qqPlot package from the car library to draw a confidence band around the residuals to see if their variation is due to more than just natural occurrence.  In this case, there is one point that appears to fall on the line of the confidence band so, if this situation were brough up in practice, I would most likely report the correlation along with a note that specifically outlines this issue as a possible shortcoming.
 
-data2 - No, from the initial inspection we see that the data do not follow a linear pattern.  It appears a quadratic equation would produce a better fit.  The following condition checks provide further support that the data do not follow a linear pattern and a linear regression model should not be used despite the fact that this data has the same summary statistics ($\mu$,sd,${ \beta  }_{ 0 }$,${ \beta  }_{ 1 }$, etc.) as the data1 set.
+data2 - No, from the initial inspection we see that the data do not follow a linear pattern.  It appears a quadratic equation would produce a better fit.  The following condition checks provide further support that the data do not follow a linear pattern and a linear regression model should not be used despite the fact that this data has the same summary statistics ($\mu$,sd, r-squared,${ \beta  }_{ 0 }$,${ \beta  }_{ 1 }$, etc.) as the data1 set.
 
 data3 - Yes, while there appears to be a point of high leverage that is affecting the model, We can see that if the outlying point was removed, the resulting line would appear to be similar.  However, due to this point, the conditions noted above are not being met since the residuals are not nearly normal and the variability of the residuals is not nearly constant.  Therefore, if we really faced this data in practice, further investigation on the outlying point should be performed.  Additionally the issues with the outlying point would be noted, as explained in the data1 summary.
 
@@ -307,4 +307,4 @@ data4 - No, this data has a point of high leverage and unlike the data3 set, the
 
 Answer:
 
-It is important to include appropriate visuaztions when analyzing data because we must use these representations to determine if certain techniques are appropriate.  It is not enough to simply look at the resulting values when determining if a model is a good fit.  For example, in the previous problem, we see that all four data sets have the same summary statistics ($\mu$,sd,${ \beta  }_{ 0 }$,${ \beta  }_{ 1 }$, etc.); however, they are all very different from one another.  I have created visualizations in the previous problem to show how they should be appropriately used.  
+It is important to include appropriate visuaztions when analyzing data because we must use these representations to make judgements about whether the necessary conditions are being met.  It is not enough to simply look at the resulting values in order to determine whether a model is a good fit.  For example, in the previous problem, we see that all four data sets have the same summary statistics ($\mu$,sd, r-squared,${ \beta  }_{ 0 }$,${ \beta  }_{ 1 }$, etc.); however, they are all very different from one another.  I have created visualizations in the previous problem to show how they should be appropriately used.  
