@@ -1,0 +1,304 @@
+Pointers
+------------
+0x7fe017e195a3
+0x7fe0169691a4
+0x7fe017e4bd68
+0x7fe017e2a70b
+0x7fe017e863b4
+0x7fe017e407f2
+0x7fe017e1ba56
+0x7fe017e1afda
+0x7fe017e1b28a
+0x7fe017e1da47
+0x7fe017561803
+0x7fe017540565
+0x7fe0172d4bec
+0x7fe017b1ca44
+0x7fe017c2e029
+0x7fe017156a81
+0x7fe017156d62
+0x7fe017f1f956
+0x7fe017f1fcb9
+0x7fe017f1d45b
+0x7fe05b0266ba
+0x7fe05a64c82d
+Raw
+------------
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_Z18__print_back_tracev+0x93) [0x7fe017e195a3]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x4941a4) [0x7fe0169691a4]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab13get_temp_nameERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEb+0xa18) [0x7fe017e4bd68]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x195570b) [0x7fe017e2a70b]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x19b13b4) [0x7fe017e863b4]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x196b7f2) [0x7fe017e407f2]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1946a56) [0x7fe017e1ba56]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1945fda) [0x7fe017e1afda]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x194628a) [0x7fe017e1b28a]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab16general_ifstreamC1ENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE+0x107) [0x7fe017e1da47]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab20parse_csvs_to_sframeERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEERNS_18csv_line_tokenizerENS_25csv_file_handling_optionsERNS_6sframeES6_+0x213) [0x7fe017561803]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab6sframe14init_from_csvsERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERNS_18csv_line_tokenizerEbbbNS1_3mapIS7_NS_14flex_type_enumENS1_4lessIS7_EENS5_INS1_4pairIS8_SD_EEEEEENS1_6vectorIS7_NS5_IS7_EEEEmm+0x1f5) [0x7fe017540565]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12unity_sframe19construct_from_csvsENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEENS1_3mapIS7_NS_13flexible_typeENS1_4lessIS7_EENS5_INS1_4pairIKS7_S9_EEEEEENS8_IS7_NS_14flex_type_enumESB_NS5_INSC_ISD_SH_EEEEEE+0x115c) [0x7fe0172d4bec]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1647a44) [0x7fe017b1ca44]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN6cppipc11comm_server8callbackERN8graphlab11nanosockets14zmq_msg_vectorES4_+0xaf9) [0x7fe017c2e029]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab11nanosockets18async_reply_socket11process_jobENS1_3jobE+0xd1) [0x7fe017156a81]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab11nanosockets18async_reply_socket15thread_functionEv+0x112) [0x7fe017156d62]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12thread_group6invokeEN5boost8functionIFvvEEEPS0_+0x26) [0x7fe017f1f956]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1a4acb9) [0x7fe017f1fcb9]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab6thread6invokeEPv+0x2b) [0x7fe017f1d45b]
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7fe05b0266ba]
+/lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7fe05a64c82d]
+
+Demangled
+------------
+__print_back_trace()
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x4941a4)
+graphlab::get_temp_name(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, bool)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x195570b)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x19b13b4)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x196b7f2)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1946a56)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1945fda)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x194628a)
+graphlab::general_ifstream::general_ifstream(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab20parse_csvs
+graphlab::sframe::init_from_csvs(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, graphlab::csv_line_tokenizer&)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12unity_sfra
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1647a44)
+cppipc::comm_server::callback(graphlab::nanosockets::zmq_msg_vector&, graphlab::nanosockets::zmq_msg_vector&)
+graphlab::nanosockets::async_reply_socket::process_job(graphlab::nanosockets::async_reply_socket::job)
+graphlab::nanosockets::async_reply_socket::thread_function()
+graphlab::thread_group::invoke(boost::function<void ()>, graphlab::thread_group*)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1a4acb9)
+graphlab::thread::invoke(void*)
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba)
+/lib/x86_64-linux-gnu/libc.so.6(clone+0x6d)
+-------------------------------------------------------
+
+
+Pointers
+------------
+0x7fe017e195a3
+0x7fe016fc8551
+0x7fe017e4be4a
+0x7fe017e2a70b
+0x7fe017e863b4
+0x7fe017e407f2
+0x7fe017e1ba56
+0x7fe017e1afda
+0x7fe017e1b28a
+0x7fe017e1da47
+0x7fe017561803
+0x7fe017540565
+0x7fe0172d4bec
+0x7fe017b1ca44
+0x7fe017c2e029
+0x7fe017156a81
+0x7fe017156d62
+0x7fe017f1f956
+0x7fe017f1fcb9
+0x7fe017f1d45b
+0x7fe05b0266ba
+0x7fe05a64c82d
+Raw
+------------
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_Z18__print_back_tracev+0x93) [0x7fe017e195a3]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0xaf3551) [0x7fe016fc8551]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab13get_temp_nameERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEb+0xafa) [0x7fe017e4be4a]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x195570b) [0x7fe017e2a70b]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x19b13b4) [0x7fe017e863b4]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x196b7f2) [0x7fe017e407f2]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1946a56) [0x7fe017e1ba56]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1945fda) [0x7fe017e1afda]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x194628a) [0x7fe017e1b28a]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab16general_ifstreamC1ENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE+0x107) [0x7fe017e1da47]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab20parse_csvs_to_sframeERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEERNS_18csv_line_tokenizerENS_25csv_file_handling_optionsERNS_6sframeES6_+0x213) [0x7fe017561803]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab6sframe14init_from_csvsERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERNS_18csv_line_tokenizerEbbbNS1_3mapIS7_NS_14flex_type_enumENS1_4lessIS7_EENS5_INS1_4pairIS8_SD_EEEEEENS1_6vectorIS7_NS5_IS7_EEEEmm+0x1f5) [0x7fe017540565]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12unity_sframe19construct_from_csvsENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEENS1_3mapIS7_NS_13flexible_typeENS1_4lessIS7_EENS5_INS1_4pairIKS7_S9_EEEEEENS8_IS7_NS_14flex_type_enumESB_NS5_INSC_ISD_SH_EEEEEE+0x115c) [0x7fe0172d4bec]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1647a44) [0x7fe017b1ca44]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN6cppipc11comm_server8callbackERN8graphlab11nanosockets14zmq_msg_vectorES4_+0xaf9) [0x7fe017c2e029]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab11nanosockets18async_reply_socket11process_jobENS1_3jobE+0xd1) [0x7fe017156a81]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab11nanosockets18async_reply_socket15thread_functionEv+0x112) [0x7fe017156d62]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12thread_group6invokeEN5boost8functionIFvvEEEPS0_+0x26) [0x7fe017f1f956]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1a4acb9) [0x7fe017f1fcb9]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab6thread6invokeEPv+0x2b) [0x7fe017f1d45b]
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7fe05b0266ba]
+/lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7fe05a64c82d]
+
+Demangled
+------------
+__print_back_trace()
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0xaf3551)
+graphlab::get_temp_name(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, bool)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x195570b)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x19b13b4)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x196b7f2)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1946a56)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1945fda)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x194628a)
+graphlab::general_ifstream::general_ifstream(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab20parse_csvs
+graphlab::sframe::init_from_csvs(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, graphlab::csv_line_tokenizer&)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12unity_sfra
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1647a44)
+cppipc::comm_server::callback(graphlab::nanosockets::zmq_msg_vector&, graphlab::nanosockets::zmq_msg_vector&)
+graphlab::nanosockets::async_reply_socket::process_job(graphlab::nanosockets::async_reply_socket::job)
+graphlab::nanosockets::async_reply_socket::thread_function()
+graphlab::thread_group::invoke(boost::function<void ()>, graphlab::thread_group*)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1a4acb9)
+graphlab::thread::invoke(void*)
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba)
+/lib/x86_64-linux-gnu/libc.so.6(clone+0x6d)
+-------------------------------------------------------
+
+
+Pointers
+------------
+0x7fe017e195a3
+0x7fe0169691a4
+0x7fe017e4bd68
+0x7fe017e2a70b
+0x7fe017e863b4
+0x7fe017e407f2
+0x7fe017e1ba56
+0x7fe017e1afda
+0x7fe017e1b28a
+0x7fe017e1da47
+0x7fe017561b02
+0x7fe017540565
+0x7fe0172d4bec
+0x7fe017b1ca44
+0x7fe017c2e029
+0x7fe017156a81
+0x7fe017156d62
+0x7fe017f1f956
+0x7fe017f1fcb9
+0x7fe017f1d45b
+0x7fe05b0266ba
+0x7fe05a64c82d
+Raw
+------------
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_Z18__print_back_tracev+0x93) [0x7fe017e195a3]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x4941a4) [0x7fe0169691a4]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab13get_temp_nameERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEb+0xa18) [0x7fe017e4bd68]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x195570b) [0x7fe017e2a70b]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x19b13b4) [0x7fe017e863b4]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x196b7f2) [0x7fe017e407f2]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1946a56) [0x7fe017e1ba56]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1945fda) [0x7fe017e1afda]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x194628a) [0x7fe017e1b28a]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab16general_ifstreamC1ENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE+0x107) [0x7fe017e1da47]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab20parse_csvs_to_sframeERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEERNS_18csv_line_tokenizerENS_25csv_file_handling_optionsERNS_6sframeES6_+0x512) [0x7fe017561b02]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab6sframe14init_from_csvsERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERNS_18csv_line_tokenizerEbbbNS1_3mapIS7_NS_14flex_type_enumENS1_4lessIS7_EENS5_INS1_4pairIS8_SD_EEEEEENS1_6vectorIS7_NS5_IS7_EEEEmm+0x1f5) [0x7fe017540565]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12unity_sframe19construct_from_csvsENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEENS1_3mapIS7_NS_13flexible_typeENS1_4lessIS7_EENS5_INS1_4pairIKS7_S9_EEEEEENS8_IS7_NS_14flex_type_enumESB_NS5_INSC_ISD_SH_EEEEEE+0x115c) [0x7fe0172d4bec]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1647a44) [0x7fe017b1ca44]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN6cppipc11comm_server8callbackERN8graphlab11nanosockets14zmq_msg_vectorES4_+0xaf9) [0x7fe017c2e029]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab11nanosockets18async_reply_socket11process_jobENS1_3jobE+0xd1) [0x7fe017156a81]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab11nanosockets18async_reply_socket15thread_functionEv+0x112) [0x7fe017156d62]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12thread_group6invokeEN5boost8functionIFvvEEEPS0_+0x26) [0x7fe017f1f956]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1a4acb9) [0x7fe017f1fcb9]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab6thread6invokeEPv+0x2b) [0x7fe017f1d45b]
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7fe05b0266ba]
+/lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7fe05a64c82d]
+
+Demangled
+------------
+__print_back_trace()
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x4941a4)
+graphlab::get_temp_name(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, bool)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x195570b)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x19b13b4)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x196b7f2)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1946a56)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1945fda)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x194628a)
+graphlab::general_ifstream::general_ifstream(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab20parse_csvs
+graphlab::sframe::init_from_csvs(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, graphlab::csv_line_tokenizer&)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12unity_sfra
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1647a44)
+cppipc::comm_server::callback(graphlab::nanosockets::zmq_msg_vector&, graphlab::nanosockets::zmq_msg_vector&)
+graphlab::nanosockets::async_reply_socket::process_job(graphlab::nanosockets::async_reply_socket::job)
+graphlab::nanosockets::async_reply_socket::thread_function()
+graphlab::thread_group::invoke(boost::function<void ()>, graphlab::thread_group*)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1a4acb9)
+graphlab::thread::invoke(void*)
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba)
+/lib/x86_64-linux-gnu/libc.so.6(clone+0x6d)
+-------------------------------------------------------
+
+
+Pointers
+------------
+0x7fe017e195a3
+0x7fe016fc8551
+0x7fe017e4be4a
+0x7fe017e2a70b
+0x7fe017e863b4
+0x7fe017e407f2
+0x7fe017e1ba56
+0x7fe017e1afda
+0x7fe017e1b28a
+0x7fe017e1da47
+0x7fe017561b02
+0x7fe017540565
+0x7fe0172d4bec
+0x7fe017b1ca44
+0x7fe017c2e029
+0x7fe017156a81
+0x7fe017156d62
+0x7fe017f1f956
+0x7fe017f1fcb9
+0x7fe017f1d45b
+0x7fe05b0266ba
+0x7fe05a64c82d
+Raw
+------------
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_Z18__print_back_tracev+0x93) [0x7fe017e195a3]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0xaf3551) [0x7fe016fc8551]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab13get_temp_nameERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEb+0xafa) [0x7fe017e4be4a]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x195570b) [0x7fe017e2a70b]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x19b13b4) [0x7fe017e863b4]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x196b7f2) [0x7fe017e407f2]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1946a56) [0x7fe017e1ba56]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1945fda) [0x7fe017e1afda]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x194628a) [0x7fe017e1b28a]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab16general_ifstreamC1ENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE+0x107) [0x7fe017e1da47]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab20parse_csvs_to_sframeERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEERNS_18csv_line_tokenizerENS_25csv_file_handling_optionsERNS_6sframeES6_+0x512) [0x7fe017561b02]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab6sframe14init_from_csvsERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERNS_18csv_line_tokenizerEbbbNS1_3mapIS7_NS_14flex_type_enumENS1_4lessIS7_EENS5_INS1_4pairIS8_SD_EEEEEENS1_6vectorIS7_NS5_IS7_EEEEmm+0x1f5) [0x7fe017540565]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12unity_sframe19construct_from_csvsENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEENS1_3mapIS7_NS_13flexible_typeENS1_4lessIS7_EENS5_INS1_4pairIKS7_S9_EEEEEENS8_IS7_NS_14flex_type_enumESB_NS5_INSC_ISD_SH_EEEEEE+0x115c) [0x7fe0172d4bec]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1647a44) [0x7fe017b1ca44]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN6cppipc11comm_server8callbackERN8graphlab11nanosockets14zmq_msg_vectorES4_+0xaf9) [0x7fe017c2e029]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab11nanosockets18async_reply_socket11process_jobENS1_3jobE+0xd1) [0x7fe017156a81]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab11nanosockets18async_reply_socket15thread_functionEv+0x112) [0x7fe017156d62]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12thread_group6invokeEN5boost8functionIFvvEEEPS0_+0x26) [0x7fe017f1f956]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1a4acb9) [0x7fe017f1fcb9]
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab6thread6invokeEPv+0x2b) [0x7fe017f1d45b]
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7fe05b0266ba]
+/lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7fe05a64c82d]
+
+Demangled
+------------
+__print_back_trace()
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0xaf3551)
+graphlab::get_temp_name(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, bool)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x195570b)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x19b13b4)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x196b7f2)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1946a56)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1945fda)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x194628a)
+graphlab::general_ifstream::general_ifstream(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab20parse_csvs
+graphlab::sframe::init_from_csvs(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, graphlab::csv_line_tokenizer&)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(_ZN8graphlab12unity_sfra
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1647a44)
+cppipc::comm_server::callback(graphlab::nanosockets::zmq_msg_vector&, graphlab::nanosockets::zmq_msg_vector&)
+graphlab::nanosockets::async_reply_socket::process_job(graphlab::nanosockets::async_reply_socket::job)
+graphlab::nanosockets::async_reply_socket::thread_function()
+graphlab::thread_group::invoke(boost::function<void ()>, graphlab::thread_group*)
+/home/grandocu/anaconda2/envs/gl-env/lib/python2.7/site-packages/graphlab/cython/../libunity_shared.so(+0x1a4acb9)
+graphlab::thread::invoke(void*)
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba)
+/lib/x86_64-linux-gnu/libc.so.6(clone+0x6d)
+-------------------------------------------------------
+
+
