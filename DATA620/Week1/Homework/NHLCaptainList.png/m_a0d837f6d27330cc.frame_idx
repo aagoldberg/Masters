@@ -1,0 +1,11 @@
+[sframe]
+version=0
+num_segments=0
+num_columns=2
+nrows=1
+[column_names]
+0000=__src_id
+0001=__dst_id
+[column_files]
+0000=m_a0d837f6d27330cc.sidx:0
+0001=m_a0d837f6d27330cc.sidx:1
