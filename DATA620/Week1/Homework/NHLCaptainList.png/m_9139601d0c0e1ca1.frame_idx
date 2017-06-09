@@ -1,9 +1,0 @@
-[sframe]
-version=0
-num_segments=0
-num_columns=1
-nrows=3
-[column_names]
-0000=__id
-[column_files]
-0000=m_9139601d0c0e1ca1.sidx:0
